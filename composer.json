@@ -14,7 +14,9 @@
         "orchestra/testbench": "^9.0|^10.0",
         "phpunit/phpunit": "^10.0|^11.0",
         "pestphp/pest": "^2.0|^3.0",
-        "pestphp/pest-plugin-laravel": "^2.0|^3.0"
+        "pestphp/pest-plugin-laravel": "^2.0|^3.0",
+        "phpstan/phpstan": "^2.1",
+        "friendsofphp/php-cs-fixer": "^3.75"
     },
     "autoload": {
         "psr-4": {
@@ -43,7 +45,15 @@
         "test": "pest",
         "test-coverage": "pest --coverage",
         "test-unit": "pest tests/Unit",
-        "test-feature": "pest tests/Feature"
+        "test-feature": "pest tests/Feature",
+        "analyse": "phpstan analyse",
+        "format": "php-cs-fixer fix",
+        "format-check": "php-cs-fixer fix --dry-run --diff",
+        "quality": [
+            "@format-check",
+            "@analyse",
+            "@test"
+        ]
     },
     "config": {
         "allow-plugins": {

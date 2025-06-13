@@ -1,0 +1,29 @@
+parameters:
+    level: 6
+    paths:
+        - src
+        - tests
+    
+    # Ignore Laravel magic methods and Pest functions
+    ignoreErrors:
+        - '#Call to an undefined method Illuminate\\.*#'
+        - '#Access to an undefined property Illuminate\\.*#'
+        - '#Call to an undefined static method Pest\\.*#'
+        - '#Function expect not found#'
+        - '#Function it not found#'
+        - '#Function describe not found#'
+        - '#Function beforeEach not found#'
+        - '#Function afterEach not found#'
+        - '#Function uses not found#'
+        - '#Class .* not found#'
+        - '#Undefined variable: \$#'
+    
+    # Exclude files
+    excludePaths:
+        - tests/Pest.php
+        - vendor
+    
+    # Include Laravel stubs
+    bootstrapFiles:
+        - vendor/autoload.php
+

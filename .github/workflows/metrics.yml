@@ -1,0 +1,112 @@
+name: Package Metrics
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  metrics:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Get Packagist stats
+        id: packagist
+        run: |
+          # Get package stats from Packagist API
+          STATS=$(curl -s "https://packagist.org/packages/grazulex/laravel-arc.json")
+          
+          if [ $? -eq 0 ] && [ "$STATS" != "null" ]; then
+            DOWNLOADS_TOTAL=$(echo "$STATS" | jq -r '.package.downloads.total // 0')
+            DOWNLOADS_MONTHLY=$(echo "$STATS" | jq -r '.package.downloads.monthly // 0')
+            DOWNLOADS_DAILY=$(echo "$STATS" | jq -r '.package.downloads.daily // 0')
+            STARS=$(echo "$STATS" | jq -r '.package.github_stars // 0')
+            FORKS=$(echo "$STATS" | jq -r '.package.github_forks // 0')
+            WATCHERS=$(echo "$STATS" | jq -r '.package.github_watchers // 0')
+            
+            echo "downloads_total=$DOWNLOADS_TOTAL" >> $GITHUB_OUTPUT
+            echo "downloads_monthly=$DOWNLOADS_MONTHLY" >> $GITHUB_OUTPUT
+            echo "downloads_daily=$DOWNLOADS_DAILY" >> $GITHUB_OUTPUT
+            echo "stars=$STARS" >> $GITHUB_OUTPUT
+            echo "forks=$FORKS" >> $GITHUB_OUTPUT
+            echo "watchers=$WATCHERS" >> $GITHUB_OUTPUT
+            
+            echo "📊 Package Stats:"
+            echo "- Total downloads: $DOWNLOADS_TOTAL"
+            echo "- Monthly downloads: $DOWNLOADS_MONTHLY"
+            echo "- Daily downloads: $DOWNLOADS_DAILY"
+            echo "- GitHub stars: $STARS"
+            echo "- GitHub forks: $FORKS"
+            echo "- GitHub watchers: $WATCHERS"
+          else
+            echo "❌ Failed to fetch package stats"
+          fi
+
+      - name: Update metrics badge
+        if: steps.packagist.outputs.downloads_total != '0'
+        run: |
+          # Create a simple metrics file
+          cat > metrics.json << EOF
+          {
+            "date": "$(date -I)",
+            "downloads": {
+              "total": ${{ steps.packagist.outputs.downloads_total }},
+              "monthly": ${{ steps.packagist.outputs.downloads_monthly }},
+              "daily": ${{ steps.packagist.outputs.downloads_daily }}
+            },
+            "github": {
+              "stars": ${{ steps.packagist.outputs.stars }},
+              "forks": ${{ steps.packagist.outputs.forks }},
+              "watchers": ${{ steps.packagist.outputs.watchers }}
+            }
+          }
+          EOF
+          
+          echo "📁 Metrics saved to metrics.json"
+
+      - name: Notify on Discord/Slack (optional)
+        if: steps.packagist.outputs.downloads_total != '0' && env.DISCORD_WEBHOOK
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        run: |
+          # Send metrics to Discord/Slack webhook
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d '{
+                 "content": "📊 Laravel Arc Daily Metrics\n**Downloads:** ${{ steps.packagist.outputs.downloads_total }} total (${{ steps.packagist.outputs.downloads_daily }} today)\n**GitHub:** ⭐ ${{ steps.packagist.outputs.stars }} stars, 🍴 ${{ steps.packagist.outputs.forks }} forks"
+               }' \
+               "$DISCORD_WEBHOOK" || echo "Webhook notification failed (optional)"
+
+      - name: Create performance report
+        run: |
+          # Generate a simple performance report
+          echo "# 📊 Laravel Arc Performance Report" > PERFORMANCE_REPORT.md
+          echo "" >> PERFORMANCE_REPORT.md
+          echo "Generated on: $(date)" >> PERFORMANCE_REPORT.md
+          echo "" >> PERFORMANCE_REPORT.md
+          echo "## 📈 Download Statistics" >> PERFORMANCE_REPORT.md
+          echo "- **Total Downloads:** ${{ steps.packagist.outputs.downloads_total }}" >> PERFORMANCE_REPORT.md
+          echo "- **Monthly Downloads:** ${{ steps.packagist.outputs.downloads_monthly }}" >> PERFORMANCE_REPORT.md
+          echo "- **Daily Downloads:** ${{ steps.packagist.outputs.downloads_daily }}" >> PERFORMANCE_REPORT.md
+          echo "" >> PERFORMANCE_REPORT.md
+          echo "## ⭐ GitHub Metrics" >> PERFORMANCE_REPORT.md
+          echo "- **Stars:** ${{ steps.packagist.outputs.stars }}" >> PERFORMANCE_REPORT.md
+          echo "- **Forks:** ${{ steps.packagist.outputs.forks }}" >> PERFORMANCE_REPORT.md
+          echo "- **Watchers:** ${{ steps.packagist.outputs.watchers }}" >> PERFORMANCE_REPORT.md
+          echo "" >> PERFORMANCE_REPORT.md
+          echo "## 🚀 Growth Rate" >> PERFORMANCE_REPORT.md
+          
+          # Calculate basic growth rate if we have historical data
+          if [ "${{ steps.packagist.outputs.downloads_total }}" -gt 0 ] && [ "${{ steps.packagist.outputs.downloads_monthly }}" -gt 0 ]; then
+            GROWTH_RATE=$(echo "scale=2; (${{ steps.packagist.outputs.downloads_monthly }} / ${{ steps.packagist.outputs.downloads_total }}) * 100" | bc -l 2>/dev/null || echo "N/A")
+            echo "- **Monthly growth:** ${GROWTH_RATE}% of total downloads" >> PERFORMANCE_REPORT.md
+          else
+            echo "- **Monthly growth:** N/A (insufficient data)" >> PERFORMANCE_REPORT.md
+          fi
+          
+          cat PERFORMANCE_REPORT.md
+
