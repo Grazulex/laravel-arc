@@ -1,5 +1,7 @@
 <?php
 
+namespace Grazulex\Arc\Examples;
+
 /**
  * Simple usage example of Laravel Arc DTO
  */

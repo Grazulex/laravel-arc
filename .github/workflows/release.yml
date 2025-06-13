@@ -23,7 +23,7 @@ jobs:
           coverage: none
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --no-dev --optimize-autoloader
+        run: composer install --prefer-dist --no-interaction --optimize-autoloader
 
       - name: Run tests
         run: vendor/bin/pest
