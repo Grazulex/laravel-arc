@@ -3,7 +3,6 @@
 $finder = PhpCsFixer\Finder::create()
     ->in([
         __DIR__ . '/src',
-        __DIR__ . '/tests',
     ])
     ->name('*.php')
     ->notName('*.blade.php')
@@ -51,7 +50,7 @@ return (new PhpCsFixer\Config())
         
         // Strings
         'single_quote' => true,
-        'escape_implicit_backslashes' => false,
+        'string_implicit_backslashes' => false,
         
         // Whitespace
         'no_extra_blank_lines' => [
