@@ -166,6 +166,10 @@ it('can create DTO and access properties directly', function () {
 });
 ```
 
+## Changelog
+
+Please see [CHANGELOG](CHANGELOG.md) for more information on what has changed recently.
+
 ## Credits
 
 - [Jean-Marc Strauven](https://github.com/grazulex)
