@@ -8,6 +8,9 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: write
     
     steps:
       - name: Checkout code
@@ -50,12 +53,9 @@ jobs:
           echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.changelog.outputs.version }}
-          release_name: Release ${{ steps.changelog.outputs.version }}
+          name: Release ${{ steps.changelog.outputs.version }}
           body: |
             ## Changes in ${{ steps.changelog.outputs.version }}
             
@@ -68,6 +68,7 @@ jobs:
             ```
           draft: false
           prerelease: false
+          generate_release_notes: true
 
       - name: Trigger Packagist update
         run: |
