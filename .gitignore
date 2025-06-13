@@ -1,0 +1,33 @@
+# Dependencies
+/vendor/
+
+# IDEs
+/.idea/
+/.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+/build/
+/.phpunit.cache/
+/coverage/
+
+# Composer
+composer.phar
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+
+# Temporary files
+/tmp/
+/temp/
+
