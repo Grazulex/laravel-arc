@@ -2,40 +2,61 @@
 
 namespace Grazulex\Arc\Traits;
 
+use function array_key_exists;
+
+use BadMethodCallException;
+
+use function count;
+
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
+
+use function is_array;
+use function is_bool;
+use function is_float;
+use function is_int;
+use function is_object;
+use function is_string;
+
 use ReflectionClass;
 use ReflectionProperty;
+
+use function strlen;
 
 trait DTOTrait
 {
     /**
      * The DTO's attributes.
+     *
+     * @var array<string, mixed>
      */
     protected array $attributes = [];
 
     /**
-     * Cache for reflection properties
+     * Cache for reflection properties.
+     *
+     * @var array<string, array<string, mixed>>
      */
     private static array $propertiesCache = [];
 
     /**
-     * Magic method to get property values directly
+     * Magic method to get property values directly.
      */
     public function __get(string $name): mixed
     {
         // First try to get from actual class property if it exists and is initialized
         if (property_exists($this, $name)) {
-            $reflection = new \ReflectionProperty($this, $name);
+            $reflection = new ReflectionProperty($this, $name);
             if ($reflection->isInitialized($this)) {
-                return $this->$name;
+                return $this->{$name};
             }
         }
+
         return $this->get($name);
     }
 
     /**
-     * Magic method to set property values directly
+     * Magic method to set property values directly.
      */
     public function __set(string $name, mixed $value): void
     {
@@ -43,28 +64,32 @@ trait DTOTrait
     }
 
     /**
-     * Magic method to check if a property exists
+     * Magic method to check if a property exists.
      */
     public function __isset(string $name): bool
     {
         // Check both actual property and attributes array
         if (property_exists($this, $name)) {
-            $reflection = new \ReflectionProperty($this, $name);
+            $reflection = new ReflectionProperty($this, $name);
             if ($reflection->isInitialized($this)) {
                 return true;
             }
         }
+
         return $this->has($name);
     }
 
     /**
-     * Magic method to handle dynamic getters and setters (optionnel pour compatibilité)
+     * Magic method to handle dynamic getters and setters (optionnel pour compatibilité).
+     *
+     * @param array<int, mixed> $arguments
      */
     public function __call(string $method, array $arguments): mixed
     {
         // Handle getters (getName, getEmail, etc.) - optionnel, pour compatibilité
         if (str_starts_with($method, 'get') && strlen($method) > 3) {
             $property = lcfirst(substr($method, 3));
+
             return $this->get($property);
         }
 
@@ -72,10 +97,11 @@ trait DTOTrait
         if (str_starts_with($method, 'set') && strlen($method) > 3 && count($arguments) === 1) {
             $property = lcfirst(substr($method, 3));
             $this->set($property, $arguments[0]);
+
             return $this;
         }
 
-        throw new \BadMethodCallException("Method {$method} does not exist.");
+        throw new BadMethodCallException("Method {$method} does not exist.");
     }
 
     /**
@@ -85,46 +111,48 @@ trait DTOTrait
     {
         // First try to get from actual class property if it exists and is initialized
         if (property_exists($this, $key)) {
-            $reflection = new \ReflectionProperty($this, $key);
+            $reflection = new ReflectionProperty($this, $key);
             if ($reflection->isInitialized($this)) {
-                return $this->$key;
+                return $this->{$key};
             }
         }
-        
+
         if (!array_key_exists($key, $this->attributes)) {
             $properties = $this->getReflectionProperties();
             if (isset($properties[$key])) {
                 $attribute = $properties[$key]['attribute'];
+
                 return $attribute?->default;
             }
         }
-        
+
         return $this->attributes[$key] ?? null;
     }
 
     /**
-     * Set an attribute in the DTO with type checking
+     * Set an attribute in the DTO with type checking.
      */
     public function set(string $key, mixed $value): static
     {
         $properties = $this->getReflectionProperties();
-        
+
         if (isset($properties[$key])) {
             $attribute = $properties[$key]['attribute'];
             $reflectionProperty = $properties[$key]['property'];
-            
+
             // Type checking
             if ($attribute && !$this->isValidType($value, $attribute->type, $reflectionProperty)) {
                 throw InvalidDTOException::forTypeError($key, $attribute->type, $value);
             }
-            
+
             // Set the actual class property if it exists
             if (property_exists($this, $key)) {
-                $this->$key = $value;
+                $this->{$key} = $value;
             }
         }
-        
+
         $this->attributes[$key] = $value;
+
         return $this;
     }
 
@@ -135,34 +163,37 @@ trait DTOTrait
     {
         // Check actual property first
         if (property_exists($this, $key)) {
-            $reflection = new \ReflectionProperty($this, $key);
+            $reflection = new ReflectionProperty($this, $key);
             if ($reflection->isInitialized($this)) {
                 return true;
             }
         }
+
         return array_key_exists($key, $this->attributes);
     }
 
     /**
      * Convert the DTO to an array.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array
     {
         $result = [];
         $properties = $this->getReflectionProperties();
-        
+
         // If we have properties with attributes, use them
         if (!empty($properties)) {
             // Get values from actual properties if they exist and are initialized
             foreach ($properties as $name => $propertyData) {
                 if (property_exists($this, $name)) {
-                    $reflection = new \ReflectionProperty($this, $name);
+                    $reflection = new ReflectionProperty($this, $name);
                     if ($reflection->isInitialized($this)) {
-                        $result[$name] = $this->$name;
+                        $result[$name] = $this->{$name};
                         continue;
                     }
                 }
-                
+
                 // Fallback to attributes array
                 if (array_key_exists($name, $this->attributes)) {
                     $result[$name] = $this->attributes[$name];
@@ -178,7 +209,7 @@ trait DTOTrait
             // If no properties with attributes, just return the attributes array
             $result = $this->attributes;
         }
-        
+
         return $result;
     }
 
@@ -191,35 +222,37 @@ trait DTOTrait
     }
 
     /**
-     * Get reflection properties with their attributes
+     * Get reflection properties with their attributes.
+     *
+     * @return array<string, array<string, mixed>>
      */
     private function getReflectionProperties(): array
     {
         $class = static::class;
-        
+
         if (!isset(self::$propertiesCache[$class])) {
             $reflection = new ReflectionClass($class);
             $properties = [];
-            
+
             foreach ($reflection->getProperties() as $property) {
                 $attributes = $property->getAttributes(Property::class);
                 if (!empty($attributes)) {
                     $attribute = $attributes[0]->newInstance();
                     $properties[$property->getName()] = [
                         'property' => $property,
-                        'attribute' => $attribute
+                        'attribute' => $attribute,
                     ];
                 }
             }
-            
+
             self::$propertiesCache[$class] = $properties;
         }
-        
+
         return self::$propertiesCache[$class];
     }
 
     /**
-     * Validate if a value matches the expected type
+     * Validate if a value matches the expected type.
      */
     private function isValidType(mixed $value, string $expectedType, ReflectionProperty $property): bool
     {
@@ -238,4 +271,3 @@ trait DTOTrait
         };
     }
 }
-

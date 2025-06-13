@@ -5,12 +5,16 @@ namespace Grazulex\Arc\Contracts;
 interface DTOInterface
 {
     /**
-     * Create a new DTO instance from an array of data.
+     * Create a new DTO instance from an array.
+     *
+     * @param array<string, mixed> $data
      */
     public static function fromArray(array $data): static;
 
     /**
      * Convert the DTO to an array.
+     *
+     * @return array<string, mixed>
      */
     public function toArray(): array;
 
@@ -24,4 +28,3 @@ interface DTOInterface
      */
     public function has(string $key): bool;
 }
-

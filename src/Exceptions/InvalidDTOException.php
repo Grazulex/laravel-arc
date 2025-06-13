@@ -2,21 +2,31 @@
 
 namespace Grazulex\Arc\Exceptions;
 
-class InvalidDTOException extends \InvalidArgumentException
+use InvalidArgumentException;
+use Throwable;
+
+class InvalidDTOException extends InvalidArgumentException
 {
+    /**
+     * @var array<string, array<string>>
+     */
     protected array $errors = [];
     protected ?string $property = null;
     protected ?string $expectedType = null;
     protected mixed $actualValue = null;
 
-    public function __construct(string $message = "", int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string $message = '', int $code = 0, ?Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }
 
+    /**
+     * @param array<string, array<string>> $errors
+     */
     public static function forValidationErrors(array $errors): self
     {
-        $exception = new self("DTO validation failed: " . implode(', ', array_keys($errors)));
+        $exception = new self('DTO validation failed: ' . implode(', ', array_keys($errors)));
+
         return $exception->setErrors($errors);
     }
 
@@ -24,12 +34,12 @@ class InvalidDTOException extends \InvalidArgumentException
     {
         $actualType = get_debug_type($actualValue);
         $message = "Property '{$property}' expects type '{$expectedType}', got '{$actualType}'";
-        
+
         $exception = new self($message);
         $exception->property = $property;
         $exception->expectedType = $expectedType;
         $exception->actualValue = $actualValue;
-        
+
         return $exception;
     }
 
@@ -38,12 +48,19 @@ class InvalidDTOException extends \InvalidArgumentException
         return new self("Required property '{$property}' is missing");
     }
 
+    /**
+     * @param array<string, array<string>> $errors
+     */
     public function setErrors(array $errors): self
     {
         $this->errors = $errors;
+
         return $this;
     }
 
+    /**
+     * @return array<string, array<string>>
+     */
     public function getErrors(): array
     {
         return $this->errors;
@@ -64,4 +81,3 @@ class InvalidDTOException extends \InvalidArgumentException
         return $this->actualValue;
     }
 }
-

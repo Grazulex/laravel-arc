@@ -26,12 +26,10 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
 
       - name: Run PHP CS Fixer (dry-run)
-        run: |
-          composer require friendsofphp/php-cs-fixer --dev --no-interaction
-          vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff --verbose
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
 
       - name: Run PHPStan
-        run: |
-          composer require phpstan/phpstan --dev --no-interaction
-          vendor/bin/phpstan analyse --memory-limit=2G
+        run: vendor/bin/phpstan analyse --memory-limit=2G
 

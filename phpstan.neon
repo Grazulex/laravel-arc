@@ -4,24 +4,23 @@ parameters:
         - src
         - tests
     
-    # Ignore Laravel magic methods and Pest functions
+    # Only ignore specific patterns that are still needed
     ignoreErrors:
-        - '#Call to an undefined method Illuminate\\.*#'
-        - '#Access to an undefined property Illuminate\\.*#'
-        - '#Call to an undefined static method Pest\\.*#'
-        - '#Function expect not found#'
-        - '#Function it not found#'
-        - '#Function describe not found#'
-        - '#Function beforeEach not found#'
-        - '#Function afterEach not found#'
-        - '#Function uses not found#'
-        - '#Class .* not found#'
-        - '#Undefined variable: \$#'
+        # PHPStan template type errors for expect() in tests
+        - '#Unable to resolve the template type TValue in call to function expect#'
+        # Ignore dynamic property access in DTOs (they use magic methods)
+        - '#Access to an undefined property .*DTO::\$.*#'
+        - '#Call to an undefined method .*DTO::get.*#'
+        - '#Call to an undefined method .*DTO::set.*#'
+        # Allow unsafe usage of new static() in DTOs
+        - '#Unsafe usage of new static\(\)#'
     
     # Exclude files
     excludePaths:
         - tests/Pest.php
         - vendor
+        - src/Examples/usage_example.php
+        - src/Examples/simple_example.php
     
     # Include Laravel stubs
     bootstrapFiles:

@@ -1,83 +1,82 @@
 <?php
 
-use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
+use Grazulex\Arc\LaravelArcDTO;
 
 // DTO simple sans propriétés déclarées pour tester la logique de base
-class BasicTestDTO extends LaravelArcDTO
+class BasicDTOTest extends LaravelArcDTO
 {
     // Override la validation pour éviter Laravel
     protected function validate(array $data): void
     {
         if (empty($data['name'])) {
-            throw new InvalidDTOException("Name is required");
+            throw new InvalidDTOException('Name is required');
         }
     }
 }
 
-describe('BasicDTO', function () {
-    it('can create a DTO with basic functionality', function () {
+describe('BasicDTO', static function () {
+    it('can create a DTO with basic functionality', static function () {
         $dto = new BasicTestDTO([
             'name' => 'Jean-Marc',
             'age' => 30,
-            'role' => 'admin'
+            'role' => 'admin',
         ]);
-        
+
         expect($dto)->toBeInstanceOf(BasicTestDTO::class);
     });
-    
-    it('can access properties via get() method', function () {
+
+    it('can access properties via get() method', static function () {
         $dto = new BasicTestDTO(['name' => 'Test', 'age' => 25]);
-        
+
         expect($dto->get('name'))->toBe('Test');
         expect($dto->get('age'))->toBe(25);
     });
-    
-    it('can modify properties via set() method', function () {
+
+    it('can modify properties via set() method', static function () {
         $dto = new BasicTestDTO(['name' => 'Test', 'age' => 25]);
-        
+
         expect($dto->get('name'))->toBe('Test');
-        
+
         $dto->set('name', 'Nouveau nom');
-        
+
         expect($dto->get('name'))->toBe('Nouveau nom');
     });
-    
-    it('can access properties via magic __get', function () {
+
+    it('can access properties via magic __get', static function () {
         $dto = new BasicTestDTO(['name' => 'Test Magic', 'age' => 25]);
-        
+
         expect($dto->name)->toBe('Test Magic');
         expect($dto->age)->toBe(25);
     });
-    
-    it('can modify properties via magic __set', function () {
+
+    it('can modify properties via magic __set', static function () {
         $dto = new BasicTestDTO(['name' => 'Test', 'age' => 25]);
-        
+
         expect($dto->name)->toBe('Test');
-        
+
         $dto->name = 'Modifié par magie';
-        
+
         expect($dto->name)->toBe('Modifié par magie');
     });
-    
-    it('can convert to array and JSON', function () {
+
+    it('can convert to array and JSON', static function () {
         $dto = new BasicTestDTO(['name' => 'Test', 'age' => 25, 'role' => 'user']);
-        
+
         $array = $dto->toArray();
         expect($array)->toBeArray();
         expect($array['name'])->toBe('Test');
         expect($array['age'])->toBe(25);
         expect($array['role'])->toBe('user');
-        
+
         $json = $dto->toJson();
         expect($json)->toBeString();
         expect(json_decode($json, true))->toBe($array);
     });
-    
-    it('validates required fields', function () {
-        expect(function () {
+
+    it('validates required fields', static function () {
+        expect(static function () {
             new BasicTestDTO(['name' => '']);
         })->toThrow(InvalidDTOException::class, 'Name is required');
     });
 });
-

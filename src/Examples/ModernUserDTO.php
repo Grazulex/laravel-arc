@@ -2,8 +2,8 @@
 
 namespace Grazulex\Arc\Examples;
 
-use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Attributes\Property;
+use Grazulex\Arc\LaravelArcDTO;
 
 class ModernUserDTO extends LaravelArcDTO
 {
@@ -22,11 +22,13 @@ class ModernUserDTO extends LaravelArcDTO
     #[Property(type: 'boolean', required: false, default: true)]
     public bool $active;
 
+    /**
+     * @var array<string>
+     */
     #[Property(type: 'array', required: false, default: [])]
     public array $permissions;
 
     // No need to manually define getters/setters!
-    // Methods getName(), setName(), getEmail(), setEmail(), etc. 
+    // Methods getName(), setName(), getEmail(), setEmail(), etc.
     // are automatically available via __call() magic
 }
-

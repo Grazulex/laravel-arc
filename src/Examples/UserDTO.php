@@ -2,8 +2,8 @@
 
 namespace Grazulex\Arc\Examples;
 
-use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Attributes\Property;
+use Grazulex\Arc\LaravelArcDTO;
 
 /**
  * Example UserDTO using the new approach with attributes.
@@ -25,4 +25,3 @@ class UserDTO extends LaravelArcDTO
     // - validation rules (generated automatically)
     // - the rules() method (inherited and automatic)
 }
-
