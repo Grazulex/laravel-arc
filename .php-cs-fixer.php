@@ -72,10 +72,13 @@ return (new PhpCsFixer\Config())
         'comment_to_phpdoc' => true,
         'multiline_comment_opening_closing' => true,
         
-        // Specific Laravel/Package rules
+        // Pest/PHPUnit specific rules
         'php_unit_method_casing' => ['case' => 'camel_case'],
         'php_unit_test_annotation' => ['style' => 'prefix'],
         'no_alias_functions' => false, // Allow some PHP aliases for compatibility
+        
+        // Don't make closures static in test files (Pest doesn't support it)
+        'static_lambda' => false,
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true);

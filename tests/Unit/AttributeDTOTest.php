@@ -4,7 +4,7 @@ use Grazulex\Arc\Exceptions\InvalidDTOException;
 use Grazulex\Arc\LaravelArcDTO;
 
 // DTO with attributes but without declared properties
-class AttributeDTOTest extends LaravelArcDTO
+class AttributeTestDTO extends LaravelArcDTO
 {
     // Simulate rule generation for tests
     public static function rules(): array
@@ -28,8 +28,8 @@ class AttributeDTOTest extends LaravelArcDTO
     }
 }
 
-describe('AttributeDTO', static function () {
-    it('can create DTO and access properties directly', static function () {
+describe('AttributeDTO', function () {
+    it('can create DTO and access properties directly', function () {
         $dto = new AttributeTestDTO([
             'name' => 'Jean-Marc',
             'age' => 30,
@@ -41,7 +41,7 @@ describe('AttributeDTO', static function () {
         expect($dto->role)->toBe('admin');
     });
 
-    it('can modify properties directly', static function () {
+    it('can modify properties directly', function () {
         $dto = new AttributeTestDTO(['name' => 'Test', 'age' => 25]);
 
         expect($dto->name)->toBe('Test');
@@ -56,7 +56,7 @@ describe('AttributeDTO', static function () {
         expect($dto->role)->toBe('manager');
     });
 
-    it('is compatible with getters and setters', static function () {
+    it('is compatible with getters and setters', function () {
         $dto = new AttributeTestDTO(['name' => 'Test', 'age' => 25]);
 
         expect($dto->getName())->toBe('Test');
@@ -66,7 +66,7 @@ describe('AttributeDTO', static function () {
         expect($dto->age)->toBe(40);
     });
 
-    it('can convert to array with pretty JSON', static function () {
+    it('can convert to array with pretty JSON', function () {
         $dto = new AttributeTestDTO([
             'name' => 'John Doe',
             'age' => 30,
@@ -80,7 +80,7 @@ describe('AttributeDTO', static function () {
         expect($array['role'])->toBe('developer');
     });
 
-    it('can generate validation rules', static function () {
+    it('can generate validation rules', function () {
         $rules = AttributeTestDTO::rules();
 
         expect($rules)->toBeArray();
@@ -90,8 +90,8 @@ describe('AttributeDTO', static function () {
         expect($rules['name'])->toBe('required|string|max:255');
     });
 
-    it('validates empty name correctly', static function () {
-        expect(static function () {
+    it('validates empty name correctly', function () {
+        expect(function () {
             new AttributeTestDTO([
                 'name' => '', // Empty
                 'age' => 'not an integer',
@@ -99,8 +99,8 @@ describe('AttributeDTO', static function () {
         })->toThrow(InvalidDTOException::class, 'Name is required');
     });
 
-    it('validates integer age correctly', static function () {
-        expect(static function () {
+    it('validates integer age correctly', function () {
+        expect(function () {
             new AttributeTestDTO([
                 'name' => 'Test',
                 'age' => 'not an integer',

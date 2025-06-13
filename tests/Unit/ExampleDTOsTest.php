@@ -39,8 +39,8 @@ class TestModernUserDTO extends BaseModernUserDTO
     }
 }
 
-describe('UserDTO Example', static function () {
-    it('can create a UserDTO with all required properties', static function () {
+describe('UserDTO Example', function () {
+    it('can create a UserDTO with all required properties', function () {
         $user = new TestUserDTO([
             'name' => 'John Doe',
             'email' => 'test@example.com',
@@ -52,7 +52,7 @@ describe('UserDTO Example', static function () {
         expect($user->age)->toBe(30);
     });
 
-    it('can modify UserDTO properties directly', static function () {
+    it('can modify UserDTO properties directly', function () {
         $user = new TestUserDTO([
             'name' => 'John Doe',
             'email' => 'test@example.com',
@@ -64,7 +64,7 @@ describe('UserDTO Example', static function () {
         expect($user->name)->toBe('Jane Doe');
     });
 
-    it('can use getters and setters on UserDTO', static function () {
+    it('can use getters and setters on UserDTO', function () {
         $user = new TestUserDTO([
             'name' => 'John Doe',
             'email' => 'test@example.com',
@@ -82,7 +82,7 @@ describe('UserDTO Example', static function () {
         expect($user->age)->toBe(35);
     });
 
-    it('can generate validation rules automatically', static function () {
+    it('can generate validation rules automatically', function () {
         $rules = TestUserDTO::rules();
 
         expect($rules)->toBeArray();
@@ -92,8 +92,8 @@ describe('UserDTO Example', static function () {
     });
 });
 
-describe('ModernUserDTO Example', static function () {
-    it('can create ModernUserDTO with default values', static function () {
+describe('ModernUserDTO Example', function () {
+    it('can create ModernUserDTO with default values', function () {
         $user = new TestModernUserDTO([
             'name' => 'Mary Smith',
             'email' => 'mary@example.com',
@@ -108,7 +108,7 @@ describe('ModernUserDTO Example', static function () {
         expect($user->permissions)->toBe([]); // Default value
     });
 
-    it('can override default values', static function () {
+    it('can override default values', function () {
         $user = new TestModernUserDTO([
             'name' => 'Admin User',
             'email' => 'admin@example.com',
@@ -123,7 +123,7 @@ describe('ModernUserDTO Example', static function () {
         expect($user->permissions)->toBe(['read', 'write', 'delete']);
     });
 
-    it('can modify all properties after creation', static function () {
+    it('can modify all properties after creation', function () {
         $user = new TestModernUserDTO([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -140,7 +140,7 @@ describe('ModernUserDTO Example', static function () {
         expect($user->permissions)->toBe(['read', 'write']);
     });
 
-    it('can use automatic getters and setters', static function () {
+    it('can use automatic getters and setters', function () {
         $user = new TestModernUserDTO([
             'name' => 'Test User',
             'email' => 'test@example.com',
@@ -165,7 +165,7 @@ describe('ModernUserDTO Example', static function () {
         expect($user->permissions)->toBe(['admin']);
     });
 
-    it('can convert to array with all properties', static function () {
+    it('can convert to array with all properties', function () {
         $user = new TestModernUserDTO([
             'name' => 'Complete User',
             'email' => 'complete@example.com',
@@ -186,7 +186,7 @@ describe('ModernUserDTO Example', static function () {
         expect($array['permissions'])->toBe(['read', 'write']);
     });
 
-    it('can generate comprehensive validation rules', static function () {
+    it('can generate comprehensive validation rules', function () {
         $rules = TestModernUserDTO::rules();
 
         expect($rules)->toBeArray();

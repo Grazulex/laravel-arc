@@ -31,8 +31,8 @@ class UserDTO extends LaravelArcDTO
     }
 }
 
-describe('RealWorld Product Management', static function () {
-    it('can create and manage products', static function () {
+describe('RealWorld Product Management', function () {
+    it('can create and manage products', function () {
         $product = new ProductDTO([
             'name' => 'MacBook Pro',
             'price' => 2499.99,
@@ -48,7 +48,7 @@ describe('RealWorld Product Management', static function () {
         expect($product->tags)->toBe(['apple', 'laptop', 'premium']);
     });
 
-    it('can apply promotions to products', static function () {
+    it('can apply promotions to products', function () {
         $product = new ProductDTO([
             'name' => 'MacBook Pro',
             'price' => 2499.99,
@@ -62,8 +62,8 @@ describe('RealWorld Product Management', static function () {
         expect($product->price)->toBe(2199.99);
     });
 
-    it('validates product name is required', static function () {
-        expect(static function () {
+    it('validates product name is required', function () {
+        expect(function () {
             new ProductDTO([
                 'name' => '',
                 'price' => 2499.99,
@@ -71,8 +71,8 @@ describe('RealWorld Product Management', static function () {
         })->toThrow(InvalidDTOException::class, 'Product name is required');
     });
 
-    it('validates product price must be positive', static function () {
-        expect(static function () {
+    it('validates product price must be positive', function () {
+        expect(function () {
             new ProductDTO([
                 'name' => 'Test Product',
                 'price' => -50,
@@ -81,8 +81,8 @@ describe('RealWorld Product Management', static function () {
     });
 });
 
-describe('RealWorld User Management', static function () {
-    it('can create and manage users', static function () {
+describe('RealWorld User Management', function () {
+    it('can create and manage users', function () {
         $user = new UserDTO([
             'name' => 'Jean-Marc Strauven',
             'email' => 'jean-marc@example.com',
@@ -98,7 +98,7 @@ describe('RealWorld User Management', static function () {
         expect($user->last_login)->toBe('2024-01-15');
     });
 
-    it('can update user role and login time', static function () {
+    it('can update user role and login time', function () {
         $user = new UserDTO([
             'name' => 'Jean-Marc Strauven',
             'email' => 'jean-marc@example.com',
@@ -115,8 +115,8 @@ describe('RealWorld User Management', static function () {
         expect($user->last_login)->toBe('2024-01-16');
     });
 
-    it('validates user name is required', static function () {
-        expect(static function () {
+    it('validates user name is required', function () {
+        expect(function () {
             new UserDTO([
                 'name' => '',
                 'email' => 'test@example.com',
@@ -124,8 +124,8 @@ describe('RealWorld User Management', static function () {
         })->toThrow(InvalidDTOException::class, 'User name is required');
     });
 
-    it('validates email format', static function () {
-        expect(static function () {
+    it('validates email format', function () {
+        expect(function () {
             new UserDTO([
                 'name' => 'Test User',
                 'email' => 'email-invalide',
@@ -134,8 +134,8 @@ describe('RealWorld User Management', static function () {
     });
 });
 
-describe('Compatibility with getters and setters', static function () {
-    it('works with mixed access patterns', static function () {
+describe('Compatibility with getters and setters', function () {
+    it('works with mixed access patterns', function () {
         $product = new ProductDTO([
             'name' => 'iPhone 15',
             'price' => 999.99,
@@ -157,8 +157,8 @@ describe('Compatibility with getters and setters', static function () {
     });
 });
 
-describe('Conversion and serialization', static function () {
-    it('can convert complex user data to array and JSON', static function () {
+describe('Conversion and serialization', function () {
+    it('can convert complex user data to array and JSON', function () {
         $user = new UserDTO([
             'name' => 'Alice Dubois',
             'email' => 'alice@example.com',

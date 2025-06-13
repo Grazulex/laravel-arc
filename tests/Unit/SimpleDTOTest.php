@@ -5,7 +5,7 @@ use Grazulex\Arc\Exceptions\InvalidDTOException;
 use Grazulex\Arc\LaravelArcDTO;
 
 // Créer un DTO de test simple sans validation Laravel
-class SimpleDTOTest extends LaravelArcDTO
+class SimpleTestDTO extends LaravelArcDTO
 {
     #[Property(type: 'string', required: true)]
     public string $name;
@@ -28,8 +28,8 @@ class SimpleDTOTest extends LaravelArcDTO
     }
 }
 
-describe('SimpleDTO', static function () {
-    it('can create DTO with declared properties and access them directly', static function () {
+describe('SimpleDTO', function () {
+    it('can create DTO with declared properties and access them directly', function () {
         $dto = new SimpleTestDTO([
             'name' => 'Jean-Marc',
             'age' => 30,
@@ -40,7 +40,7 @@ describe('SimpleDTO', static function () {
         expect($dto->role)->toBe('user'); // Default value
     });
 
-    it('can modify properties directly', static function () {
+    it('can modify properties directly', function () {
         $dto = new SimpleTestDTO(['name' => 'Test', 'age' => 25]);
 
         expect($dto->name)->toBe('Test');
@@ -55,7 +55,7 @@ describe('SimpleDTO', static function () {
         expect($dto->role)->toBe('admin');
     });
 
-    it('validates type when setting invalid values', static function () {
+    it('validates type when setting invalid values', function () {
         $dto = new SimpleTestDTO(['name' => 'Test', 'age' => 25]);
 
         // Note: Cette validation dépend de l'implémentation de la validation de type
@@ -68,7 +68,7 @@ describe('SimpleDTO', static function () {
         // })->toThrow(InvalidDTOException::class);
     });
 
-    it('can convert to array and JSON', static function () {
+    it('can convert to array and JSON', function () {
         $dto = new SimpleTestDTO(['name' => 'Test', 'age' => 25]);
         $dto->role = 'manager';
 
@@ -83,7 +83,7 @@ describe('SimpleDTO', static function () {
         expect(json_decode($json, true))->toBe($array);
     });
 
-    it('can check if properties exist', static function () {
+    it('can check if properties exist', function () {
         $dto = new SimpleTestDTO(['name' => 'Test', 'age' => 25]);
 
         expect($dto->has('name'))->toBeTrue();
@@ -91,20 +91,20 @@ describe('SimpleDTO', static function () {
         expect(isset($dto->name))->toBeTrue();
     });
 
-    it('validates required name field', static function () {
-        expect(static function () {
+    it('validates required name field', function () {
+        expect(function () {
             new SimpleTestDTO(['name' => '', 'age' => 25]);
         })->toThrow(InvalidDTOException::class, 'Name is required');
     });
 
-    it('validates required age field', static function () {
-        expect(static function () {
+    it('validates required age field', function () {
+        expect(function () {
             new SimpleTestDTO(['name' => 'Test']);
         })->toThrow(InvalidDTOException::class, 'Age must be an integer');
     });
 
-    it('validates age must be integer', static function () {
-        expect(static function () {
+    it('validates age must be integer', function () {
+        expect(function () {
             new SimpleTestDTO(['name' => 'Test', 'age' => 'not an integer']);
         })->toThrow(InvalidDTOException::class, 'Age must be an integer');
     });
