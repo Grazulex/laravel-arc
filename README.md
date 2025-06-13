@@ -115,7 +115,7 @@ See the `src/Examples/` folder for complete usage examples.
 ## 🤝 Compatibility
 
 - PHP 8.2+
-- Laravel 10+ / 11+ / 12+
+- Laravel 11+ / 12+
 
 ## Testing
 

@@ -5,6 +5,30 @@ All notable changes to `laravel-arc` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-06-13
+
+### 🎯 Breaking Changes
+- ❌ **Dropped support for Laravel 10** - Now requires Laravel 11+ only
+- ⚠️ This is a **MINOR** version due to improved compatibility strategy
+
+### Added
+- ✅ **Focused Laravel 11+ support** for better compatibility
+- ✅ **Upgraded to Laravel 12** with latest features
+- ✅ **Enhanced Pest 3.x support** with latest testing features
+- ✅ **PHPUnit 11.x compatibility** for modern testing
+- ✅ **Simplified dependency matrix** for CI/CD
+
+### Changed
+- 🔄 **Modernized technology stack** - Laravel 11+/12+ only
+- 🔄 **Updated GitHub Actions** to focus on Laravel 11+ and 12+
+- 🔄 **Simplified composer requirements** for better stability
+- 🔄 **Enhanced testing matrix** with PHP 8.2, 8.3, 8.4
+
+### Improved
+- 🚀 **Better CI/CD performance** with focused version matrix
+- 🚀 **Reduced dependency conflicts** by targeting modern Laravel
+- 🚀 **Future-proof architecture** aligned with Laravel's roadmap
+
 ## [1.0.1] - 2025-06-13
 
 ### Added
