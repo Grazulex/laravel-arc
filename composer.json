@@ -1,6 +1,6 @@
 {
     "name": "grazulex/laravel-arc",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Laravel package for elegant and modern Data Transfer Objects (DTOs) management with automatic validation and direct property access",
     "keywords": ["laravel", "dto", "data-transfer-object", "validation", "attributes", "php8", "pest"],
     "homepage": "https://github.com/grazulex/laravel-arc",
