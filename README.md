@@ -246,6 +246,72 @@ composer test-feature
 ./vendor/bin/pest
 ```
 
+## Code Quality & Development Tools
+
+Laravel Arc includes comprehensive tools for maintaining high code quality and development standards.
+
+### Code Analysis
+
+```bash
+# Run PHPStan static analysis (Level 6)
+composer analyse
+
+# Run PHPStan directly with custom options
+./vendor/bin/phpstan analyse --level=6 src/
+```
+
+### Code Formatting
+
+```bash
+# Format code with PHP CS Fixer
+composer format
+
+# Check formatting without making changes
+composer format-check
+
+# Run PHP CS Fixer directly
+./vendor/bin/php-cs-fixer fix
+```
+
+### Quality Assurance Suite
+
+```bash
+# Run complete quality check (format check + analysis + tests)
+composer quality
+```
+
+This command runs:
+1. **Format Check**: Verifies code follows PSR standards
+2. **Static Analysis**: PHPStan Level 6 analysis for type safety
+3. **Test Suite**: Complete test coverage with Pest
+
+### Development Workflow
+
+For contributors and maintainers, the recommended workflow is:
+
+```bash
+# 1. Make your changes
+vim src/SomeFile.php
+
+# 2. Format the code
+composer format
+
+# 3. Run quality checks
+composer quality
+
+# 4. If all passes, commit your changes
+git add .
+git commit -m "feat: your feature description"
+```
+
+### Code Quality Standards
+
+- **PSR-12** coding standards via PHP CS Fixer
+- **PHPStan Level 6** static analysis for maximum type safety
+- **100% PHPDoc coverage** for better IDE support
+- **Comprehensive test coverage** with edge cases
+- **Zero tolerance** for critical static analysis errors
+
 ### Test Structure
 
 - **Unit Tests** (`tests/Unit/`): Test individual DTO components and functionality
