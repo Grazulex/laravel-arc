@@ -33,66 +33,97 @@ class Property
         ?string $timezone = null,
         bool $immutable = false,
         bool $collection = false,
+        // New cleaner syntax
+        ?string $class = null,
+        // Keep backward compatibility
         ?string $enumClass = null,
         ?string $dtoClass = null,
     ) {
+        // Prioritize new 'class' parameter over legacy parameters
+        $targetClass = $class ?? $enumClass ?? $dtoClass;
+        
         // Smart cast detection based on type
-        $this->cast = $cast ?? $this->detectCastType($type, $enumClass, $dtoClass);
-        $this->nested = $this->detectNestedClass($type, $enumClass, $dtoClass);
+        $this->cast = $cast ?? $this->detectCastType($type, $targetClass);
+        $this->nested = $this->detectNestedClass($type, $targetClass);
         $this->isCollection = $collection || $this->detectCollection($type);
     }
 
     /**
      * Automatically detect the appropriate cast type based on the property type.
      */
-    private function detectCastType(string $type, ?string $enumClass, ?string $dtoClass): string
+    private function detectCastType(string $type, ?string $targetClass): string
     {
-        // Handle array types
+        // Handle explicit type declarations with new syntax
+        switch ($type) {
+            case 'enum':
+                return 'enum';
+            case 'date':
+            case 'datetime':
+                return 'date';
+            case 'nested':
+                return 'nested';
+            case 'collection':
+                return 'nested'; // Collections are handled as nested with isCollection=true
+            case 'string':
+                return 'string';
+            case 'int':
+            case 'integer':
+                return 'int';
+            case 'float':
+            case 'double':
+                return 'float';
+            case 'bool':
+            case 'boolean':
+                return 'bool';
+            case 'array':
+                return 'array';
+        }
+
+        // Legacy: Handle array types
         if (str_starts_with($type, 'array')) {
             if ($this->detectCollection($type)) {
                 return 'nested'; // array<SomeDTO>
             }
-
             return 'array';
         }
 
-        // Handle Carbon dates
+        // Legacy: Handle Carbon dates
         if ($type === 'Carbon' || $type === 'CarbonImmutable' || str_contains($type, 'Carbon')) {
             return 'date';
         }
 
-        // Handle enums (explicit or by class check)
-        if ($enumClass || $this->isEnumClass($type)) {
+        // Legacy: Handle explicit enum/DTO class parameters (high priority)
+        if ($targetClass) {
+            if ($this->isEnumClass($targetClass)) {
+                return 'enum';
+            }
+            if ($this->isDTOClass($targetClass)) {
+                return 'nested';
+            }
+        }
+        
+        // Legacy: Handle enums by type name
+        if ($this->isEnumClass($type)) {
             return 'enum';
         }
 
-        // Handle DTOs (explicit or by class check)
-        if ($dtoClass || $this->isDTOClass($type)) {
+        // Legacy: Handle DTOs by type name
+        if ($this->isDTOClass($type)) {
             return 'nested';
         }
 
-        // Handle basic PHP types
-        return match ($type) {
-            'string' => 'string',
-            'int', 'integer' => 'int',
-            'float', 'double' => 'float',
-            'bool', 'boolean' => 'bool',
-            'array' => 'array',
-            default => 'string', // fallback
-        };
+        // Default fallback
+        return 'string';
     }
 
     /**
      * Detect the nested class for enum or DTO casting.
      */
-    private function detectNestedClass(string $type, ?string $enumClass, ?string $dtoClass): ?string
+    private function detectNestedClass(string $type, ?string $targetClass): ?string
     {
-        if ($enumClass) {
-            return $enumClass;
-        }
-
-        if ($dtoClass) {
-            return $dtoClass;
+        // Prioritize explicit class parameter
+        if ($targetClass) {
+            return $targetClass;
         }
 
         // Extract class from array notation: array<UserDTO> -> UserDTO
@@ -116,7 +147,7 @@ class Property
      */
     private function detectCollection(string $type): bool
     {
-        return str_starts_with($type, 'array<') || str_contains($type, '[]');
+        return $type === 'collection' || str_starts_with($type, 'array<') || str_contains($type, '[]');
     }
 
     /**
