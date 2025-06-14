@@ -9,6 +9,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.1.0] - 2025-06-14
+
+### ✨ New Features & Enhancements
+
+#### 📚 Enhanced Documentation
+- **Comprehensive Feature Documentation**: Added detailed documentation for all v2.0 advanced features
+- **GitHub Release Integration**: Complete GitHub release notes for better version tracking
+- **Usage Examples**: Enhanced examples and use cases for better developer experience
+
+#### 🔧 Advanced Features Integration
+- **Complete Feature Set**: All v2.0 advanced features are now fully documented and integrated
+- **Developer Experience**: Improved developer experience with comprehensive guides
+
+### 📖 Changes
+- docs: add comprehensive GitHub release notes for v2.0.0
+- feat: add comprehensive v2.0 advanced features and update documentation
+
+### 🔄 Migration from v2.0.0
+
+No breaking changes in this release. This is a minor version update that enhances documentation and provides better integration of existing features.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. Review the enhanced documentation for better feature utilization
+
 ## [2.0.0] - 2025-06-14
 
 ### 🚨 BREAKING CHANGES
