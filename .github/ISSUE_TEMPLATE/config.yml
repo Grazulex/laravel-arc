@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Community Discussion
+    url: https://github.com/your-username/laravel-arc/discussions
+    about: Please ask and answer questions here.
+  - name: Security Issues
+    url: mailto:security@yourdomain.com
+    about: Please report security vulnerabilities privately.
+
