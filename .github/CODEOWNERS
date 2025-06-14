@@ -1,0 +1,14 @@
+# Global code owners for the entire repository
+# This ensures that @grazulex is automatically assigned as a reviewer for all PRs
+
+# Main owner for all files
+* @grazulex
+
+# Specific ownership for critical files
+/.github/ @grazulex
+/src/ @grazulex
+/composer.json @grazulex
+/composer.lock @grazulex
+/README.md @grazulex
+/CHANGELOG.md @grazulex
+

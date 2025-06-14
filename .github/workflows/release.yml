@@ -1,16 +1,22 @@
 name: Release
 
+# Manual release trigger
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., 1.0.0)'
+        required: true
+        type: string
+      release_notes:
+        description: 'Release notes'
+        required: false
+        type: string
 
 jobs:
-  release:
+  manual-release:
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-      packages: write
+    if: github.actor == 'grazulex'  # Only allow grazulex to trigger releases
     
     steps:
       - name: Checkout code
@@ -22,55 +28,29 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv
-          coverage: none
+          extensions: dom, curl, libxml, mbstring, zip
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-interaction --optimize-autoloader
+        run: composer install --no-dev --optimize-autoloader
 
       - name: Run tests
-        run: vendor/bin/pest
+        run: composer test
 
-      - name: Generate changelog
-        id: changelog
+      - name: Create Git tag
         run: |
-          # Extract version from tag
-          VERSION=${GITHUB_REF#refs/tags/}
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
-          
-          # Generate changelog since last tag
-          PREVIOUS_TAG=$(git tag --sort=-version:refname | grep -A1 "$VERSION" | tail -1)
-          if [ -z "$PREVIOUS_TAG" ]; then
-            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --reverse)
-          else
-            CHANGELOG=$(git log --pretty=format:"- %s (%h)" --reverse $PREVIOUS_TAG..$VERSION)
-          fi
-          
-          # Save changelog to file
-          echo "$CHANGELOG" > RELEASE_CHANGELOG.md
-          echo "changelog<<EOF" >> $GITHUB_OUTPUT
-          echo "$CHANGELOG" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          git config user.name "Jean-Marc Strauven"
+          git config user.email "your-email@example.com"
+          git tag -a "v${{ github.event.inputs.version }}" -m "Release v${{ github.event.inputs.version }}"
+          git push origin "v${{ github.event.inputs.version }}"
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v1
         with:
-          name: Release ${{ steps.changelog.outputs.version }}
-          body: |
-            ## Changes in ${{ steps.changelog.outputs.version }}
-            
-            ${{ steps.changelog.outputs.changelog }}
-            
-            ## Installation
-            
-            ```bash
-            composer require grazulex/laravel-arc:${{ steps.changelog.outputs.version }}
-            ```
+          tag_name: "v${{ github.event.inputs.version }}"
+          name: "Release v${{ github.event.inputs.version }}"
+          body: ${{ github.event.inputs.release_notes }}
           draft: false
           prerelease: false
-          generate_release_notes: true
-
-      - name: Trigger Packagist update
-        run: |
-          curl -XPOST -H'content-type:application/json' 'https://packagist.org/api/update-package?username=${{ secrets.PACKAGIST_USERNAME }}&apiToken=${{ secrets.PACKAGIST_TOKEN }}' -d'{"repository":{"url":"https://github.com/grazulex/laravel-arc"}}' || true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
