@@ -13,6 +13,10 @@ on:
         required: false
         type: string
 
+permissions:
+  contents: write
+  pull-requests: read
+
 jobs:
   manual-release:
     runs-on: ubuntu-latest
