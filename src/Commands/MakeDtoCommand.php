@@ -677,8 +677,8 @@ PHP;
                 }
             }
 
-            // Fallback: Try to invoke method only if we have a database connection
-            if ($this->hasDatabaseConnection()) {
+            // Fallback: Try to invoke method only if we have a database connection AND connection resolver
+            if ($this->hasDatabaseConnection() && $this->hasEloquentConnectionResolver()) {
                 $result = $method->invoke($model);
 
                 // Check if result is an object (relations should return objects)
@@ -990,6 +990,27 @@ PHP;
             DB::connection()->getPdo();
 
             return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Check if Eloquent connection resolver is available.
+     */
+    private function hasEloquentConnectionResolver(): bool
+    {
+        try {
+            if (!class_exists('\Illuminate\Database\Eloquent\Model')) {
+                return false;
+            }
+
+            // Try to access the connection resolver statically
+            $resolverProperty = new \ReflectionProperty('\Illuminate\Database\Eloquent\Model', 'resolver');
+            $resolverProperty->setAccessible(true);
+            $resolver = $resolverProperty->getValue();
+            
+            return $resolver !== null;
         } catch (Exception $e) {
             return false;
         }
