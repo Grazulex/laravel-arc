@@ -9,6 +9,130 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [1.2.0] - 2025-06-14
+
+### 🚀 Major Feature: Intelligent DTO Generation with Artisan Command
+
+#### Added
+- **🛠️ New Artisan Command**: `php artisan make:dto` for automatic DTO generation
+  - **Basic generation**: `php artisan make:dto User`
+  - **Model-based generation**: `php artisan make:dto User --model=User`
+  - **Custom paths**: `php artisan make:dto Product --path=app/DTOs`
+  - **Intelligent analysis**: Automatic property extraction from Eloquent models
+
+- **🧠 Multi-Layered Type Detection**: Intelligent type detection with prioritized sources
+  - **🎯 Model Casts Analysis** (Highest Priority): Reads `$casts` property for exact type mapping
+    - `'age' => 'integer'` → `public int $age` (non-nullable)
+    - `'is_active' => 'boolean'` → `public bool $is_active`
+    - `'metadata' => 'array'` → `public ?array $metadata`
+    - `'salary' => 'decimal:2'` → `public float $salary`
+    - `'created_at' => 'datetime'` → `#[DateProperty] public ?Carbon $created_at`
+  
+  - **🗃️ Database Schema Inspection** (Second Priority): Analyzes actual column types and constraints
+    - `VARCHAR` → `string`, `INT` → `int`, `DECIMAL` → `float`
+    - `NULL`/`NOT NULL` → Nullable/Non-nullable properties
+    - Real-time database introspection for accurate types
+  
+  - **📄 Migration File Parsing** (Third Priority): Extracts types from Laravel migration files
+    - `$table->string('name')` → `public ?string $name`
+    - `$table->integer('age')->nullable()` → `public ?int $age`
+    - `$table->boolean('is_active')` → `public bool $is_active`
+    - `$table->timestamp('created_at')` → `#[DateProperty] public ?Carbon $created_at`
+  
+  - **🔍 Smart Pattern Matching** (Fallback): Intelligent pattern-based type detection
+    - `*_id`, `id` → `int`
+    - `*_at` → `Carbon` with `DateProperty`
+    - `email` → `string` with validation `email`
+    - `password` → `string`
+    - `phone` → `string` nullable
+    - `*url*` → `string` with validation `url`
+    - `price`, `amount`, `cost` → `float`
+    - `count`, `quantity`, `number` → `int`
+    - `is_*`, `has_*` → `bool` with default `false`
+
+- **⚡ Automatic Features**:
+  - **📋 Property Extraction**: Automatic analysis of `fillable` attributes
+  - **📅 Date Handling**: Uses `DateProperty` for timestamp fields with proper Carbon typing
+  - **✅ Validation Rules**: Generates appropriate validation rules based on detected types
+  - **🛡️ Safety First**: Prevents overwriting existing files
+  - **📂 Directory Creation**: Creates target directories automatically if they don't exist
+  - **🏷️ Suffix Management**: Automatically adds "DTO" suffix if not present
+
+#### Enhanced
+- **🔧 Enhanced ArcServiceProvider**: Updated with command registration
+- **📚 Comprehensive Documentation**: Complete command documentation in README
+- **🎨 Code Generation**: Smart namespace detection and PHP code generation
+
+#### Quality & Developer Experience
+- **📊 Standardization**: All example files renamed to consistent PascalCase naming
+  - `simple_example.php` → `SimpleExample.php`
+  - `usage_example.php` → `UsageExample.php`
+  - `demo_advanced_features.php` → `DemoAdvancedFeatures.php`
+  - `enum_simple_example.php` → `EnumSimpleExample.php`
+  - `enum_advanced_example.php` → `EnumAdvancedExample.php`
+  - `factory_example.php` → `FactoryExample.php`
+  - `team_example.php` → `TeamExample.php`
+
+- **📚 Enhanced Documentation**:
+  - Updated README with comprehensive command documentation
+  - Improved examples table with proper formatting
+  - Added new examples: `AdvancedModelDTO.php`, `ProductDTO.php`
+  - Multi-layered type detection explanation
+
+- **🧪 Comprehensive Testing**: **86 tests** with **327 assertions**
+  - New test suites: `MakeDtoCommandTest`, `MakeDtoAdvancedTest`, `MakeDtoWithModelTest`
+  - Complete coverage of command functionality
+  - Model analysis testing with mock models
+  - Edge case handling and error scenarios
+
+- **🏆 Code Quality**: Maintained excellence
+  - **PHPStan Level 6**: Zero errors with strict type safety
+  - **PSR-12 Compliance**: All code properly formatted
+  - **100% Backward Compatibility**: No breaking changes
+
+#### Usage Examples
+```bash
+# Generate basic DTO
+php artisan make:dto User
+
+# Generate from model with intelligent type detection
+php artisan make:dto User --model=User
+
+# Custom path and model analysis
+php artisan make:dto Product --model=Product --path=app/DTOs
+```
+
+#### Generated DTO Example
+For a User model with casts:
+```php
+protected $casts = [
+    'age' => 'integer',
+    'is_active' => 'boolean',
+    'metadata' => 'array',
+];
+```
+
+Generates:
+```php
+class UserDTO extends LaravelArcDTO
+{
+    #[Property(type: 'string', required: false, validation: 'email')]
+    public ?string $email;
+
+    #[Property(type: 'int', required: true)]  // From cast
+    public int $age;
+
+    #[Property(type: 'bool', required: true)]  // From cast
+    public bool $is_active;
+
+    #[Property(type: 'array', required: false)]  // From cast
+    public ?array $metadata;
+
+    #[DateProperty(required: false)]
+    public ?Carbon $created_at;
+}
+```
+
 ## [1.1.0] - 2025-06-14
 
 ### 🆕 Major Feature: PHP Enums Support
