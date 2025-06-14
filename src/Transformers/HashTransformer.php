@@ -2,7 +2,7 @@
 
 namespace Grazulex\Arc\Transformers;
 
-use Grazulex\Arc\Contracts\TransformerInterface;
+use Grazulex\Arc\Interfaces\TransformerInterface;
 
 use function is_string;
 
@@ -15,12 +15,23 @@ class HashTransformer implements TransformerInterface
         private string $algorithm = 'sha256',
     ) {}
 
-    public function transform(mixed $value): mixed
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function transform(mixed $value, array $context = []): mixed
     {
         if (is_string($value)) {
             return hash($this->algorithm, $value);
         }
 
         return $value;
+    }
+
+    /**
+     * @param array<string, mixed> $context
+     */
+    public function shouldTransform(mixed $value, array $context = []): bool
+    {
+        return is_string($value) && !empty($value);
     }
 }

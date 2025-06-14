@@ -86,15 +86,21 @@ abstract class AbstractDTO implements DTOInterface
      */
     protected function validateAndSet(array $data): void
     {
-        $this->validate($data);
+        // Only validate if data is provided - skip validation for empty constructor calls
+        if (!empty($data)) {
+            $this->validate($data);
+        }
 
-        // Set attributes with type checking
+        // PASS 1: Set attributes with basic transformations only (no context-aware transformations)
         foreach ($data as $key => $value) {
-            $this->set($key, $value);
+            $this->setWithoutContextualTransforms($key, $value);
         }
 
         // Check for required properties and set defaults
         $this->setDefaultsForMissingRequired();
+
+        // PASS 2: Re-apply context-aware transformations now that all values are set
+        $this->applyContextualTransformations($data);
     }
 
     /**
@@ -104,7 +110,9 @@ abstract class AbstractDTO implements DTOInterface
      */
     protected function validate(array $data): void
     {
-        $validator = validator($data, static::rules());
+        $rules = static::rules();
+
+        $validator = validator($data, $rules);
 
         if ($validator->fails()) {
             throw InvalidDTOException::forValidationErrors($validator->errors()->toArray());

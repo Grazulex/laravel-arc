@@ -69,7 +69,10 @@ describe('Transformation Pipeline', function () {
         });
         
         it('shouldTransform returns true for valid input', function () {
-            expect(TransformationManager::shouldTransform('test', [TrimTransformer::class]))->toBeTrue();
+            // Use a value that actually needs trimming
+            expect(TransformationManager::shouldTransform('  test  ', [TrimTransformer::class]))->toBeTrue();
+            // Test with value that doesn't need transformation
+            expect(TransformationManager::shouldTransform('test', [TrimTransformer::class]))->toBeFalse();
         });
         
     });

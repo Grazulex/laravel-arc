@@ -8,12 +8,16 @@ use BadMethodCallException;
 use Carbon\Carbon;
 
 use function count;
+use function get_class;
 
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
+use Grazulex\Arc\Contracts\TransformerInterface as LegacyTransformerInterface;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
+use Grazulex\Arc\Interfaces\TransformerInterface;
 use Grazulex\Arc\Transformation\TransformationManager;
 
+use function in_array;
 use function is_array;
 use function is_bool;
 use function is_float;
@@ -150,8 +154,13 @@ trait DTOTrait
             $reflectionProperty = $properties[$key]['property'];
 
             // Apply transformations first (before casting)
-            if ($attribute && !empty($attribute->transform) && TransformationManager::shouldTransform($value, $attribute->transform)) {
-                $value = TransformationManager::transform($value, $attribute->transform);
+            if ($attribute && !empty($attribute->transform)) {
+                // Build context from current DTO state for cross-field transformations
+                $context = $this->buildTransformationContext();
+
+                if (TransformationManager::shouldTransform($value, $attribute->transform, $context)) {
+                    $value = TransformationManager::transform($value, $attribute->transform, $context);
+                }
             }
 
             // Apply casting if specified
@@ -269,6 +278,182 @@ trait DTOTrait
     }
 
     /**
+     * Set an attribute without applying context-aware transformations (first pass).
+     */
+    public function setWithoutContextualTransforms(string $key, mixed $value): static
+    {
+        $properties = $this->getReflectionProperties();
+
+        if (isset($properties[$key])) {
+            $attribute = $properties[$key]['attribute'];
+            $reflectionProperty = $properties[$key]['property'];
+
+            // Apply only basic transformations (not context-aware ones)
+            if ($attribute && !empty($attribute->transform)) {
+                $basicTransformers = $this->filterBasicTransformers($attribute->transform);
+                if (!empty($basicTransformers)) {
+                    $context = $this->buildTransformationContext();
+                    if (TransformationManager::shouldTransform($value, $basicTransformers, $context)) {
+                        $value = TransformationManager::transform($value, $basicTransformers, $context);
+                    }
+                }
+            }
+
+            // Apply casting if specified
+            if ($attribute && $attribute->cast) {
+                $value = CastManager::cast($value, $attribute);
+            }
+
+            // Type checking
+            if ($attribute && !$this->isValidType($value, $attribute->type, $reflectionProperty)) {
+                throw InvalidDTOException::forTypeError($key, $attribute->type, $value);
+            }
+
+            // Set the actual class property if it exists
+            if (property_exists($this, $key)) {
+                $propertyType = $reflectionProperty->getType();
+                if ($propertyType && $propertyType->getName() === 'Carbon\CarbonImmutable' && $value instanceof Carbon) {
+                    $this->{$key} = $value->toImmutable();
+                } else {
+                    $this->{$key} = $value;
+                }
+            }
+        }
+
+        $this->attributes[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Apply context-aware transformations in a second pass.
+     *
+     * @param array<string, mixed> $originalData
+     */
+    public function applyContextualTransformations(array $originalData): void
+    {
+        $properties = $this->getReflectionProperties();
+
+        // Process ALL properties with contextual transformers, not just those in originalData
+        foreach ($properties as $key => $propertyData) {
+            $attribute = $propertyData['attribute'];
+            $reflectionProperty = $propertyData['property'];
+
+            if ($attribute && !empty($attribute->transform)) {
+                $contextualTransformers = $this->filterContextualTransformers($attribute->transform);
+                if (!empty($contextualTransformers)) {
+                    $context = $this->buildTransformationContext();
+
+                    // Start with current value (could be null for auto-generated fields)
+                    $currentValue = $this->get($key);
+
+                    if (TransformationManager::shouldTransform($currentValue, $contextualTransformers, $context)) {
+                        $transformedValue = TransformationManager::transform($currentValue, $contextualTransformers, $context);
+
+                        // Apply casting if specified
+                        if ($attribute->cast) {
+                            $transformedValue = CastManager::cast($transformedValue, $attribute);
+                        }
+
+                        // Type checking
+                        if (!$this->isValidType($transformedValue, $attribute->type, $reflectionProperty)) {
+                            throw InvalidDTOException::forTypeError($key, $attribute->type, $transformedValue);
+                        }
+
+                        // Update the property
+                        if (property_exists($this, $key)) {
+                            $propertyType = $reflectionProperty->getType();
+                            if ($propertyType && $propertyType->getName() === 'Carbon\CarbonImmutable' && $transformedValue instanceof Carbon) {
+                                $this->{$key} = $transformedValue->toImmutable();
+                            } else {
+                                $this->{$key} = $transformedValue;
+                            }
+                        }
+
+                        $this->attributes[$key] = $transformedValue;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Filter transformers to get only basic (non-context-aware) ones.
+     *
+     * @param array<LegacyTransformerInterface|string|TransformerInterface> $transformers
+     *
+     * @return array<LegacyTransformerInterface|string|TransformerInterface>
+     */
+    private function filterBasicTransformers(array $transformers): array
+    {
+        return array_filter($transformers, function ($transformer) {
+            // Check if this is a context-aware transformer
+            return !$this->isContextualTransformer($transformer);
+        });
+    }
+
+    /**
+     * Filter transformers to get only context-aware ones.
+     *
+     * @param array<LegacyTransformerInterface|string|TransformerInterface> $transformers
+     *
+     * @return array<LegacyTransformerInterface|string|TransformerInterface>
+     */
+    private function filterContextualTransformers(array $transformers): array
+    {
+        return array_filter($transformers, function ($transformer) {
+            return $this->isContextualTransformer($transformer);
+        });
+    }
+
+    /**
+     * Check if a transformer is context-aware (depends on other fields).
+     */
+    private function isContextualTransformer(LegacyTransformerInterface|string|TransformerInterface $transformer): bool
+    {
+        // List of known context-aware transformers
+        $contextualTransformerClasses = [
+            'Grazulex\Arc\Transformers\SlugTransformer',
+            'Grazulex\Arc\Examples\TitleToSlugTransformer',
+            'Grazulex\Arc\Examples\UsernameTransformer',
+            'Grazulex\Arc\Examples\FullNameTransformer',
+        ];
+
+        if (is_string($transformer)) {
+            return in_array($transformer, $contextualTransformerClasses, true);
+            // DEBUG: Uncomment this for debugging
+            // error_log("[DEBUG] Checking transformer string: $transformer, isContextual: " . ($isContextual ? 'true' : 'false'));
+        }
+
+        $transformerClass = get_class($transformer);
+
+        return in_array($transformerClass, $contextualTransformerClasses, true);
+        // DEBUG: Uncomment this for debugging
+        // error_log("[DEBUG] Checking transformer class: $transformerClass, isContextual: " . ($isContextual ? 'true' : 'false'));
+    }
+
+    /**
+     * Validate if a value matches the expected type.
+     */
+    private function isValidType(mixed $value, string $expectedType, ReflectionProperty $property): bool
+    {
+        if ($value === null && !$property->getType()?->allowsNull()) {
+            return false;
+        }
+
+        return match ($expectedType) {
+            'string' => is_string($value),
+            'int', 'integer' => is_int($value),
+            'float', 'double' => is_float($value) || is_int($value),
+            'bool', 'boolean' => is_bool($value),
+            'array' => is_array($value),
+            'object' => is_object($value),
+            'enum' => is_object($value), // Enums are objects in PHP
+            default => true // Pour les types custom ou mixed
+        };
+    }
+
+    /**
      * Get reflection properties with their attributes.
      *
      * @return array<string, array<string, mixed>>
@@ -301,23 +486,32 @@ trait DTOTrait
     }
 
     /**
-     * Validate if a value matches the expected type.
+     * Build transformation context from current DTO state.
+     *
+     * @return array<string, mixed>
      */
-    private function isValidType(mixed $value, string $expectedType, ReflectionProperty $property): bool
+    private function buildTransformationContext(): array
     {
-        if ($value === null && !$property->getType()?->allowsNull()) {
-            return false;
+        $context = [];
+        $properties = $this->getReflectionProperties();
+
+        // Include all current property values in context
+        foreach ($properties as $name => $propertyData) {
+            // Try to get from actual property first
+            if (property_exists($this, $name)) {
+                $reflection = new ReflectionProperty($this, $name);
+                if ($reflection->isInitialized($this)) {
+                    $context[$name] = $this->{$name};
+                    continue;
+                }
+            }
+
+            // Fallback to attributes array
+            if (array_key_exists($name, $this->attributes)) {
+                $context[$name] = $this->attributes[$name];
+            }
         }
 
-        return match ($expectedType) {
-            'string' => is_string($value),
-            'int', 'integer' => is_int($value),
-            'float', 'double' => is_float($value) || is_int($value),
-            'bool', 'boolean' => is_bool($value),
-            'array' => is_array($value),
-            'object' => is_object($value),
-            'enum' => is_object($value), // Enums are objects in PHP
-            default => true // Pour les types custom ou mixed
-        };
+        return $context;
     }
 }
