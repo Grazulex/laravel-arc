@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="logo-header.svg" alt="Laravel Arc Logo" width="400">
+  <img src="logo-header.svg" alt="Laravel Arc Logo" width="420">
   
   *Elegant and modern Data Transfer Objects (DTOs) for Laravel*
 </div>
