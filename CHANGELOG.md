@@ -9,6 +9,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.2.4] - 2025-06-14
+
+### 🐛 Bug Fixes
+
+#### 🔧 Eloquent Connection Resolver Handling
+- **Fixed connection resolver error**: Resolved `Call to a member function connection() on null` error in artisan command context
+- **Enhanced model instantiation check**: Added proper validation of Eloquent connection resolver before model instantiation
+- **Improved relation analysis**: Enhanced relation method analysis with connection resolver validation
+- **Better fallback handling**: Graceful degradation to static analysis when connection resolver is unavailable
+- **Context-aware execution**: Intelligent detection of execution environment (artisan vs application)
+
+#### 🛠️ Implementation Details
+- **Static resolver inspection**: Uses reflection to safely check Eloquent Model static resolver property
+- **Dual validation approach**: Validates both database connection AND Eloquent resolver availability
+- **Safe method invocation**: Prevents relation method execution without proper resolver context
+- **Enhanced error prevention**: Comprehensive checks before any database-dependent operations
+- **Test compatibility maintained**: All existing functionality preserved in test and application environments
+
+### 📖 Changes
+- fix: check Eloquent connection resolver before model instantiation
+- fix: add connection resolver check to relation analysis
+- improve: enhance canInstantiateModel with resolver validation
+- improve: prevent relation method invocation without resolver
+- enhance: better context detection for database operations
+
+### 🔄 Migration from v2.2.3
+
+No breaking changes in this release. This is a patch version update that fixes critical connection resolver issues.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. Commands now work correctly in all environments
+4. Enhanced stability for `--with-relations` flag
+
 ## [2.2.3] - 2025-06-14
 
 ### 🐛 Bug Fixes
