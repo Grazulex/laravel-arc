@@ -21,6 +21,7 @@ use function is_string;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
+use ReflectionProperty;
 
 class MakeDtoCommand extends Command
 {
@@ -1038,6 +1039,23 @@ PHP;
 
             // For real models, check if we have database infrastructure
             if (!class_exists('\\Illuminate\\Support\\Facades\\DB')) {
+                return false;
+            }
+
+            // Check if Eloquent's connection resolver is available
+            // This is crucial - without this, model instantiation will fail
+            if (!class_exists('\\Illuminate\\Database\\Eloquent\\Model')) {
+                return false;
+            }
+
+            // Try to access the connection resolver statically
+            // If this fails, it means we're in a context where Eloquent isn't properly initialized
+            $resolverProperty = new \ReflectionProperty('\\Illuminate\\Database\\Eloquent\\Model', 'resolver');
+            $resolverProperty->setAccessible(true);
+            $resolver = $resolverProperty->getValue();
+            
+            if ($resolver === null) {
+                // No connection resolver available - can't safely instantiate models
                 return false;
             }
 
