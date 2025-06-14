@@ -16,20 +16,48 @@
 
 A Laravel package for elegant and modern Data Transfer Objects (DTOs) management with automatic validation and direct property access.
 
+---
+
+## 📚 Table of Contents
+
+- [🚀 Features](#features)
+- [📦 Installation](#installation)
+- [🎯 Quick Usage](#quick-usage)
+- [🔧 Property Attribute](#property-attribute)
+- [🎭 Advanced Features](#advanced-features)
+  - [Date Properties with Carbon](#date-properties-with-carbon)
+  - [Nested DTOs](#nested-dtos)
+  - [PHP Enums Support (NEW)](#php-enums-support-new)
+  - [Collections of DTOs](#collections-of-dtos)
+  - [DTO Factory/Builder Pattern](#dto-factorybuilder-pattern)
+- [🎫 Examples](#examples)
+- [🤝 Compatibility](#compatibility)
+- [🧪 Testing](#testing)
+- [📊 Code Quality & Development](#code-quality--development)
+- [📄 License](#license)
+
+---
+
 ## 🚀 Features
 
+### 🎯 **Core Features**
 - ✅ **Direct property access** (`$user->name` instead of `$user->getName()`)
 - ✅ **Automatic validation** based on PHP 8+ attributes
-- ✅ **Automatic Laravel validation rules generation**
-- ✅ **Real-time type validation**
-- ✅ **Default values**
-- ✅ **Detailed exceptions**
-- ✅ **Simple and intuitive API**
-- 🆕 **Automatic Carbon date transformation**
-- 🆕 **Nested DTOs and collections**
-- 🆕 **Advanced casting system**
-- 🆕 **Timezone support for dates**
-- 🆆 **DTO Factory/Builder Pattern**
+- ✅ **Real-time type validation** with detailed exceptions
+- ✅ **Laravel integration** with automatic validation rules generation
+
+### 🆕 **Advanced Features**
+- 🔥 **PHP 8.1+ Enums Support** - Full enum integration with automatic casting
+- 📅 **Carbon Date Transformation** - Automatic date handling with timezone support
+- 🏗️ **Nested DTOs & Collections** - Compose complex data structures
+- 🎨 **Advanced Casting System** - Extensible data transformation pipeline
+- 🏭 **DTO Factory/Builder Pattern** - Generate test data and prototypes
+
+### 🛡️ **Developer Experience**
+- 🎯 **Type Safety** - Full compile-time and runtime validation
+- 📝 **Default Values** - Smart property initialization
+- 🚀 **Simple API** - Intuitive and clean interface
+- 🧪 **Test-Friendly** - Built-in factory for test data generation
 
 ## 📦 Installation
 
@@ -324,24 +352,35 @@ $testUser = UserDTO::fake(['role' => 'admin']);
 - **Prototyping**: Quickly build and test concepts
 - **Seeding**: Database seeding with structured data
 
-## 🎨 Examples
+## 🎫 Examples
 
-See the `src/Examples/` folder for complete usage examples including:
-- `AdvancedExampleDTO.php` - Complex nested structures with dates
-- `ModernUserDTO.php` - Modern DTO implementation with advanced features
-- `UserDTO.php` - Basic user DTO example
-- `demo_advanced_features.php` - Practical demonstration of advanced features
-- `factory_example.php` - Comprehensive DTO Factory usage examples
-- `simple_example.php` - Basic DTO usage patterns
-- `team_example.php` - Team and member relationship examples
-- `usage_example.php` - General usage demonstration
+Explore complete usage examples in the [`src/Examples/`](src/Examples/) folder:
+
+| Example | Description |
+|---------|-------------|
+| **Basic Usage** | |
+| [`UserDTO.php`](src/Examples/UserDTO.php) | Basic user DTO example |
+| [`simple_example.php`](src/Examples/simple_example.php) | Basic DTO usage patterns |
+| [`usage_example.php`](src/Examples/usage_example.php) | General usage demonstration |
+| **Advanced Features** | |
+| [`AdvancedExampleDTO.php`](src/Examples/AdvancedExampleDTO.php) | Complex nested structures with dates |
+| [`ModernUserDTO.php`](src/Examples/ModernUserDTO.php) | Modern DTO implementation |
+| [`demo_advanced_features.php`](src/Examples/demo_advanced_features.php) | Practical demonstration |
+| **Enums & Factories** | |
+| [`EnumExampleDTO.php`](src/Examples/EnumExampleDTO.php) | Complete enum DTO demonstration |
+| [`enum_simple_example.php`](src/Examples/enum_simple_example.php) | Simple enum usage |
+| [`factory_example.php`](src/Examples/factory_example.php) | DTO Factory usage examples |
+| [`team_example.php`](src/Examples/team_example.php) | Team and member relationships |
 
 ## 🤝 Compatibility
 
-- PHP 8.2+
-- Laravel 11+ / 12+
+| Requirement | Version |
+|-------------|----------|
+| **PHP** | 8.2+ |
+| **Laravel** | 11+ / 12+ |
+| **Carbon** | 3.10+ |
 
-## Testing
+## 🧪 Testing
 
 This package uses [Pest](https://pestphp.com/) for testing with a comprehensive test suite covering all functionality.
 
@@ -364,7 +403,7 @@ composer test-feature
 ./vendor/bin/pest
 ```
 
-## Code Quality & Development Tools
+## 📊 Code Quality & Development
 
 Laravel Arc includes comprehensive tools for maintaining high code quality and development standards.
 
