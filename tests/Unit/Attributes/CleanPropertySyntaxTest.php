@@ -5,7 +5,7 @@ namespace Tests\Unit\Attributes;
 use Carbon\Carbon;
 use Grazulex\Arc\Attributes\Property;
 use PHPUnit\Framework\TestCase;
-use Tests\Examples\UserDTO;
+use Grazulex\Arc\Examples\UserDTO;
 
 // Test enum for this test
 enum TestStatus: string

@@ -6,13 +6,11 @@ use Attribute;
 use BackedEnum;
 
 use function class_exists;
-use function interface_exists;
 use function is_subclass_of;
 
 use ReflectionClass;
 
 use function str_contains;
-use function str_starts_with;
 
 use UnitEnum;
 

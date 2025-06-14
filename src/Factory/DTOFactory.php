@@ -5,7 +5,6 @@ namespace Grazulex\Arc\Factory;
 use function array_slice;
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Contracts\DTOFactoryInterface;
 use Grazulex\Arc\Contracts\DTOInterface;
@@ -141,11 +140,12 @@ class DTOFactory implements DTOFactoryInterface
                 if ($attribute->isCollection) {
                     return $this->generateFakeCollection($attribute->nested);
                 }
+
                 return $this->generateFakeNestedDTO($attribute->nested);
-            
+
             case 'date':
                 return $this->generateFakeDate();
-            
+
             case 'enum':
                 return $this->generateFakeEnum($attribute->nested);
         }
@@ -171,6 +171,8 @@ class DTOFactory implements DTOFactoryInterface
 
     /**
      * Generate fake collection of DTOs.
+     *
+     * @return array<DTOInterface>
      */
     protected function generateFakeCollection(string $dtoClass): array
     {
@@ -191,6 +193,7 @@ class DTOFactory implements DTOFactoryInterface
     protected function generateFakeNestedDTO(string $dtoClass): mixed
     {
         $factory = new static($dtoClass);
+
         return $factory->fake()->create();
     }
 

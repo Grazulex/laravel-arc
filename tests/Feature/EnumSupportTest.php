@@ -1,6 +1,5 @@
 <?php
 
-use Grazulex\Arc\Attributes\EnumProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
@@ -38,10 +37,10 @@ class EnumTestDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true)]
     public string $email;
 
-    #[EnumProperty(enumClass: UserStatus::class, required: true)]
+    #[Property(type: 'enum', class: UserStatus::class, required: true)]
     public UserStatus $status;
 
-    #[EnumProperty(enumClass: UserRole::class, required: false, default: UserRole::USER)]
+    #[Property(type: 'enum', class: UserRole::class, required: false, default: UserRole::USER)]
     public UserRole $role;
 
     #[Property(type: 'integer', required: false)]

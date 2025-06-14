@@ -4,9 +4,7 @@ namespace Grazulex\Arc\Casting\Casters;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use DateTimeZone;
 use Exception;
-use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\BaseCaster;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
@@ -32,41 +30,17 @@ class DateCaster extends BaseCaster
         }
 
         try {
-            $dateFormat = 'Y-m-d H:i:s';
-            $timezone = null;
-
-            if ($attribute instanceof DateProperty) {
-                $dateFormat = $attribute->format;
-                if ($attribute->timezone) {
-                    $timezone = new DateTimeZone($attribute->timezone);
-                }
-            }
-
-            // Try to parse the date
+            // Parse the date using Carbon's intelligent parsing
             if (is_string($value)) {
-                // If it's a specific format, parse it
-                if ($dateFormat !== 'Y-m-d H:i:s') {
-                    $date = $attribute instanceof DateProperty && $attribute->immutable
-                        ? CarbonImmutable::createFromFormat($dateFormat, $value, $timezone)
-                        : Carbon::createFromFormat($dateFormat, $value, $timezone);
-                } else {
-                    // Let Carbon parse it automatically
-                    $date = $attribute instanceof DateProperty && $attribute->immutable
-                        ? CarbonImmutable::parse($value, $timezone)
-                        : Carbon::parse($value, $timezone);
-                }
+                $date = Carbon::parse($value);
             } elseif (is_int($value)) {
                 // Unix timestamp
-                $date = $attribute instanceof DateProperty && $attribute->immutable
-                    ? CarbonImmutable::createFromTimestamp($value, $timezone)
-                    : Carbon::createFromTimestamp($value, $timezone);
+                $date = Carbon::createFromTimestamp($value);
             } else {
                 throw new InvalidArgumentException('Invalid date format');
             }
 
-            if (!$date) {
-                throw new InvalidArgumentException('Could not parse date');
-            }
+            // Date parsing should always succeed with Carbon
 
             return $date;
         } catch (Exception $e) {
@@ -77,13 +51,7 @@ class DateCaster extends BaseCaster
     protected function performSerialization(mixed $value, Property $attribute): string
     {
         if ($value instanceof Carbon || $value instanceof CarbonImmutable) {
-            $format = 'Y-m-d H:i:s';
-
-            if ($attribute instanceof DateProperty) {
-                $format = $attribute->format;
-            }
-
-            return $value->format($format);
+            return $value->toDateTimeString();
         }
 
         return (string) $value;

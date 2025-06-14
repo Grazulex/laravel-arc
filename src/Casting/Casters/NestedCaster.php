@@ -3,7 +3,6 @@
 namespace Grazulex\Arc\Casting\Casters;
 
 use Exception;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\BaseCaster;
 use Grazulex\Arc\Contracts\DTOInterface;
@@ -43,7 +42,7 @@ class NestedCaster extends BaseCaster
 
         try {
             // Handle collections
-            if ($attribute instanceof NestedProperty && $attribute->isCollection) {
+            if ($attribute->isCollection) {
                 return $this->castToCollection($value, $dtoClass);
             }
 
@@ -59,7 +58,7 @@ class NestedCaster extends BaseCaster
      */
     protected function performSerialization(mixed $value, Property $attribute): array
     {
-        if ($attribute instanceof NestedProperty && $attribute->isCollection) {
+        if ($attribute->isCollection) {
             return $this->serializeCollection($value);
         }
 

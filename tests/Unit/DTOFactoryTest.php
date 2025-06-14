@@ -2,8 +2,6 @@
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -45,13 +43,13 @@ class FactoryUserDTO extends LaravelArcDTO
     #[Property(type: 'integer', required: true, validation: 'min:0|max:150')]
     public int $age;
 
-    #[DateProperty(required: false, format: 'Y-m-d')]
+    #[Property(type: 'date', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property(type: 'date', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[NestedProperty(dtoClass: FactoryAddressDTO::class, required: false)]
+    #[Property(type: 'nested', class: FactoryAddressDTO::class, required: false)]
     public ?FactoryAddressDTO $address;
 
     #[Property(type: 'string', required: false, default: 'user')]
@@ -89,7 +87,7 @@ class FactoryTeamDTO extends LaravelArcDTO
     /**
      * @var array<FactoryUserDTO>
      */
-    #[NestedProperty(dtoClass: FactoryUserDTO::class, required: false, isCollection: true)]
+    #[Property(type: 'collection', class: FactoryUserDTO::class, required: false)]
     public array $members;
 
     protected function validate(array $data): void
