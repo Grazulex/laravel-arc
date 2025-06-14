@@ -9,8 +9,6 @@ require_once '../../vendor/autoload.php';
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -51,13 +49,13 @@ class ExampleUserDTO extends LaravelArcDTO
     #[Property(type: 'integer', required: true, validation: 'min:0|max:150')]
     public int $age;
 
-    #[DateProperty(required: false, format: 'Y-m-d')]
+    #[Property('Carbon', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property('CarbonImmutable', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[NestedProperty(dtoClass: ExampleAddressDTO::class, required: false)]
+    #[Property('ExampleAddressDTO', dtoClass: ExampleAddressDTO::class, required: false)]
     public ?ExampleAddressDTO $address;
 
     #[Property(type: 'string', required: false, default: 'user')]
@@ -94,7 +92,7 @@ class ExampleTeamDTO extends LaravelArcDTO
     /**
      * @var array<ExampleUserDTO>
      */
-    #[NestedProperty(dtoClass: ExampleUserDTO::class, required: false, isCollection: true)]
+    #[Property('array<ExampleUserDTO>', required: false)]
     public array $members;
 
     protected function validate(array $data): void

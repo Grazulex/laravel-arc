@@ -15,7 +15,7 @@ class NestedProperty extends Property
         bool $required = true,
         mixed $default = null,
         ?string $validation = null,
-        public readonly bool $isCollection = false,
+        bool $isCollection = false,
     ) {
         parent::__construct(
             type: $isCollection ? 'array' : 'object',
@@ -23,7 +23,8 @@ class NestedProperty extends Property
             default: $default,
             validation: $validation,
             cast: 'nested',
-            nested: $dtoClass,
+            collection: $isCollection,
+            dtoClass: $dtoClass,
         );
     }
 }

@@ -22,6 +22,7 @@ use function is_int;
 use function is_object;
 use function is_string;
 
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -272,20 +273,11 @@ trait DTOTrait
             $properties = [];
 
             foreach ($reflection->getProperties() as $property) {
-                // Check for Property, DateProperty, NestedProperty, or EnumProperty attributes
-                $attributes = $property->getAttributes(Property::class);
-                if (empty($attributes)) {
-                    $attributes = $property->getAttributes(DateProperty::class);
-                }
-                if (empty($attributes)) {
-                    $attributes = $property->getAttributes(NestedProperty::class);
-                }
-                if (empty($attributes)) {
-                    $attributes = $property->getAttributes(EnumProperty::class);
-                }
+                // Check for any Property-based attributes (Property, DateProperty, NestedProperty, EnumProperty)
+                $propertyAttributes = $property->getAttributes(Property::class, ReflectionAttribute::IS_INSTANCEOF);
 
-                if (!empty($attributes)) {
-                    $attribute = $attributes[0]->newInstance();
+                if (!empty($propertyAttributes)) {
+                    $attribute = $propertyAttributes[0]->newInstance();
                     $properties[$property->getName()] = [
                         'property' => $property,
                         'attribute' => $attribute,

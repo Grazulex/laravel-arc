@@ -2,7 +2,6 @@
 
 namespace Grazulex\Arc\Examples;
 
-use Grazulex\Arc\Attributes\EnumProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -39,10 +38,10 @@ class EnumExampleDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true, validation: 'email')]
     public string $email;
 
-    #[EnumProperty(enumClass: UserStatus::class, required: true)]
+    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
     public UserStatus $status;
 
-    #[EnumProperty(enumClass: UserRole::class, required: false, default: UserRole::USER)]
+    #[Property('UserRole', enumClass: UserRole::class, required: false, default: UserRole::USER)]
     public UserRole $role;
 
     #[Property(type: 'integer', required: false, validation: 'min:18|max:100')]

@@ -9,7 +9,6 @@ namespace Grazulex\Arc\Examples;
 require_once '../../vendor/autoload.php';
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -87,7 +86,7 @@ class TeamExample extends LaravelArcDTO
     /**
      * @var array<UserAdvancedDTO>
      */
-    #[NestedProperty(dtoClass: UserAdvancedDTO::class, required: false, isCollection: true)]
+    #[Property('array<UserAdvancedDTO>', required: false)]
     public array $members;
 
     protected function validate(array $data): void

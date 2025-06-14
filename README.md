@@ -188,16 +188,16 @@ public string $property;
 Automatic transformation of dates to Carbon instances:
 
 ```php
-use Grazulex\Arc\Attributes\DateProperty;
+use Grazulex\Arc\Attributes\Property;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 
 class UserDTO extends LaravelArcDTO
 {
-    #[DateProperty(required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    #[Property('Carbon', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property('CarbonImmutable', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 }
 
@@ -220,23 +220,23 @@ $array = $user->toArray();
 Embed DTOs within other DTOs:
 
 ```php
-use Grazulex\Arc\Attributes\NestedProperty;
+use Grazulex\Arc\Attributes\Property;
 
 class AddressDTO extends LaravelArcDTO
 {
-    #[Property(type: 'string', required: true)]
+    #[Property('string', required: true)]
     public string $street;
     
-    #[Property(type: 'string', required: true)]
+    #[Property('string', required: true)]
     public string $city;
 }
 
 class UserDTO extends LaravelArcDTO
 {
-    #[Property(type: 'string', required: true)]
+    #[Property('string', required: true)]
     public string $name;
     
-    #[NestedProperty(dtoClass: AddressDTO::class, required: false)]
+    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
     public ?AddressDTO $address;
 }
 
@@ -258,7 +258,7 @@ $user->address->city = 'Antwerp';
 Laravel Arc now supports PHP 8.1+ enums with automatic casting:
 
 ```php
-use Grazulex\Arc\Attributes\EnumProperty;
+use Grazulex\Arc\Attributes\Property;
 
 // Define your enums
 enum UserStatus: string
@@ -277,13 +277,13 @@ enum UserRole
 
 class UserDTO extends LaravelArcDTO
 {
-    #[Property(type: 'string', required: true)]
+    #[Property('string', required: true)]
     public string $name;
 
-    #[EnumProperty(enumClass: UserStatus::class, required: true)]
+    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
     public UserStatus $status;
 
-    #[EnumProperty(enumClass: UserRole::class, default: UserRole::USER)]
+    #[Property('UserRole', enumClass: UserRole::class, default: UserRole::USER)]
     public UserRole $role;
 }
 
@@ -310,10 +310,10 @@ Handle arrays of nested DTOs:
 ```php
 class TeamDTO extends LaravelArcDTO
 {
-    #[Property(type: 'string', required: true)]
+    #[Property('string', required: true)]
     public string $name;
     
-    #[NestedProperty(dtoClass: UserDTO::class, required: false, isCollection: true)]
+    #[Property('array<UserDTO>', required: false)]
     public array $members;
 }
 

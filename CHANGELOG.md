@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `'is_active' => 'boolean'` → `public bool $is_active`
     - `'metadata' => 'array'` → `public ?array $metadata`
     - `'salary' => 'decimal:2'` → `public float $salary`
-    - `'created_at' => 'datetime'` → `#[DateProperty] public ?Carbon $created_at`
+    - `'created_at' => 'datetime'` → `#[Property('Carbon')] public ?Carbon $created_at`
   
   - **🗃️ Database Schema Inspection** (Second Priority): Analyzes actual column types and constraints
     - `VARCHAR` → `string`, `INT` → `int`, `DECIMAL` → `float`
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `$table->string('name')` → `public ?string $name`
     - `$table->integer('age')->nullable()` → `public ?int $age`
     - `$table->boolean('is_active')` → `public bool $is_active`
-    - `$table->timestamp('created_at')` → `#[DateProperty] public ?Carbon $created_at`
+    - `$table->timestamp('created_at')` → `#[Property('Carbon')] public ?Carbon $created_at`
   
   - **🔍 Smart Pattern Matching** (Fallback): Intelligent pattern-based type detection
     - `*_id`, `id` → `int`
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **⚡ Automatic Features**:
   - **📋 Property Extraction**: Automatic analysis of `fillable` attributes
-  - **📅 Date Handling**: Uses `DateProperty` for timestamp fields with proper Carbon typing
+  - **Date Handling**: Uses `Property('Carbon')` for timestamp fields with proper Carbon typing
   - **✅ Validation Rules**: Generates appropriate validation rules based on detected types
   - **🛡️ Safety First**: Prevents overwriting existing files
   - **📂 Directory Creation**: Creates target directories automatically if they don't exist
@@ -128,7 +128,7 @@ class UserDTO extends LaravelArcDTO
     #[Property(type: 'array', required: false)]  // From cast
     public ?array $metadata;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $created_at;
 }
 ```
@@ -139,7 +139,7 @@ class UserDTO extends LaravelArcDTO
 
 #### Added
 - **🎯 Complete PHP 8.1+ Enums Integration**: Full support for modern PHP enums with automatic casting
-  - **New `EnumProperty` attribute**: Specialized attribute for enum properties with type safety
+- **Unified `Property` attribute**: Enhanced Property attribute with intelligent enum detection and type safety
   - **Automatic enum casting**: Convert strings/integers to enum instances seamlessly
     - `'active'` → `UserStatus::ACTIVE` (BackedEnum)
     - `'ADMIN'` → `UserRole::ADMIN` (UnitEnum)
@@ -158,7 +158,7 @@ class UserDTO extends LaravelArcDTO
   - `castToEnum()`: Convert values to enum instances with validation
   - `serializeEnum()`: Smart serialization based on enum type
   - Full integration with existing casting system
-- **📊 Enhanced DTOTrait**: Extended reflection system to support EnumProperty
+- **Enhanced DTOTrait**: Extended reflection system to support enum properties via unified Property attribute
 - **🎨 Improved Type System**: Better validation for enum types in property assignment
 
 #### Documentation & Examples
@@ -189,10 +189,10 @@ enum UserRole { case ADMIN; case USER; }
 
 // Use in DTOs
 class UserDTO extends LaravelArcDTO {
-    #[EnumProperty(enumClass: UserStatus::class, required: true)]
+    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
     public UserStatus $status;
     
-    #[EnumProperty(enumClass: UserRole::class, default: UserRole::USER)]
+    #[Property('UserRole', enumClass: UserRole::class, default: UserRole::USER)]
     public UserRole $role;
 }
 
@@ -221,7 +221,7 @@ echo $user->role->name;    // 'ADMIN'
 
 #### Features
 - `LaravelArcDTO` base class for creating DTOs
-- `Property`, `DateProperty`, `NestedProperty` attributes
+- Unified `Property` attribute with intelligent type detection
 - `ArcServiceProvider` for Laravel integration
 - `DTOInterface` and `DTOTrait` for extensibility
 - Magic methods for backward compatibility

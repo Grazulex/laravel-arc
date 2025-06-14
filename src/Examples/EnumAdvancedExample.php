@@ -8,8 +8,6 @@
 require_once __DIR__ . '/../../vendor/autoload.php';
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\EnumProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -99,22 +97,22 @@ class OrderDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true, validation: 'email')]
     public string $customerEmail;
 
-    #[EnumProperty(enumClass: OrderStatus::class, required: true)]
+    #[Property('OrderStatus', enumClass: OrderStatus::class, required: true)]
     public OrderStatus $status;
 
-    #[EnumProperty(enumClass: PaymentMethod::class, required: true)]
+    #[Property('PaymentMethod', enumClass: PaymentMethod::class, required: true)]
     public PaymentMethod $paymentMethod;
 
-    #[EnumProperty(enumClass: Priority::class, default: Priority::NORMAL)]
+    #[Property('Priority', enumClass: Priority::class, default: Priority::NORMAL)]
     public Priority $priority;
 
-    #[Property(type: 'float', required: true, validation: 'numeric|min:0')]
+    #[Property('float', required: true, validation: 'numeric|min:0')]
     public float $amount;
 
-    #[DateProperty(required: true)]
+    #[Property('Carbon', required: true)]
     public Carbon $createdAt;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $shippedAt = null;
 
     // Business logic methods

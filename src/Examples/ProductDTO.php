@@ -3,7 +3,6 @@
 namespace Grazulex\Arc\Examples;
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -39,9 +38,9 @@ class ProductDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false, validation: 'url')]
     public ?string $image_url;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $created_at;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $updated_at;
 }

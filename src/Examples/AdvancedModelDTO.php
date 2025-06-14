@@ -3,7 +3,6 @@
 namespace Grazulex\Arc\Examples;
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -51,9 +50,9 @@ class AdvancedModelDTO extends LaravelArcDTO
     public float $salary;
 
     // Cast: 'datetime' → Nullable Carbon with DateProperty
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $created_at;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $updated_at;
 }

@@ -4,8 +4,6 @@ namespace Grazulex\Arc\Examples;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -40,7 +38,7 @@ class CompanyDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false, validation: 'email')]
     public ?string $email;
 
-    #[NestedProperty(dtoClass: AddressDTO::class, required: false)]
+    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
     public ?AddressDTO $address;
 
     protected function validate(array $data): void
@@ -57,19 +55,19 @@ class UserAdvancedDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true, validation: 'email')]
     public string $email;
 
-    #[DateProperty(required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    #[Property('Carbon', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property('CarbonImmutable', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[DateProperty(required: false, format: 'Y-m-d H:i:s')]
+    #[Property('Carbon', required: false, format: 'Y-m-d H:i:s')]
     public ?Carbon $lastLoginAt;
 
-    #[NestedProperty(dtoClass: AddressDTO::class, required: false)]
+    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
     public ?AddressDTO $address;
 
-    #[NestedProperty(dtoClass: CompanyDTO::class, required: false)]
+    #[Property('CompanyDTO', dtoClass: CompanyDTO::class, required: false)]
     public ?CompanyDTO $company;
 
     /**

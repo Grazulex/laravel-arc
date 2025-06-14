@@ -19,7 +19,7 @@ class EnumProperty extends Property
             default: $default,
             validation: $validation,
             cast: 'enum',
-            nested: $enumClass,
+            enumClass: $enumClass,
         );
     }
 }

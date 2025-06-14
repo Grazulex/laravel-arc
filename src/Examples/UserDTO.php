@@ -3,7 +3,6 @@
 namespace Grazulex\Arc\Examples;
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -24,7 +23,7 @@ class GeneratedUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false, validation: 'email')]
     public ?string $email;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $email_verified_at;
 
     #[Property(type: 'string', required: false)]
@@ -33,10 +32,10 @@ class GeneratedUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false)]
     public ?string $remember_token;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $created_at;
 
-    #[DateProperty(required: false)]
+    #[Property('Carbon', required: false)]
     public ?Carbon $updated_at;
 }
 

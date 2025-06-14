@@ -24,7 +24,9 @@ class DateProperty extends Property
             default: $default,
             validation: $validation,
             cast: 'date',
-            dateFormat: $format,
+            format: $format,
+            timezone: $timezone,
+            immutable: $immutable,
         );
     }
 }

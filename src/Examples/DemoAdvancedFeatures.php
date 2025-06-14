@@ -9,8 +9,6 @@ require_once '../../vendor/autoload.php';
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
@@ -50,20 +48,20 @@ class DemoUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true)]
     public string $email;
 
-    #[DateProperty(required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    #[Property('Carbon', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property('CarbonImmutable', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[NestedProperty(dtoClass: DemoAddressDTO::class, required: false)]
-    public ?DemoAddressDTO $address;
+    #[Property('Carbon', required: false, format: 'Y-m-d H:i:s')]
+    public ?Carbon $lastLoginAt;
 
-    /**
-     * @var array<string>
-     */
-    #[Property(type: 'array', required: false, default: [])]
-    public array $permissions;
+    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
+    public ?AddressDTO $address;
+
+    #[Property('CompanyDTO', dtoClass: CompanyDTO::class, required: false)]
+    public ?CompanyDTO $company;
 
     protected function validate(array $data): void
     {
