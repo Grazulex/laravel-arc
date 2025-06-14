@@ -9,6 +9,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.2.0] - 2025-06-14
+
+### 🐛 Bug Fixes
+
+#### 🔧 Command Improvements
+- **Fixed --with-relations error**: Resolved `get_class(): Argument #1 ($object) must be of type object, true given` error in MakeDtoCommand
+- **Better type checking**: Improved validation to ensure only objects are passed to `get_class()`
+- **Enhanced relation detection**: More robust handling of method return values when analyzing Eloquent relations
+
+### 📖 Changes
+- fix: resolve --with-relations command error when method returns non-object
+- improve: strengthen type checking in relation method analysis
+
+### 🔄 Migration from v2.1.0
+
+No breaking changes in this release. This is a minor version update that fixes a bug with the `--with-relations` flag.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. The `--with-relations` flag now works correctly without errors
+
 ## [2.1.0] - 2025-06-14
 
 ### ✨ New Features & Enhancements

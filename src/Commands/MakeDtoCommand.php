@@ -628,7 +628,8 @@ PHP;
             // Try to execute the method to see if it returns a relation
             $result = $method->invoke($model);
 
-            if (!$result) {
+            // Check if result is an object (relations should return objects)
+            if (!is_object($result)) {
                 return null;
             }
 
