@@ -1006,10 +1006,10 @@ PHP;
             }
 
             // Try to access the connection resolver statically
-            $resolverProperty = new \ReflectionProperty('\Illuminate\Database\Eloquent\Model', 'resolver');
+            $resolverProperty = new ReflectionProperty('\Illuminate\Database\Eloquent\Model', 'resolver');
             $resolverProperty->setAccessible(true);
             $resolver = $resolverProperty->getValue();
-            
+
             return $resolver !== null;
         } catch (Exception $e) {
             return false;
@@ -1071,10 +1071,10 @@ PHP;
 
             // Try to access the connection resolver statically
             // If this fails, it means we're in a context where Eloquent isn't properly initialized
-            $resolverProperty = new \ReflectionProperty('\\Illuminate\\Database\\Eloquent\\Model', 'resolver');
+            $resolverProperty = new ReflectionProperty('\\Illuminate\\Database\\Eloquent\\Model', 'resolver');
             $resolverProperty->setAccessible(true);
             $resolver = $resolverProperty->getValue();
-            
+
             if ($resolver === null) {
                 // No connection resolver available - can't safely instantiate models
                 return false;
