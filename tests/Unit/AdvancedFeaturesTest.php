@@ -2,8 +2,6 @@
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 use Grazulex\Arc\LaravelArcDTO;
@@ -33,13 +31,13 @@ class TestUserWithDatesDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true)]
     public string $name;
 
-    #[DateProperty(required: false, format: 'Y-m-d')]
+    #[Property(type: 'date', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[DateProperty(required: false, immutable: true)]
+    #[Property(type: 'date', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[NestedProperty(dtoClass: TestAddressDTO::class, required: false)]
+    #[Property(type: 'nested', class: TestAddressDTO::class, required: false)]
     public ?TestAddressDTO $address;
 
     protected function validate(array $data): void
@@ -58,7 +56,7 @@ class TestTeamDTO extends LaravelArcDTO
     /**
      * @var array<TestUserWithDatesDTO>
      */
-    #[NestedProperty(dtoClass: TestUserWithDatesDTO::class, required: false, isCollection: true)]
+    #[Property(type: 'collection', class: TestUserWithDatesDTO::class, required: false)]
     public array $members;
 
     protected function validate(array $data): void

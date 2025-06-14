@@ -33,27 +33,20 @@ class Property
         ?string $timezone = null,
         bool $immutable = false,
         bool $collection = false,
-        // New cleaner syntax
         ?string $class = null,
-        // Keep backward compatibility
-        ?string $enumClass = null,
-        ?string $dtoClass = null,
     ) {
-        // Prioritize new 'class' parameter over legacy parameters
-        $targetClass = $class ?? $enumClass ?? $dtoClass;
-        
         // Smart cast detection based on type
-        $this->cast = $cast ?? $this->detectCastType($type, $targetClass);
-        $this->nested = $this->detectNestedClass($type, $targetClass);
+        $this->cast = $cast ?? $this->detectCastType($type, $class);
+        $this->nested = $this->detectNestedClass($type, $class);
         $this->isCollection = $collection || $this->detectCollection($type);
     }
 
     /**
-     * Automatically detect the appropriate cast type based on the property type.
+     * Detect the appropriate cast type based on the property type.
      */
-    private function detectCastType(string $type, ?string $targetClass): string
+    private function detectCastType(string $type, ?string $class): string
     {
-        // Handle explicit type declarations with new syntax
+        // Handle explicit type declarations
         switch ($type) {
             case 'enum':
                 return 'enum';
@@ -79,37 +72,14 @@ class Property
                 return 'array';
         }
 
-        // Legacy: Handle array types
-        if (str_starts_with($type, 'array')) {
-            if ($this->detectCollection($type)) {
-                return 'nested'; // array<SomeDTO>
-            }
-            return 'array';
-        }
-
-        // Legacy: Handle Carbon dates
-        if ($type === 'Carbon' || $type === 'CarbonImmutable' || str_contains($type, 'Carbon')) {
-            return 'date';
-        }
-
-        // Legacy: Handle explicit enum/DTO class parameters (high priority)
-        if ($targetClass) {
-            if ($this->isEnumClass($targetClass)) {
+        // If a class is specified, try to auto-detect type
+        if ($class) {
+            if ($this->isEnumClass($class)) {
                 return 'enum';
             }
-            if ($this->isDTOClass($targetClass)) {
+            if ($this->isDTOClass($class)) {
                 return 'nested';
             }
-        }
-        
-        // Legacy: Handle enums by type name
-        if ($this->isEnumClass($type)) {
-            return 'enum';
-        }
-
-        // Legacy: Handle DTOs by type name
-        if ($this->isDTOClass($type)) {
-            return 'nested';
         }
 
         // Default fallback
@@ -119,27 +89,10 @@ class Property
     /**
      * Detect the nested class for enum or DTO casting.
      */
-    private function detectNestedClass(string $type, ?string $targetClass): ?string
+    private function detectNestedClass(string $type, ?string $class): ?string
     {
-        // Prioritize explicit class parameter
-        if ($targetClass) {
-            return $targetClass;
-        }
-
-        // Extract class from array notation: array<UserDTO> -> UserDTO
-        if (str_contains($type, '<') && str_contains($type, '>')) {
-            preg_match('/array<(.+)>/', $type, $matches);
-            if (isset($matches[1])) {
-                return $matches[1];
-            }
-        }
-
-        // Check if type itself is a class
-        if (class_exists($type) || interface_exists($type)) {
-            return $type;
-        }
-
-        return null;
+        // Return explicit class parameter
+        return $class;
     }
 
     /**
@@ -147,7 +100,7 @@ class Property
      */
     private function detectCollection(string $type): bool
     {
-        return $type === 'collection' || str_starts_with($type, 'array<') || str_contains($type, '[]');
+        return $type === 'collection';
     }
 
     /**

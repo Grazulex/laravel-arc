@@ -50,9 +50,9 @@ class AdvancedModelDTO extends LaravelArcDTO
     public float $salary;
 
     // Cast: 'datetime' → Nullable Carbon with DateProperty
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $created_at;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $updated_at;
 }

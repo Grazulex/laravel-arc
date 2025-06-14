@@ -38,9 +38,9 @@ class ProductDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false, validation: 'url')]
     public ?string $image_url;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $created_at;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $updated_at;
 }

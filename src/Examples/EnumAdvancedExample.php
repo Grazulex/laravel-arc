@@ -97,22 +97,22 @@ class OrderDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true, validation: 'email')]
     public string $customerEmail;
 
-    #[Property('OrderStatus', enumClass: OrderStatus::class, required: true)]
+    #[Property(type: 'enum', class: OrderStatus::class, required: true)]
     public OrderStatus $status;
 
-    #[Property('PaymentMethod', enumClass: PaymentMethod::class, required: true)]
+    #[Property(type: 'enum', class: PaymentMethod::class, required: true)]
     public PaymentMethod $paymentMethod;
 
-    #[Property('Priority', enumClass: Priority::class, default: Priority::NORMAL)]
+    #[Property(type: 'enum', class: Priority::class, default: Priority::NORMAL)]
     public Priority $priority;
 
-    #[Property('float', required: true, validation: 'numeric|min:0')]
+    #[Property(type: 'float', required: true, validation: 'numeric|min:0')]
     public float $amount;
 
-    #[Property('Carbon', required: true)]
+    #[Property(type: 'date', required: true)]
     public Carbon $createdAt;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $shippedAt = null;
 
     // Business logic methods

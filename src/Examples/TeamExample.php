@@ -86,7 +86,7 @@ class TeamExample extends LaravelArcDTO
     /**
      * @var array<UserAdvancedDTO>
      */
-    #[Property('array<UserAdvancedDTO>', required: false)]
+    #[Property(type: 'collection', class: UserAdvancedDTO::class, required: false)]
     public array $members;
 
     protected function validate(array $data): void

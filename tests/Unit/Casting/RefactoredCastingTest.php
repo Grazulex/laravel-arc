@@ -1,7 +1,6 @@
 <?php
 
 use Carbon\Carbon;
-use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
 use Grazulex\Arc\Casting\Casters\ArrayCaster;
@@ -63,7 +62,7 @@ describe('Refactored Casting Architecture', function () {
     });
     
     it('maintains compatibility with static cast method', function () {
-        $dateProperty = new DateProperty();
+        $dateProperty = new Property(type: 'date');
         
         $result = CastManager::cast('2023-01-01', $dateProperty);
         
@@ -72,7 +71,7 @@ describe('Refactored Casting Architecture', function () {
     });
     
     it('maintains compatibility with static serialize method', function () {
-        $dateProperty = new DateProperty();
+        $dateProperty = new Property(type: 'date');
         
         $date = Carbon::parse('2023-01-01');
         $result = CastManager::serialize($date, $dateProperty);
@@ -91,7 +90,7 @@ describe('Refactored Casting Architecture', function () {
     });
     
     it('handles null values consistently across all casters', function () {
-        $dateProperty = new DateProperty();
+        $dateProperty = new Property(type: 'date');
         
         $result = CastManager::cast(null, $dateProperty);
         
@@ -102,7 +101,7 @@ describe('Refactored Casting Architecture', function () {
 describe('Individual Caster Functionality', function () {
     it('DateCaster can handle date casting correctly', function () {
         $caster = new DateCaster();
-        $property = new DateProperty();
+        $property = new Property(type: 'date');
         
         expect($caster->canCast('date'))->toBeTrue();
         expect($caster->canCast('string'))->toBeFalse();

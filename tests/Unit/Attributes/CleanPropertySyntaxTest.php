@@ -72,35 +72,28 @@ class CleanPropertySyntaxTest extends TestCase
         $this->assertSame('bool', $boolProperty->cast);
     }
     
-    public function test_backward_compatibility_maintained(): void
+    public function test_auto_detection_from_class_parameter(): void
     {
-        // Old syntax should still work - specify the class explicitly
-        $enumProperty = new Property(type: 'enum', enumClass: TestStatus::class);
-        $this->assertSame('enum', $enumProperty->cast);
+        // Auto-detection when type is not specified but class is provided
+        $enumProperty = new Property(type: 'string', class: TestStatus::class);
+        $this->assertSame('enum', $enumProperty->cast); // Should auto-detect from class
         $this->assertSame(TestStatus::class, $enumProperty->nested);
         
-        // Array<DTO> syntax should still work
-        $collectionProperty = new Property('array<UserDTO>');
-        $this->assertSame('nested', $collectionProperty->cast);
-        $this->assertSame('UserDTO', $collectionProperty->nested);
-        $this->assertTrue($collectionProperty->isCollection);
-        
-        // Test that legacy enumClass still works with explicit enum type
-        $legacyEnum = new Property(type: 'SomeRandomType', enumClass: TestStatus::class);
-        $this->assertSame('enum', $legacyEnum->cast);
-        $this->assertSame(TestStatus::class, $legacyEnum->nested);
+        // Auto-detection for DTO class
+        $dtoProperty = new Property(type: 'string', class: UserDTO::class);
+        $this->assertSame('nested', $dtoProperty->cast); // Should auto-detect from class
+        $this->assertSame(UserDTO::class, $dtoProperty->nested);
     }
     
-    public function test_new_class_parameter_takes_priority(): void
+    public function test_explicit_type_with_class_parameter(): void
     {
-        // New 'class' parameter should override legacy parameters
+        // Explicit type specification with class parameter
         $property = new Property(
             type: 'enum',
-            class: TestStatus::class,
-            enumClass: 'SomeOtherClass', // Should be ignored
-            dtoClass: 'AnotherClass' // Should be ignored
+            class: TestStatus::class
         );
         
+        $this->assertSame('enum', $property->cast);
         $this->assertSame(TestStatus::class, $property->nested);
     }
 }

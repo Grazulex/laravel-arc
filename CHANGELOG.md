@@ -26,7 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `'is_active' => 'boolean'` → `public bool $is_active`
     - `'metadata' => 'array'` → `public ?array $metadata`
     - `'salary' => 'decimal:2'` → `public float $salary`
-    - `'created_at' => 'datetime'` → `#[Property('Carbon')] public ?Carbon $created_at`
+    - `'created_at' => 'datetime'` → `#[Property(type: 'date')] public ?Carbon $created_at`
   
   - **🗃️ Database Schema Inspection** (Second Priority): Analyzes actual column types and constraints
     - `VARCHAR` → `string`, `INT` → `int`, `DECIMAL` → `float`
@@ -37,7 +37,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - `$table->string('name')` → `public ?string $name`
     - `$table->integer('age')->nullable()` → `public ?int $age`
     - `$table->boolean('is_active')` → `public bool $is_active`
-    - `$table->timestamp('created_at')` → `#[Property('Carbon')] public ?Carbon $created_at`
+    - `$table->timestamp('created_at')` → `#[Property(type: 'date')] public ?Carbon $created_at`
   
   - **🔍 Smart Pattern Matching** (Fallback): Intelligent pattern-based type detection
     - `*_id`, `id` → `int`
@@ -52,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **⚡ Automatic Features**:
   - **📋 Property Extraction**: Automatic analysis of `fillable` attributes
-  - **Date Handling**: Uses `Property('Carbon')` for timestamp fields with proper Carbon typing
+  - **Date Handling**: Uses `Property(type: 'date')` for timestamp fields with proper Carbon typing
   - **✅ Validation Rules**: Generates appropriate validation rules based on detected types
   - **🛡️ Safety First**: Prevents overwriting existing files
   - **📂 Directory Creation**: Creates target directories automatically if they don't exist
@@ -128,7 +128,7 @@ class UserDTO extends LaravelArcDTO
     #[Property(type: 'array', required: false)]  // From cast
     public ?array $metadata;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $created_at;
 }
 ```
@@ -189,10 +189,10 @@ enum UserRole { case ADMIN; case USER; }
 
 // Use in DTOs
 class UserDTO extends LaravelArcDTO {
-    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
+    #[Property(type: 'enum', class: UserStatus::class, required: true)]
     public UserStatus $status;
     
-    #[Property('UserRole', enumClass: UserRole::class, default: UserRole::USER)]
+    #[Property(type: 'enum', class: UserRole::class, default: UserRole::USER)]
     public UserRole $role;
 }
 

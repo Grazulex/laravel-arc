@@ -38,10 +38,10 @@ class EnumExampleDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true, validation: 'email')]
     public string $email;
 
-    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
+    #[Property(type: 'enum', class: UserStatus::class, required: true)]
     public UserStatus $status;
 
-    #[Property('UserRole', enumClass: UserRole::class, required: false, default: UserRole::USER)]
+    #[Property(type: 'enum', class: UserRole::class, required: false, default: UserRole::USER)]
     public UserRole $role;
 
     #[Property(type: 'integer', required: false, validation: 'min:18|max:100')]

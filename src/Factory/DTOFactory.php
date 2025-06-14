@@ -6,8 +6,6 @@ use function array_slice;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Contracts\DTOFactoryInterface;
 use Grazulex\Arc\Contracts\DTOInterface;
@@ -116,12 +114,6 @@ class DTOFactory implements DTOFactoryInterface
 
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(Property::class);
-            if (empty($attributes)) {
-                $attributes = $property->getAttributes(DateProperty::class);
-            }
-            if (empty($attributes)) {
-                $attributes = $property->getAttributes(NestedProperty::class);
-            }
 
             if (!empty($attributes)) {
                 $attribute = $attributes[0]->newInstance();
@@ -143,14 +135,19 @@ class DTOFactory implements DTOFactoryInterface
             return $attribute->default;
         }
 
-        // Gestion spéciale pour DateProperty
-        if ($attribute instanceof DateProperty) {
-            return $this->generateFakeDate($attribute);
-        }
-
-        // Gestion spéciale pour NestedProperty
-        if ($attribute instanceof NestedProperty) {
-            return $this->generateFakeNested($attribute);
+        // Handle different property types based on cast
+        switch ($attribute->cast) {
+            case 'nested':
+                if ($attribute->isCollection) {
+                    return $this->generateFakeCollection($attribute->nested);
+                }
+                return $this->generateFakeNestedDTO($attribute->nested);
+            
+            case 'date':
+                return $this->generateFakeDate();
+            
+            case 'enum':
+                return $this->generateFakeEnum($attribute->nested);
         }
 
         // Génération basée sur le type
@@ -167,37 +164,51 @@ class DTOFactory implements DTOFactoryInterface
     /**
      * Generate fake date value.
      */
-    protected function generateFakeDate(DateProperty $attribute): Carbon|CarbonImmutable
+    protected function generateFakeDate(): Carbon
     {
-        $fakeDate = Carbon::now()->subDays(rand(0, 365));
+        return Carbon::now()->subDays(rand(0, 365));
+    }
 
-        if ($attribute->timezone) {
-            $fakeDate->setTimezone($attribute->timezone);
+    /**
+     * Generate fake collection of DTOs.
+     */
+    protected function generateFakeCollection(string $dtoClass): array
+    {
+        $count = rand(1, 3);
+        $items = [];
+
+        for ($i = 0; $i < $count; ++$i) {
+            $factory = new static($dtoClass);
+            $items[] = $factory->fake()->create();
         }
 
-        return $attribute->immutable ? $fakeDate->toImmutable() : $fakeDate;
+        return $items;
     }
 
     /**
      * Generate fake nested DTO.
      */
-    protected function generateFakeNested(NestedProperty $attribute): mixed
+    protected function generateFakeNestedDTO(string $dtoClass): mixed
     {
-        if ($attribute->isCollection) {
-            $count = rand(1, 3);
-            $items = [];
+        $factory = new static($dtoClass);
+        return $factory->fake()->create();
+    }
 
-            for ($i = 0; $i < $count; ++$i) {
-                $factory = new static($attribute->dtoClass);
-                $items[] = $factory->fake()->create();
-            }
-
-            return $items;
+    /**
+     * Generate fake enum value.
+     */
+    protected function generateFakeEnum(string $enumClass): mixed
+    {
+        if (!enum_exists($enumClass)) {
+            return null;
         }
 
-        $factory = new static($attribute->dtoClass);
+        $cases = $enumClass::cases();
+        if (empty($cases)) {
+            return null;
+        }
 
-        return $factory->fake()->create();
+        return $cases[array_rand($cases)];
     }
 
     /**

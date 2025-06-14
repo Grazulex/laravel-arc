@@ -49,13 +49,13 @@ class ExampleUserDTO extends LaravelArcDTO
     #[Property(type: 'integer', required: true, validation: 'min:0|max:150')]
     public int $age;
 
-    #[Property('Carbon', required: false, format: 'Y-m-d')]
+    #[Property(type: 'date', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[Property('CarbonImmutable', required: false, immutable: true)]
+    #[Property(type: 'date', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[Property('ExampleAddressDTO', dtoClass: ExampleAddressDTO::class, required: false)]
+    #[Property(type: 'nested', class: ExampleAddressDTO::class, required: false)]
     public ?ExampleAddressDTO $address;
 
     #[Property(type: 'string', required: false, default: 'user')]
@@ -92,7 +92,7 @@ class ExampleTeamDTO extends LaravelArcDTO
     /**
      * @var array<ExampleUserDTO>
      */
-    #[Property('array<ExampleUserDTO>', required: false)]
+    #[Property(type: 'collection', class: ExampleUserDTO::class, required: false)]
     public array $members;
 
     protected function validate(array $data): void

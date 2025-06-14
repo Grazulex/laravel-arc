@@ -23,7 +23,7 @@ class GeneratedUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false, validation: 'email')]
     public ?string $email;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $email_verified_at;
 
     #[Property(type: 'string', required: false)]
@@ -32,10 +32,10 @@ class GeneratedUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: false)]
     public ?string $remember_token;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $created_at;
 
-    #[Property('Carbon', required: false)]
+    #[Property(type: 'date', required: false)]
     public ?Carbon $updated_at;
 }
 

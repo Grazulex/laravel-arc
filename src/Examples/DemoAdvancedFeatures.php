@@ -48,20 +48,19 @@ class DemoUserDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true)]
     public string $email;
 
-    #[Property('Carbon', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    #[Property(type: 'date', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
     public ?Carbon $birthDate;
 
-    #[Property('CarbonImmutable', required: false, immutable: true)]
+    #[Property(type: 'date', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
 
-    #[Property('Carbon', required: false, format: 'Y-m-d H:i:s')]
+    #[Property(type: 'date', required: false, format: 'Y-m-d H:i:s')]
     public ?Carbon $lastLoginAt;
 
-    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
-    public ?AddressDTO $address;
+    #[Property(type: 'nested', class: DemoAddressDTO::class, required: false)]
+    public ?DemoAddressDTO $address;
 
-    #[Property('CompanyDTO', dtoClass: CompanyDTO::class, required: false)]
-    public ?CompanyDTO $company;
+    // Company property removed to simplify demo
 
     protected function validate(array $data): void
     {
