@@ -170,16 +170,58 @@ The `Property` attribute allows you to define:
 - **`required`** : Whether the property is required (default: `true`)
 - **`default`** : Default value if not provided
 - **`validation`** : Additional Laravel validation rules
+- **`class`** : Target class for `enum`, `nested`, or `collection` types
+
+### 🎨 Two Syntax Styles Available
+
+Laravel Arc supports both **clean type-based syntax** (recommended) and **legacy syntax** for backward compatibility:
+
+#### ✨ **New Clean Syntax** (Recommended)
 
 ```php
-#[Property(
-    type: 'string',
-    required: false,
-    default: 'default_value',
-    validation: 'max:100|regex:/^[a-zA-Z]+$/'
-)]
-public string $property;
+// Basic types
+#[Property(type: 'string', required: true, validation: 'max:255')]
+public string $name;
+
+// Complex types - specify class only once
+#[Property(type: 'enum', class: UserStatus::class, required: true)]
+public UserStatus $status;
+
+#[Property(type: 'date', format: 'Y-m-d', timezone: 'UTC')]
+public ?Carbon $birthDate;
+
+#[Property(type: 'nested', class: AddressDTO::class, required: false)]
+public ?AddressDTO $address;
+
+#[Property(type: 'collection', class: UserDTO::class, required: false)]
+public array $members;
 ```
+
+#### 🔄 **Legacy Syntax** (Still Supported)
+
+```php
+// Legacy - type specified twice
+#[Property('UserStatus', enumClass: UserStatus::class)]
+public UserStatus $status;
+
+#[Property('Carbon', format: 'Y-m-d')]
+public ?Carbon $birthDate;
+
+#[Property('AddressDTO', dtoClass: AddressDTO::class)]
+public ?AddressDTO $address;
+
+#[Property('array<UserDTO>')]
+public array $members;
+```
+
+#### 🎯 **Benefits of Clean Syntax**
+
+- ✅ **No redundancy** - specify the class only once
+- ✅ **Clear intent** - explicit type keywords (`enum`, `date`, `nested`, `collection`)
+- ✅ **Consistent pattern** - same syntax for all complex types
+- ✅ **Better readability** - easier to understand at a glance
+- ✅ **IDE friendly** - better autocomplete and validation
+- ✅ **Future-proof** - aligned with modern PHP practices
 
 ## 🎨 Advanced Features
 
@@ -194,11 +236,16 @@ use Carbon\CarbonImmutable;
 
 class UserDTO extends LaravelArcDTO
 {
-    #[Property('Carbon', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    // New clean syntax (recommended)
+    #[Property(type: 'date', required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
     public ?Carbon $birthDate;
 
-    #[Property('CarbonImmutable', required: false, immutable: true)]
+    #[Property(type: 'date', required: false, immutable: true)]
     public ?CarbonImmutable $createdAt;
+    
+    // Legacy syntax (still supported)
+    // #[Property('Carbon', required: false, format: 'Y-m-d')]
+    // #[Property('CarbonImmutable', required: false, immutable: true)]
 }
 
 $user = new UserDTO([
@@ -224,20 +271,24 @@ use Grazulex\Arc\Attributes\Property;
 
 class AddressDTO extends LaravelArcDTO
 {
-    #[Property('string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $street;
     
-    #[Property('string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $city;
 }
 
 class UserDTO extends LaravelArcDTO
 {
-    #[Property('string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $name;
     
-    #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
+    // New clean syntax (recommended)
+    #[Property(type: 'nested', class: AddressDTO::class, required: false)]
     public ?AddressDTO $address;
+    
+    // Legacy syntax (still supported)
+    // #[Property('AddressDTO', dtoClass: AddressDTO::class, required: false)]
 }
 
 $user = new UserDTO([
@@ -277,14 +328,19 @@ enum UserRole
 
 class UserDTO extends LaravelArcDTO
 {
-    #[Property('string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $name;
 
-    #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
+    // New clean syntax (recommended)
+    #[Property(type: 'enum', class: UserStatus::class, required: true)]
     public UserStatus $status;
 
-    #[Property('UserRole', enumClass: UserRole::class, default: UserRole::USER)]
+    #[Property(type: 'enum', class: UserRole::class, default: UserRole::USER)]
     public UserRole $role;
+    
+    // Legacy syntax (still supported)
+    // #[Property('UserStatus', enumClass: UserStatus::class, required: true)]
+    // #[Property('UserRole', enumClass: UserRole::class, default: UserRole::USER)]
 }
 
 // Usage with automatic enum casting
@@ -310,11 +366,15 @@ Handle arrays of nested DTOs:
 ```php
 class TeamDTO extends LaravelArcDTO
 {
-    #[Property('string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $name;
     
-    #[Property('array<UserDTO>', required: false)]
+    // New clean syntax (recommended)
+    #[Property(type: 'collection', class: UserDTO::class, required: false)]
     public array $members;
+    
+    // Legacy syntax (still supported)
+    // #[Property('array<UserDTO>', required: false)]
 }
 
 $team = new TeamDTO([
