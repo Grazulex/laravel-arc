@@ -21,6 +21,7 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 - 🆕 **Nested DTOs and collections**
 - 🆕 **Advanced casting system**
 - 🆕 **Timezone support for dates**
+- 🆆 **DTO Factory/Builder Pattern**
 
 ## 📦 Installation
 
@@ -212,11 +213,70 @@ foreach ($team->members as $member) {
 }
 ```
 
+### 🏭 DTO Factory/Builder Pattern
+
+Generate test data and prototype DTOs with ease:
+
+```php
+// Quick fake data generation
+$user = UserDTO::fake();
+echo $user->name;  // "Lorem ipsum d3f2"
+echo $user->email; // "alice123@example.com"
+echo $user->age;   // 42
+
+// Multiple instances
+$users = UserDTO::fakeMany(5);
+
+// Mix manual and fake data
+$user = UserDTO::factory()
+    ->with('name', 'Fixed Name')
+    ->with('email', 'fixed@example.com')
+    ->fake() // Generate fake data for other fields
+    ->create();
+
+// Batch attributes
+$admin = UserDTO::factory()
+    ->withAttributes([
+        'name' => 'Admin User',
+        'email' => 'admin@example.com',
+        'role' => 'admin'
+    ])
+    ->fakeOnly(['age']) // Only generate fake age
+    ->create();
+
+// Override with specific values
+$testUser = UserDTO::fake(['role' => 'admin']);
+```
+
+#### Factory Features:
+
+- **🎲 Smart fake data generation** based on property types and validation rules
+- **📧 Realistic email generation** with random domains
+- **📅 Automatic date generation** with timezone support
+- **🏗️ Nested DTO creation** with automatic relationship building
+- **📊 Collection support** for arrays of DTOs
+- **🎯 Fluent builder API** for readable test data creation
+- **⚡ Fast prototyping** for demos and development
+
+#### Perfect for:
+
+- **Unit Testing**: Generate consistent test data
+- **Integration Testing**: Create complex object graphs
+- **Demo Data**: Populate applications with realistic data
+- **Prototyping**: Quickly build and test concepts
+- **Seeding**: Database seeding with structured data
+
 ## 🎨 Examples
 
 See the `src/Examples/` folder for complete usage examples including:
 - `AdvancedExampleDTO.php` - Complex nested structures with dates
-- `advanced_usage_example.php` - Practical usage demonstration
+- `ModernUserDTO.php` - Modern DTO implementation with advanced features
+- `UserDTO.php` - Basic user DTO example
+- `demo_advanced_features.php` - Practical demonstration of advanced features
+- `factory_example.php` - Comprehensive DTO Factory usage examples
+- `simple_example.php` - Basic DTO usage patterns
+- `team_example.php` - Team and member relationship examples
+- `usage_example.php` - General usage demonstration
 
 ## 🤝 Compatibility
 

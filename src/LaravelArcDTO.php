@@ -3,6 +3,7 @@
 namespace Grazulex\Arc;
 
 use Grazulex\Arc\Abstract\AbstractDTO;
+use Grazulex\Arc\Traits\DTOFactoryTrait;
 
 /**
  * Classe de base principale pour Laravel Arc DTOs.
@@ -27,10 +28,17 @@ use Grazulex\Arc\Abstract\AbstractDTO;
  * $user = new UserDTO(['name' => 'Jean-Marc', 'email' => 'test@example.com']);
  * echo $user->name; // Accès direct
  * $user->email = 'new@example.com'; // Assignment direct
+ *
+ * // Factory usage
+ * $fakeUser = UserDTO::fake(); // DTO avec données générées
+ * $users = UserDTO::fakeMany(5); // 5 DTOs avec données générées
+ * $customUser = UserDTO::factory()->with('name', 'Custom Name')->fake()->create();
  * ```
  */
 class LaravelArcDTO extends AbstractDTO
 {
+    use DTOFactoryTrait;
+    
     // Cette classe hérite de toute la logique d'AbstractDTO
     // mais offre un nom plus explicite pour les utilisateurs du package
 }
