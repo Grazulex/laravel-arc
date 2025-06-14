@@ -72,6 +72,9 @@ class UserAdvancedDTO extends LaravelArcDTO
     #[NestedProperty(dtoClass: CompanyDTO::class, required: false)]
     public ?CompanyDTO $company;
 
+    /**
+     * @var array<string>
+     */
     #[Property(type: 'array', required: false, default: [])]
     public array $permissions;
 
@@ -83,4 +86,3 @@ class UserAdvancedDTO extends LaravelArcDTO
         // Custom validation can be added here
     }
 }
-

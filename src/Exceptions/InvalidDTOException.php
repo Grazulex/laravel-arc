@@ -52,7 +52,7 @@ class InvalidDTOException extends InvalidArgumentException
     {
         $valueType = get_debug_type($value);
         $message = "Failed to cast value of type '{$valueType}' to '{$castType}': {$reason}";
-        
+
         return new self($message);
     }
 

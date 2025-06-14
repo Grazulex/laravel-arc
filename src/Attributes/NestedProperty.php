@@ -23,8 +23,7 @@ class NestedProperty extends Property
             default: $default,
             validation: $validation,
             cast: 'nested',
-            nested: $dtoClass
+            nested: $dtoClass,
         );
     }
 }
-

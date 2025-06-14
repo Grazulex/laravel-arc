@@ -53,7 +53,7 @@ trait DTOTrait
             if ($reflection->isInitialized($this)) {
                 return $this->{$name};
             }
-            
+
             // If property is not initialized, check if it's nullable
             $type = $reflection->getType();
             if ($type && $type->allowsNull()) {
@@ -221,7 +221,7 @@ trait DTOTrait
                 if (!$hasValue) {
                     $attribute = $propertyData['attribute'];
                     $reflection = $propertyData['property'];
-                    
+
                     if ($attribute?->default !== null) {
                         $value = $attribute->default;
                         $hasValue = true;
@@ -279,7 +279,7 @@ trait DTOTrait
                 if (empty($attributes)) {
                     $attributes = $property->getAttributes(NestedProperty::class);
                 }
-                
+
                 if (!empty($attributes)) {
                     $attribute = $attributes[0]->newInstance();
                     $properties[$property->getName()] = [

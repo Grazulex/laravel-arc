@@ -78,6 +78,9 @@ return (new PhpCsFixer\Config())
         
         // Don't make closures static in test files (Pest doesn't support it)
         'static_lambda' => false,
+        
+        // Allow class names different from file names in examples
+        'class_definition' => false,
     ])
     ->setFinder($finder)
     ->setRiskyAllowed(true);

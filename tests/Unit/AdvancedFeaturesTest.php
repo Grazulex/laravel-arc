@@ -55,6 +55,9 @@ class TestTeamDTO extends LaravelArcDTO
     #[Property(type: 'string', required: true)]
     public string $name;
 
+    /**
+     * @var array<TestUserWithDatesDTO>
+     */
     #[NestedProperty(dtoClass: TestUserWithDatesDTO::class, required: false, isCollection: true)]
     public array $members;
 

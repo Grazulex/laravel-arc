@@ -4,12 +4,18 @@ namespace Grazulex\Arc\Casting;
 
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use DateTimeZone;
+use Exception;
 use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Contracts\DTOInterface;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 use InvalidArgumentException;
+
+use function is_array;
+use function is_int;
+use function is_string;
 
 class CastManager
 {
@@ -30,6 +36,22 @@ class CastManager
     }
 
     /**
+     * Cast value for serialization (reverse casting).
+     */
+    public static function serialize(mixed $value, Property $attribute): mixed
+    {
+        if ($value === null) {
+            return null;
+        }
+
+        return match ($attribute->cast) {
+            'date' => self::serializeDate($value, $attribute),
+            'nested' => self::serializeNested($value, $attribute),
+            default => $value
+        };
+    }
+
+    /**
      * Cast value to Carbon date.
      */
     private static function castToDate(mixed $value, Property $attribute): Carbon|CarbonImmutable
@@ -41,9 +63,9 @@ class CastManager
         try {
             $dateFormat = $attribute->dateFormat ?? 'Y-m-d H:i:s';
             $timezone = null;
-            
+
             if ($attribute instanceof DateProperty && $attribute->timezone) {
-                $timezone = new \DateTimeZone($attribute->timezone);
+                $timezone = new DateTimeZone($attribute->timezone);
             }
 
             // Try to parse the date
@@ -73,15 +95,17 @@ class CastManager
             }
 
             return $date;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw InvalidDTOException::forCastingError('date', $value, $e->getMessage());
         }
     }
 
     /**
      * Cast value to nested DTO.
+     *
+     * @return array<DTOInterface>|DTOInterface
      */
-    private static function castToNested(mixed $value, Property $attribute): DTOInterface|array
+    private static function castToNested(mixed $value, Property $attribute): array|DTOInterface
     {
         if (!$attribute->nested) {
             throw new InvalidArgumentException('Nested class not specified');
@@ -108,6 +132,7 @@ class CastManager
                     if ($item instanceof $dtoClass) {
                         return $item;
                     }
+
                     return new $dtoClass(is_array($item) ? $item : []);
                 }, $value);
             }
@@ -122,25 +147,9 @@ class CastManager
             }
 
             throw new InvalidArgumentException('Value must be an array or instance of ' . $dtoClass);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw InvalidDTOException::forCastingError('nested', $value, $e->getMessage());
         }
-    }
-
-    /**
-     * Cast value for serialization (reverse casting).
-     */
-    public static function serialize(mixed $value, Property $attribute): mixed
-    {
-        if ($value === null) {
-            return null;
-        }
-
-        return match ($attribute->cast) {
-            'date' => self::serializeDate($value, $attribute),
-            'nested' => self::serializeNested($value, $attribute),
-            default => $value
-        };
     }
 
     /**
@@ -150,6 +159,7 @@ class CastManager
     {
         if ($value instanceof Carbon || $value instanceof CarbonImmutable) {
             $format = $attribute->dateFormat ?? 'Y-m-d H:i:s';
+
             return $value->format($format);
         }
 
@@ -158,6 +168,8 @@ class CastManager
 
     /**
      * Serialize nested DTO to array.
+     *
+     * @return array<string, mixed>
      */
     private static function serializeNested(mixed $value, Property $attribute): array
     {
@@ -170,6 +182,7 @@ class CastManager
                 if ($item instanceof DTOInterface) {
                     return $item->toArray();
                 }
+
                 return $item;
             }, $value);
         }
@@ -181,4 +194,3 @@ class CastManager
         return is_array($value) ? $value : [];
     }
 }
-

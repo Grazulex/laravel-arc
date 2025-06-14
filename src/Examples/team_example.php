@@ -9,7 +9,9 @@ namespace Grazulex\Arc\Examples;
 require_once '../../vendor/autoload.php';
 
 use Carbon\Carbon;
-use Carbon\CarbonImmutable;
+use Grazulex\Arc\Attributes\NestedProperty;
+use Grazulex\Arc\Attributes\Property;
+use Grazulex\Arc\LaravelArcDTO;
 
 echo "=== Laravel Arc Advanced Features Example ===\n\n";
 
@@ -24,7 +26,7 @@ $userData = [
         'street' => '123 Rue Example',
         'city' => 'Brussels',
         'postalCode' => '1000',
-        'country' => 'Belgium'
+        'country' => 'Belgium',
     ],
     'company' => [
         'name' => 'Tech Solutions Inc.',
@@ -33,11 +35,11 @@ $userData = [
             'street' => '456 Business Ave',
             'city' => 'Brussels',
             'postalCode' => '1050',
-            'country' => 'Belgium'
-        ]
+            'country' => 'Belgium',
+        ],
     ],
     'permissions' => ['read', 'write', 'admin'],
-    'isActive' => true
+    'isActive' => true,
 ];
 
 $user = new UserAdvancedDTO($userData);
@@ -45,13 +47,13 @@ $user = new UserAdvancedDTO($userData);
 echo "User created with automatic date parsing and nested DTOs:\n";
 echo "- Name: {$user->name}\n";
 echo "- Email: {$user->email}\n";
-echo "- Birth Date: " . ($user->birthDate ? $user->birthDate->format('d/m/Y') : 'N/A') . "\n";
-echo "- Created At: " . ($user->createdAt ? $user->createdAt->toDateTimeString() : 'N/A') . "\n";
-echo "- Last Login: " . ($user->lastLoginAt ? $user->lastLoginAt->toDateTimeString() : 'N/A') . "\n";
+echo '- Birth Date: ' . ($user->birthDate ? $user->birthDate->format('d/m/Y') : 'N/A') . "\n";
+echo '- Created At: ' . ($user->createdAt ? $user->createdAt->toDateTimeString() : 'N/A') . "\n";
+echo '- Last Login: ' . ($user->lastLoginAt ? $user->lastLoginAt->toDateTimeString() : 'N/A') . "\n";
 echo "- Address: {$user->address->street}, {$user->address->city}\n";
 echo "- Company: {$user->company->name}\n";
-echo "- Permissions: " . implode(', ', $user->permissions) . "\n";
-echo "- Active: " . ($user->isActive ? 'Yes' : 'No') . "\n\n";
+echo '- Permissions: ' . implode(', ', $user->permissions) . "\n";
+echo '- Active: ' . ($user->isActive ? 'Yes' : 'No') . "\n\n";
 
 // 2. Direct property access and modification
 echo "Direct property manipulation:\n";
@@ -77,15 +79,15 @@ echo $user->toJson() . "\n\n";
 echo "=== Collections Example ===\n\n";
 
 // Create a DTO that handles collections
-class TeamDTO extends \Grazulex\Arc\LaravelArcDTO
+class team_example extends LaravelArcDTO
 {
-    use \Grazulex\Arc\Attributes\Property;
-    use \Grazulex\Arc\Attributes\NestedProperty;
-
-    #[\Grazulex\Arc\Attributes\Property(type: 'string', required: true)]
+    #[Property(type: 'string', required: true)]
     public string $name;
 
-    #[\Grazulex\Arc\Attributes\NestedProperty(dtoClass: UserAdvancedDTO::class, required: false, isCollection: true)]
+    /**
+     * @var array<UserAdvancedDTO>
+     */
+    #[NestedProperty(dtoClass: UserAdvancedDTO::class, required: false, isCollection: true)]
     public array $members;
 
     protected function validate(array $data): void
@@ -101,18 +103,18 @@ $teamData = [
             'name' => 'Alice Dupont',
             'email' => 'alice@example.com',
             'birthDate' => '1988-03-10',
-            'permissions' => ['read', 'write']
+            'permissions' => ['read', 'write'],
         ],
         [
             'name' => 'Bob Martin',
             'email' => 'bob@example.com',
             'birthDate' => '1985-12-25',
-            'permissions' => ['read', 'write', 'admin']
-        ]
-    ]
+            'permissions' => ['read', 'write', 'admin'],
+        ],
+    ],
 ];
 
-$team = new TeamDTO($teamData);
+$team = new team_example($teamData);
 
 echo "Team: {$team->name}\n";
 echo "Members:\n";
@@ -125,4 +127,3 @@ foreach ($team->members as $member) {
 
 echo "\nTeam serialized to array:\n";
 print_r($team->toArray());
-

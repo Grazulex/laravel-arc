@@ -122,7 +122,7 @@ abstract class AbstractDTO implements DTOInterface
             if (!$this->has($name)) {
                 $attribute = $propertyData['attribute'];
                 $property = $propertyData['property'];
-                
+
                 if ($attribute->default !== null) {
                     // Set both the class property and attributes array
                     if (property_exists($this, $name)) {

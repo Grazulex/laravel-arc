@@ -47,8 +47,8 @@
         "test-unit": "pest tests/Unit",
         "test-feature": "pest tests/Feature",
         "analyse": "phpstan analyse",
-        "format": "php-cs-fixer fix",
-        "format-check": "php-cs-fixer fix --dry-run --diff",
+        "format": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix",
+        "format-check": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix --dry-run --diff",
         "quality": [
             "@format-check",
             "@analyse",
