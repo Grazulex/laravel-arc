@@ -9,6 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.2.1] - 2025-06-14
+
+### 🐛 Bug Fixes
+
+#### 🔧 Database Connection Handling
+- **Fixed database connection error**: Resolved `Call to a member function connection() on null` error when no database is configured
+- **Enhanced relation analysis**: Added database connection check before invoking relation methods
+- **Improved error handling**: Better fallback when database connection is unavailable during DTO generation
+- **Safer method analysis**: Uses reflection-based analysis as primary method, database invocation as fallback
+
+### 📖 Changes
+- fix: prevent database connection errors in relation analysis
+- improve: add database connection validation before method invocation
+- enhance: fallback to reflection-based relation detection
+
+### 🔄 Migration from v2.2.0
+
+No breaking changes in this release. This is a patch version update that fixes database connection issues.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. The `--with-relations` flag now works correctly even without database connection
+
 ## [2.2.0] - 2025-06-14
 
 ### 🐛 Bug Fixes

@@ -625,33 +625,53 @@ PHP;
                 return null;
             }
 
-            // Try to execute the method to see if it returns a relation
-            $result = $method->invoke($model);
-
-            // Check if result is an object (relations should return objects)
-            if (!is_object($result)) {
-                return null;
+            // Use reflection to analyze method return type instead of invoking it
+            $returnType = $method->getReturnType();
+            if ($returnType && $returnType instanceof \ReflectionNamedType) {
+                $returnTypeName = $returnType->getName();
+                if ($this->isEloquentRelation($returnTypeName)) {
+                    $relationType = $this->getRelationType($returnTypeName);
+                    // For now, we'll use a generic approach since we can't invoke the method safely
+                    $methodName = $method->getName();
+                    $relatedModelClass = $this->guessRelatedModelFromMethodName($methodName);
+                    
+                    if ($relationType && $relatedModelClass) {
+                        return $this->buildRelationConfig($relationType, $relatedModelClass);
+                    }
+                }
             }
 
-            $resultClass = get_class($result);
+            // Fallback: Try to invoke method only if we have a database connection
+            if ($this->hasDatabaseConnection()) {
+                $result = $method->invoke($model);
 
-            // Check if it's an Eloquent relation
-            if (!$this->isEloquentRelation($resultClass)) {
-                return null;
+                // Check if result is an object (relations should return objects)
+                if (!is_object($result)) {
+                    return null;
+                }
+
+                $resultClass = get_class($result);
+
+                // Check if it's an Eloquent relation
+                if (!$this->isEloquentRelation($resultClass)) {
+                    return null;
+                }
+
+                // Extract relation information
+                $relationType = $this->getRelationType($resultClass);
+                $relatedModel = $this->getRelatedModelClass($result);
+
+                if (!$relationType || !$relatedModel) {
+                    return null;
+                }
+
+                // Determine DTO configuration based on relation type
+                return $this->buildRelationConfig($relationType, $relatedModel);
             }
 
-            // Extract relation information
-            $relationType = $this->getRelationType($resultClass);
-            $relatedModel = $this->getRelatedModelClass($result);
-
-            if (!$relationType || !$relatedModel) {
-                return null;
-            }
-
-            // Determine DTO configuration based on relation type
-            return $this->buildRelationConfig($relationType, $relatedModel);
+            return null;
         } catch (Exception $e) {
-            // Method execution failed, probably not a relation
+            // Method execution failed, probably not a relation or no DB connection
             return null;
         }
     }
@@ -918,5 +938,49 @@ PHP;
         }
 
         return $rules;
+    }
+
+    /**
+     * Check if we have a database connection available.
+     */
+    private function hasDatabaseConnection(): bool
+    {
+        try {
+            if (!class_exists('\Illuminate\Support\Facades\DB')) {
+                return false;
+            }
+
+            // Try to get the default connection
+            DB::connection()->getPdo();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Guess related model class from method name.
+     */
+    private function guessRelatedModelFromMethodName(string $methodName): string
+    {
+        // Convert method name to potential model name
+        // e.g., 'posts' -> 'Post', 'comments' -> 'Comment', 'author' -> 'Author'
+        $modelName = Str::studly(Str::singular($methodName));
+        
+        // Try different namespaces
+        $possibleClasses = [
+            "App\\Models\\{$modelName}",
+            "App\\{$modelName}",
+            $modelName,
+        ];
+
+        foreach ($possibleClasses as $class) {
+            if (class_exists($class)) {
+                return $class;
+            }
+        }
+
+        // Return a generic class name that can be adjusted later
+        return "App\\Models\\{$modelName}";
     }
 }
