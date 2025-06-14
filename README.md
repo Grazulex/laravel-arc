@@ -193,6 +193,56 @@ echo $user->address->street; // 123 Main St
 $user->address->city = 'Antwerp';
 ```
 
+### PHP Enums Support (NEW)
+
+Laravel Arc now supports PHP 8.1+ enums with automatic casting:
+
+```php
+use Grazulex\Arc\Attributes\EnumProperty;
+
+// Define your enums
+enum UserStatus: string
+{
+    case ACTIVE = 'active';
+    case INACTIVE = 'inactive';
+    case PENDING = 'pending';
+}
+
+enum UserRole
+{
+    case ADMIN;
+    case USER;
+    case MODERATOR;
+}
+
+class UserDTO extends LaravelArcDTO
+{
+    #[Property(type: 'string', required: true)]
+    public string $name;
+
+    #[EnumProperty(enumClass: UserStatus::class, required: true)]
+    public UserStatus $status;
+
+    #[EnumProperty(enumClass: UserRole::class, default: UserRole::USER)]
+    public UserRole $role;
+}
+
+// Usage with automatic enum casting
+$user = new UserDTO([
+    'name' => 'John Doe',
+    'status' => 'active',      // Automatically converted to UserStatus::ACTIVE
+    'role' => 'ADMIN'          // Automatically converted to UserRole::ADMIN
+]);
+
+// Direct access to enum instances
+echo $user->status->value;     // 'active' (BackedEnum)
+echo $user->role->name;        // 'ADMIN' (UnitEnum)
+
+// Serialization back to original values
+$array = $user->toArray();
+// Result: ['name' => 'John Doe', 'status' => 'active', 'role' => 'ADMIN']
+```
+
 ### Collections of DTOs
 
 Handle arrays of nested DTOs:

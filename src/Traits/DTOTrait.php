@@ -9,6 +9,7 @@ use BadMethodCallException;
 use function count;
 
 use Grazulex\Arc\Attributes\DateProperty;
+use Grazulex\Arc\Attributes\EnumProperty;
 use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
@@ -271,13 +272,16 @@ trait DTOTrait
             $properties = [];
 
             foreach ($reflection->getProperties() as $property) {
-                // Check for Property, DateProperty, or NestedProperty attributes
+                // Check for Property, DateProperty, NestedProperty, or EnumProperty attributes
                 $attributes = $property->getAttributes(Property::class);
                 if (empty($attributes)) {
                     $attributes = $property->getAttributes(DateProperty::class);
                 }
                 if (empty($attributes)) {
                     $attributes = $property->getAttributes(NestedProperty::class);
+                }
+                if (empty($attributes)) {
+                    $attributes = $property->getAttributes(EnumProperty::class);
                 }
 
                 if (!empty($attributes)) {
@@ -311,6 +315,7 @@ trait DTOTrait
             'bool', 'boolean' => is_bool($value),
             'array' => is_array($value),
             'object' => is_object($value),
+            'enum' => is_object($value), // Enums are objects in PHP
             default => true // Pour les types custom ou mixed
         };
     }

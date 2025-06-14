@@ -2,6 +2,7 @@
 
 namespace Grazulex\Arc\Casting;
 
+use BackedEnum;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use DateTimeZone;
@@ -17,6 +18,8 @@ use function is_array;
 use function is_int;
 use function is_string;
 
+use UnitEnum;
+
 class CastManager
 {
     /**
@@ -31,6 +34,7 @@ class CastManager
         return match ($attribute->cast) {
             'date' => self::castToDate($value, $attribute),
             'nested' => self::castToNested($value, $attribute),
+            'enum' => self::castToEnum($value, $attribute),
             default => $value
         };
     }
@@ -47,6 +51,7 @@ class CastManager
         return match ($attribute->cast) {
             'date' => self::serializeDate($value, $attribute),
             'nested' => self::serializeNested($value, $attribute),
+            'enum' => self::serializeEnum($value, $attribute),
             default => $value
         };
     }
@@ -192,5 +197,64 @@ class CastManager
         }
 
         return is_array($value) ? $value : [];
+    }
+
+    /**
+     * Cast value to PHP enum.
+     */
+    private static function castToEnum(mixed $value, Property $attribute): BackedEnum|UnitEnum
+    {
+        if (!$attribute->nested) {
+            throw new InvalidArgumentException('Enum class not specified');
+        }
+
+        $enumClass = $attribute->nested;
+
+        if (!enum_exists($enumClass)) {
+            throw InvalidDTOException::forCastingError('enum', $value, "Enum {$enumClass} does not exist");
+        }
+
+        // If already the correct enum instance
+        if ($value instanceof $enumClass) {
+            return $value;
+        }
+
+        try {
+            // Check if it's a BackedEnum (has values)
+            if (is_subclass_of($enumClass, BackedEnum::class)) {
+                // Try to get enum from value
+                return $enumClass::from($value);
+            }
+
+            // It's a UnitEnum (no values)
+            if (is_string($value)) {
+                // Try to get enum from name
+                foreach ($enumClass::cases() as $case) {
+                    if ($case->name === $value) {
+                        return $case;
+                    }
+                }
+            }
+
+            throw new InvalidArgumentException("Cannot convert value to enum {$enumClass}");
+        } catch (Exception $e) {
+            throw InvalidDTOException::forCastingError('enum', $value, $e->getMessage());
+        }
+    }
+
+    /**
+     * Serialize enum to its value or name.
+     */
+    private static function serializeEnum(mixed $value, Property $attribute): int|string
+    {
+        if ($value instanceof BackedEnum) {
+            return $value->value;
+        }
+
+        if ($value instanceof UnitEnum) {
+            return $value->name;
+        }
+
+        return (string) $value;
     }
 }
