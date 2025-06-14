@@ -4,18 +4,30 @@
 
 ## 🎉 What's New in v2.1.0
 
-This release builds upon the solid foundation of v2.0.0 with enhanced documentation and additional comprehensive features.
+This release introduces several powerful new features, tools, and enhancements:
 
-## ✨ New Features & Enhancements
+### ✨ New Features & Enhancements
 
-### 📚 Enhanced Documentation
-- **Comprehensive Feature Documentation**: Added detailed documentation for all v2.0 advanced features
-- **GitHub Release Integration**: Complete GitHub release notes for better version tracking
-- **Usage Examples**: Enhanced examples and use cases for better developer experience
+#### 🔄 Transformation Pipeline System
+- **Pre-processing pipeline**: Apply transformations before casting
+- **Built-in transformers**: TrimTransformer, LowercaseTransformer, UppercaseTransformer, HashTransformer
+- **Extensible system**: Implement `TransformerInterface` for custom transformers
 
-### 🔧 Advanced Features Integration
-- **Complete Feature Set**: All v2.0 advanced features are now fully documented and integrated
-- **Developer Experience**: Improved developer experience with comprehensive guides
+#### 🔍 Auto-Discovery Relations
+- **Eloquent relation detection**: Automatically detect model relations
+- **Smart relation mapping**: HasMany → collection, BelongsTo/HasOne → nested
+
+#### 🛡️ Smart Validation Rules Generation
+- **Intelligent rule detection**: Based on field names, types, and patterns
+- **20+ built-in patterns**: Comprehensive validation rule library
+
+#### 🔧 Debug & Analysis Tools
+- **dto:analyze command**: Detailed DTO structure analysis
+- **dto:validate command**: Data validation testing against DTOs
+
+## 📚 Enhanced Documentation
+- Complete documentation for all v2.0+ features
+- Detailed examples and use cases
 
 ## 📖 Changes Since v2.0.0
 
@@ -24,12 +36,11 @@ This release builds upon the solid foundation of v2.0.0 with enhanced documentat
 
 ## 🔄 Migration from v2.0.0
 
-No breaking changes in this release. This is a minor version update that enhances documentation and provides better integration of existing features.
+No breaking changes in this release. This update adds new features with full backward compatibility.
 
 ### Simple Update Steps:
 1. Update your composer dependency: `composer update grazulex/laravel-arc`
-2. No configuration changes required
-3. Review the enhanced documentation for better feature utilization
+2. Explore new features like transformation pipelines and validation tools.
 
 ## 📋 Requirements
 

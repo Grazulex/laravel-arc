@@ -27,7 +27,7 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 - [🎭 Advanced Features](#advanced-features)
   - [Date Properties with Carbon](#date-properties-with-carbon)
   - [Nested DTOs](#nested-dtos)
-  - [PHP Enums Support (NEW)](#php-enums-support-new)
+  - [PHP Enums Support](#php-enums-support)
   - [Collections of DTOs](#collections-of-dtos)
   - [DTO Factory/Builder Pattern](#dto-factorybuilder-pattern)
 - [🎫 Examples](#examples)
@@ -285,7 +285,7 @@ echo $user->address->street; // 123 Main St
 $user->address->city = 'Antwerp';
 ```
 
-### PHP Enums Support (NEW)
+### PHP Enums Support
 
 Laravel Arc now supports PHP 8.1+ enums with automatic casting:
 

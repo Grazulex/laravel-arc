@@ -13,27 +13,64 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### ✨ New Features & Enhancements
 
+#### 🔄 Transformation Pipeline System
+- **Pre-processing pipeline**: Apply transformations before casting with new transformation system
+- **Built-in transformers**: TrimTransformer, LowercaseTransformer, UppercaseTransformer, HashTransformer
+- **Extensible system**: Implement `TransformerInterface` for custom transformers
+- **Chained transformations**: Apply multiple transformations in sequence
+- **Example**: `#[Property(type: 'string', transform: [TrimTransformer::class, LowercaseTransformer::class])]`
+
+#### 🔍 Auto-Discovery Relations
+- **Eloquent relation detection**: Automatically detect model relations using reflection
+- **Smart relation mapping**: HasMany → collection, BelongsTo/HasOne → nested
+- **Command integration**: `--with-relations` and `--relations=specific` flags
+- **Intelligent analysis**: Skips getters, setters, and Laravel magic methods
+- **Safe execution**: Graceful error handling for broken relations
+
+#### 🛡️ Smart Validation Rules Generation
+- **Intelligent rule detection**: Based on field names, types, and patterns
+- **Pattern recognition**: email, password, phone, age, country_code, etc.
+- **Strict mode**: `--validation-strict` for enhanced security rules
+- **20+ built-in patterns**: Comprehensive validation rule library
+- **Examples**: 
+  - `email` → `required|email|max:254`
+  - `password` → `required|min:8|regex:/strong_password/`
+  - `age` → `required|integer|min:0|max:150`
+
+#### 🔧 Debug & Analysis Tools
+- **dto:analyze command**: Comprehensive DTO structure analysis
+- **dto:validate command**: Test data validation against DTOs
+- **JSON output support**: Machine-readable analysis results
+- **Interactive validation**: Real-time data testing
+- **Statistics dashboard**: Properties, validation, transformations metrics
+- **Visual output**: Tables and emojis for better readability
+
 #### 📚 Enhanced Documentation
-- **Comprehensive Feature Documentation**: Added detailed documentation for all v2.0 advanced features
+- **Comprehensive Feature Documentation**: Added detailed documentation for all v2.0+ features
 - **GitHub Release Integration**: Complete GitHub release notes for better version tracking
 - **Usage Examples**: Enhanced examples and use cases for better developer experience
-
-#### 🔧 Advanced Features Integration
-- **Complete Feature Set**: All v2.0 advanced features are now fully documented and integrated
-- **Developer Experience**: Improved developer experience with comprehensive guides
+- **Advanced Features Guide**: Complete guide for transformation pipeline, auto-discovery, and debug tools
 
 ### 📖 Changes
 - docs: add comprehensive GitHub release notes for v2.0.0
 - feat: add comprehensive v2.0 advanced features and update documentation
+- feat: add transformation pipeline system with built-in transformers
+- feat: add auto-discovery relations for Eloquent models
+- feat: add smart validation rules generation with pattern recognition
+- feat: add debug and analysis tools (dto:analyze, dto:validate)
 
 ### 🔄 Migration from v2.0.0
 
-No breaking changes in this release. This is a minor version update that enhances documentation and provides better integration of existing features.
+No breaking changes in this release. This is a minor version update that adds powerful new features while maintaining full backward compatibility.
 
 **Simple Update Steps:**
 1. Update your composer dependency: `composer update grazulex/laravel-arc`
 2. No configuration changes required
-3. Review the enhanced documentation for better feature utilization
+3. Explore new features:
+   - Use transformation pipeline: `#[Property(transform: [TrimTransformer::class])]`
+   - Generate DTOs with relations: `php artisan make:dto User --model=User --with-relations`
+   - Analyze your DTOs: `php artisan dto:analyze UserDTO`
+   - Validate data: `php artisan dto:validate UserDTO --data='{...}'`
 
 ## [2.0.0] - 2025-06-14
 
