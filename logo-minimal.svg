@@ -1,0 +1,26 @@
+<svg width="200" height="60" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="mainGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#FF2D20;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#3B82F6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF2D20;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Main Arc shape -->
+  <path d="M 10 45 Q 30 15 50 45" stroke="url(#mainGradient)" stroke-width="3" fill="none" stroke-linecap="round"/>
+  
+  <!-- Data transfer dots -->
+  <circle cx="15" cy="42" r="2" fill="#FF2D20" opacity="0.8"/>
+  <circle cx="30" cy="25" r="2" fill="#3B82F6" opacity="0.8"/>
+  <circle cx="45" cy="42" r="2" fill="#FF2D20" opacity="0.8"/>
+  
+  <!-- DTO Box -->
+  <rect x="25" y="20" width="10" height="10" rx="2" fill="#1E40AF" opacity="0.2" stroke="#1E40AF" stroke-width="1"/>
+  
+  <!-- Text -->
+  <text x="70" y="25" font-family="Arial, sans-serif" font-size="18" font-weight="300" fill="#374151">Laravel</text>
+  <text x="70" y="45" font-family="Arial, sans-serif" font-size="24" font-weight="700" fill="#FF2D20">ARC</text>
+  <text x="125" y="45" font-family="Arial, sans-serif" font-size="12" font-weight="400" fill="#6B7280">Data Transfer Objects</text>
+</svg>
+

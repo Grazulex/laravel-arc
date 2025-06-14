@@ -1,0 +1,41 @@
+<svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FF2D20;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="dataGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#1E40AF;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="60" cy="60" r="55" fill="none" stroke="#F1F5F9" stroke-width="2"/>
+  
+  <!-- Main Arc -->
+  <path d="M 20 60 Q 60 20 100 60" stroke="url(#arcGradient)" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Data flow lines -->
+  <line x1="25" y1="55" x2="40" y2="45" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="30" y1="60" x2="50" y2="50" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="35" y1="65" x2="60" y2="55" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  
+  <line x1="85" y1="65" x2="95" y2="55" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="80" y1="60" x2="90" y2="50" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  <line x1="75" y1="55" x2="85" y2="45" stroke="url(#dataGradient)" stroke-width="2" stroke-linecap="round"/>
+  
+  <!-- Data points/nodes -->
+  <circle cx="25" cy="60" r="3" fill="#FF2D20"/>
+  <circle cx="60" cy="35" r="3" fill="#3B82F6"/>
+  <circle cx="95" cy="60" r="3" fill="#FF2D20"/>
+  
+  <!-- Center DTO symbol -->
+  <rect x="54" y="54" width="12" height="12" rx="2" fill="#1E40AF" opacity="0.8"/>
+  <text x="60" y="63" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" font-weight="bold" fill="white">D</text>
+  
+  <!-- Laravel Arc text -->
+  <text x="60" y="85" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" font-weight="bold" fill="#374151">Laravel</text>
+  <text x="60" y="98" text-anchor="middle" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#FF2D20">ARC</text>
+</svg>
+
