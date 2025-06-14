@@ -5,6 +5,38 @@ All notable changes to `laravel-arc` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.1.0] - 2025-06-14
+
+### Added
+- **📚 Comprehensive Code Quality Documentation**: Complete section in README covering all development tools
+- **🛠️ Enhanced Developer Experience**: Detailed documentation for `composer analyse`, `format`, `format-check`, and `quality` commands
+- **⚡ Quality Assurance Workflow**: Step-by-step development workflow for contributors
+- **🎯 Code Standards Documentation**: PSR-12 and PHPStan Level 6 standards explained
+
+### Enhanced
+- **🔧 PHP CS Fixer Configuration**: Added PHP_CS_FIXER_IGNORE_ENV support for PHP 8.4 compatibility
+- **📝 Type Annotations**: Comprehensive PHPDoc type annotations for better IDE support
+- **🧪 Code Quality**: Zero PHPStan Level 6 errors across entire codebase
+- **🎨 Code Formatting**: All code properly formatted according to PSR-12 standards
+
+### Fixed
+- **🐛 PHPStan Type Issues**: Resolved missing array type specifications
+- **🔍 Static Analysis**: Fixed all type-related warnings in CastManager and examples
+- **⚙️ PHP 8.4 Compatibility**: Updated scripts to handle PHP CS Fixer version constraints
+- **📁 File Organization**: Renamed example files for better PSR compliance
+
+### Developer Tools
+- **composer analyse**: PHPStan Level 6 static analysis
+- **composer format**: Automatic code formatting with PHP CS Fixer
+- **composer format-check**: Format verification without modifications
+- **composer quality**: Complete quality suite (format + analysis + tests)
+
+### Documentation
+- **Code Quality & Development Tools**: New comprehensive section in README
+- **Development Workflow**: Best practices for contributors
+- **Quality Standards**: Detailed explanation of code quality requirements
+- **Tool Usage**: Complete documentation for all composer scripts
+
 ## [2.0.0] - 2025-06-14
 
 ### Added
