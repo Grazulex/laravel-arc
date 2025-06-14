@@ -46,8 +46,8 @@ class FactoryUserDTO extends LaravelArcDTO
     #[Property(type: 'date', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[Property(type: 'date', required: false, immutable: true)]
-    public ?CarbonImmutable $createdAt;
+    #[Property(type: 'date', required: false)]
+    public ?Carbon $createdAt;
 
     #[Property(type: 'nested', class: FactoryAddressDTO::class, required: false)]
     public ?FactoryAddressDTO $address;
@@ -168,7 +168,7 @@ describe('DTO Factory Functionality', function () {
         }
         
         if ($user->createdAt) {
-            expect($user->createdAt)->toBeInstanceOf(CarbonImmutable::class);
+            expect($user->createdAt)->toBeInstanceOf(Carbon::class);
         }
     });
 

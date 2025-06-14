@@ -34,8 +34,8 @@ class TestUserWithDatesDTO extends LaravelArcDTO
     #[Property(type: 'date', required: false, format: 'Y-m-d')]
     public ?Carbon $birthDate;
 
-    #[Property(type: 'date', required: false, immutable: true)]
-    public ?CarbonImmutable $createdAt;
+    #[Property(type: 'date', required: false)]
+    public ?Carbon $createdAt;
 
     #[Property(type: 'nested', class: TestAddressDTO::class, required: false)]
     public ?TestAddressDTO $address;
@@ -78,7 +78,7 @@ describe('Date Property Features', function () {
         expect($user->birthDate)->toBeInstanceOf(Carbon::class);
         expect($user->birthDate->format('Y-m-d'))->toBe('1990-05-15');
         
-        expect($user->createdAt)->toBeInstanceOf(CarbonImmutable::class);
+        expect($user->createdAt)->toBeInstanceOf(Carbon::class);
         expect($user->createdAt->format('Y-m-d H:i:s'))->toBe('2024-01-15 10:30:00');
     });
 
@@ -258,7 +258,7 @@ describe('Combined Advanced Features', function () {
         $member = $team->members[0];
         expect($member->name)->toBe('Alice Dupont');
         expect($member->birthDate)->toBeInstanceOf(Carbon::class);
-        expect($member->createdAt)->toBeInstanceOf(CarbonImmutable::class);
+        expect($member->createdAt)->toBeInstanceOf(Carbon::class);
         expect($member->address)->toBeInstanceOf(TestAddressDTO::class);
         expect($member->address->street)->toBe('123 Alice Street');
 

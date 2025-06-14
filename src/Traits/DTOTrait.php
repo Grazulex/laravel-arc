@@ -5,12 +5,10 @@ namespace Grazulex\Arc\Traits;
 use function array_key_exists;
 
 use BadMethodCallException;
+use Carbon\Carbon;
 
 use function count;
 
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\EnumProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
@@ -22,7 +20,6 @@ use function is_int;
 use function is_object;
 use function is_string;
 
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -156,14 +153,20 @@ trait DTOTrait
                 $value = CastManager::cast($value, $attribute);
             }
 
-            // Type checking
+            // Type checking - allow compatible types for dates
             if ($attribute && !$this->isValidType($value, $attribute->type, $reflectionProperty)) {
                 throw InvalidDTOException::forTypeError($key, $attribute->type, $value);
             }
 
-            // Set the actual class property if it exists
+            // Set the actual class property if it exists - handle different Carbon types
             if (property_exists($this, $key)) {
-                $this->{$key} = $value;
+                $propertyType = $reflectionProperty->getType();
+                if ($propertyType && $propertyType->getName() === 'Carbon\CarbonImmutable' && $value instanceof Carbon) {
+                    // Convert Carbon to CarbonImmutable if property expects it
+                    $this->{$key} = $value->toImmutable();
+                } else {
+                    $this->{$key} = $value;
+                }
             }
         }
 
@@ -273,8 +276,8 @@ trait DTOTrait
             $properties = [];
 
             foreach ($reflection->getProperties() as $property) {
-                // Check for any Property-based attributes (Property, DateProperty, NestedProperty, EnumProperty)
-                $propertyAttributes = $property->getAttributes(Property::class, ReflectionAttribute::IS_INSTANCEOF);
+                // Check for Property attributes only
+                $propertyAttributes = $property->getAttributes(Property::class);
 
                 if (!empty($propertyAttributes)) {
                     $attribute = $propertyAttributes[0]->newInstance();

@@ -8,9 +8,6 @@ use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\BaseCaster;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 use InvalidArgumentException;
-
-use function is_string;
-
 use UnitEnum;
 
 /**
@@ -35,66 +32,51 @@ class EnumCaster extends BaseCaster
             throw InvalidDTOException::forCastingError('enum', $value, "Enum {$enumClass} does not exist");
         }
 
-        // If already the correct enum instance
-        if ($value instanceof $enumClass) {
-            return $value;
-        }
-
         try {
-            // Check if it's a BackedEnum (has values)
-            if (is_subclass_of($enumClass, BackedEnum::class)) {
-                return $this->castToBackedEnum($value, $enumClass);
+            // If value is already an instance of the enum, return it
+            if ($value instanceof $enumClass) {
+                return $value;
             }
 
-            // It's a UnitEnum (no values)
-            return $this->castToUnitEnum($value, $enumClass);
+            // Handle BackedEnum (enums with values)
+            if (is_subclass_of($enumClass, BackedEnum::class)) {
+                return $enumClass::from($value);
+            }
+
+            // Handle UnitEnum (pure enums without values)
+            // Since we already checked for BackedEnum, this must be UnitEnum
+            // Try direct name match first
+            foreach ($enumClass::cases() as $case) {
+                if ($case->name === $value) {
+                    return $case;
+                }
+            }
+
+            // Try case-insensitive match
+            foreach ($enumClass::cases() as $case) {
+                if (strtoupper($case->name) === strtoupper($value)) {
+                    return $case;
+                }
+            }
+
+            throw new InvalidArgumentException("Unknown enum case: {$value} for enum {$enumClass}");
         } catch (Exception $e) {
             throw InvalidDTOException::forCastingError('enum', $value, $e->getMessage());
         }
     }
 
-    protected function performSerialization(mixed $value, Property $attribute): int|string
+    protected function performSerialization(mixed $value, Property $attribute): string
     {
         if ($value instanceof BackedEnum) {
-            return $value->value;
+            // BackedEnum serializes to its value
+            return (string) $value->value;
         }
 
         if ($value instanceof UnitEnum) {
+            // UnitEnum serializes to its name
             return $value->name;
         }
 
         return (string) $value;
-    }
-
-    /**
-     * Cast value to a BackedEnum.
-     *
-     * @param class-string<BackedEnum> $enumClass
-     */
-    private function castToBackedEnum(mixed $value, string $enumClass): BackedEnum
-    {
-        // Try to get enum from value
-        return $enumClass::from($value);
-    }
-
-    /**
-     * Cast value to a UnitEnum.
-     *
-     * @param class-string<UnitEnum> $enumClass
-     */
-    private function castToUnitEnum(mixed $value, string $enumClass): UnitEnum
-    {
-        if (!is_string($value)) {
-            throw new InvalidArgumentException('Value must be a string for UnitEnum');
-        }
-
-        // Try to get enum from name
-        foreach ($enumClass::cases() as $case) {
-            if ($case->name === $value) {
-                return $case;
-            }
-        }
-
-        throw new InvalidArgumentException("Cannot convert value '{$value}' to enum {$enumClass}");
     }
 }

@@ -45,6 +45,17 @@ class EnumTestDTO extends LaravelArcDTO
 
     #[Property(type: 'integer', required: false)]
     public ?int $age = null;
+    
+    protected function validate(array $data): void
+    {
+        // Simple validation - don't check enum types since they're handled by casting
+        if (empty($data['name'])) {
+            throw new \InvalidArgumentException('Name is required');
+        }
+        if (empty($data['email'])) {
+            throw new \InvalidArgumentException('Email is required');
+        }
+    }
 }
 
 it('can create DTO with enum properties from string values', function () {

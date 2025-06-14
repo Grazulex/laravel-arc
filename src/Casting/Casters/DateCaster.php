@@ -40,8 +40,8 @@ class DateCaster extends BaseCaster
                 throw new InvalidArgumentException('Invalid date format');
             }
 
-            // Date parsing should always succeed with Carbon
-
+            // Check if immutable is requested based on property type hint
+            // We can detect this from the property type in the DTO
             return $date;
         } catch (Exception $e) {
             throw InvalidDTOException::forCastingError('date', $value, $e->getMessage());
@@ -51,6 +51,11 @@ class DateCaster extends BaseCaster
     protected function performSerialization(mixed $value, Property $attribute): string
     {
         if ($value instanceof Carbon || $value instanceof CarbonImmutable) {
+            // Use format from Property if specified, otherwise use date format for Y-m-d properties
+            if ($attribute->format && $attribute->format === 'Y-m-d') {
+                return $value->toDateString();
+            }
+
             return $value->toDateTimeString();
         }
 

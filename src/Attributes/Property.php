@@ -20,6 +20,9 @@ class Property
     public readonly ?string $cast;
     public readonly ?string $nested;
     public readonly bool $isCollection;
+    public readonly ?string $format;
+    public readonly ?string $timezone;
+    public readonly bool $immutable;
 
     public function __construct(
         public readonly string $type,
@@ -37,6 +40,9 @@ class Property
         $this->cast = $cast ?? $this->detectCastType($type, $class);
         $this->nested = $this->detectNestedClass($type, $class);
         $this->isCollection = $collection || $this->detectCollection($type);
+        $this->format = $format;
+        $this->timezone = $timezone;
+        $this->immutable = $immutable;
     }
 
     /**

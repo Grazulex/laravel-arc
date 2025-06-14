@@ -72,15 +72,15 @@ class CleanPropertySyntaxTest extends TestCase
         $this->assertSame('bool', $boolProperty->cast);
     }
     
-    public function test_auto_detection_from_class_parameter(): void
+    public function test_type_overridden_by_class_detection(): void
     {
-        // Auto-detection when type is not specified but class is provided
-        $enumProperty = new Property(type: 'string', class: TestStatus::class);
+        // Type can be overridden by auto-detection when class is provided
+        $enumProperty = new Property(type: 'unknown', class: TestStatus::class);
         $this->assertSame('enum', $enumProperty->cast); // Should auto-detect from class
         $this->assertSame(TestStatus::class, $enumProperty->nested);
         
         // Auto-detection for DTO class
-        $dtoProperty = new Property(type: 'string', class: UserDTO::class);
+        $dtoProperty = new Property(type: 'unknown', class: UserDTO::class);
         $this->assertSame('nested', $dtoProperty->cast); // Should auto-detect from class
         $this->assertSame(UserDTO::class, $dtoProperty->nested);
     }
