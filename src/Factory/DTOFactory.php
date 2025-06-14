@@ -2,6 +2,8 @@
 
 namespace Grazulex\Arc\Factory;
 
+use function array_slice;
+
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
 use Grazulex\Arc\Attributes\DateProperty;
@@ -41,14 +43,14 @@ class DTOFactory implements DTOFactoryInterface
     public function with(string $property, mixed $value): static
     {
         $this->attributes[$property] = $value;
-        
+
         return $this;
     }
 
     public function withAttributes(array $attributes): static
     {
         $this->attributes = array_merge($this->attributes, $attributes);
-        
+
         return $this;
     }
 
@@ -59,7 +61,7 @@ class DTOFactory implements DTOFactoryInterface
                 $this->attributes[$name] = $this->generateFakeValue($propertyData['attribute']);
             }
         }
-        
+
         return $this;
     }
 
@@ -68,11 +70,11 @@ class DTOFactory implements DTOFactoryInterface
         foreach ($properties as $property) {
             if (isset($this->reflectionProperties[$property])) {
                 $this->attributes[$property] = $this->generateFakeValue(
-                    $this->reflectionProperties[$property]['attribute']
+                    $this->reflectionProperties[$property]['attribute'],
                 );
             }
         }
-        
+
         return $this;
     }
 
@@ -84,14 +86,14 @@ class DTOFactory implements DTOFactoryInterface
     public function createMany(int $count): array
     {
         $instances = [];
-        
-        for ($i = 0; $i < $count; $i++) {
+
+        for ($i = 0; $i < $count; ++$i) {
             // Create a new factory instance for each item to avoid data sharing
             $factory = new static($this->dtoClass);
             $factory->attributes = $this->attributes;
             $instances[] = $factory->fake()->create();
         }
-        
+
         return $instances;
     }
 
@@ -111,7 +113,7 @@ class DTOFactory implements DTOFactoryInterface
     protected function loadReflectionProperties(): void
     {
         $reflection = new ReflectionClass($this->dtoClass);
-        
+
         foreach ($reflection->getProperties() as $property) {
             $attributes = $property->getAttributes(Property::class);
             if (empty($attributes)) {
@@ -120,7 +122,7 @@ class DTOFactory implements DTOFactoryInterface
             if (empty($attributes)) {
                 $attributes = $property->getAttributes(NestedProperty::class);
             }
-            
+
             if (!empty($attributes)) {
                 $attribute = $attributes[0]->newInstance();
                 $this->reflectionProperties[$property->getName()] = [
@@ -168,11 +170,11 @@ class DTOFactory implements DTOFactoryInterface
     protected function generateFakeDate(DateProperty $attribute): Carbon|CarbonImmutable
     {
         $fakeDate = Carbon::now()->subDays(rand(0, 365));
-        
+
         if ($attribute->timezone) {
             $fakeDate->setTimezone($attribute->timezone);
         }
-        
+
         return $attribute->immutable ? $fakeDate->toImmutable() : $fakeDate;
     }
 
@@ -184,16 +186,17 @@ class DTOFactory implements DTOFactoryInterface
         if ($attribute->isCollection) {
             $count = rand(1, 3);
             $items = [];
-            
-            for ($i = 0; $i < $count; $i++) {
+
+            for ($i = 0; $i < $count; ++$i) {
                 $factory = new static($attribute->dtoClass);
                 $items[] = $factory->fake()->create();
             }
-            
+
             return $items;
         }
-        
+
         $factory = new static($attribute->dtoClass);
+
         return $factory->fake()->create();
     }
 
@@ -206,20 +209,20 @@ class DTOFactory implements DTOFactoryInterface
         if (str_contains($attribute->validation ?? '', 'email')) {
             return $this->generateFakeEmail();
         }
-        
+
         // Génération par défaut avec plus de variété et identifiant unique
-        $words = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit', 
-                  'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et', 
-                  'dolore', 'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis'];
-        
+        $words = ['Lorem', 'ipsum', 'dolor', 'sit', 'amet', 'consectetur', 'adipiscing', 'elit',
+            'sed', 'do', 'eiusmod', 'tempor', 'incididunt', 'ut', 'labore', 'et',
+            'dolore', 'magna', 'aliqua', 'enim', 'ad', 'minim', 'veniam', 'quis'];
+
         // Shuffle pour plus de randomisation
         shuffle($words);
         $wordCount = rand(1, 3);
         $baseText = implode(' ', array_slice($words, 0, $wordCount));
-        
+
         // Ajouter un identifiant unique pour garantir l'unicité
         $uniqueId = substr(uniqid(), -4);
-        
+
         return $baseText . ' ' . $uniqueId;
     }
 
@@ -230,7 +233,7 @@ class DTOFactory implements DTOFactoryInterface
     {
         $names = ['john', 'jane', 'alice', 'bob', 'charlie', 'diana'];
         $domains = ['example.com', 'test.org', 'demo.net'];
-        
+
         return $names[array_rand($names)] . rand(1, 999) . '@' . $domains[array_rand($domains)];
     }
 
@@ -242,7 +245,7 @@ class DTOFactory implements DTOFactoryInterface
         // Extraction des limites depuis la validation
         $min = 1;
         $max = 100;
-        
+
         if ($attribute->validation) {
             if (preg_match('/min:(\d+)/', $attribute->validation, $matches)) {
                 $min = (int) $matches[1];
@@ -251,7 +254,7 @@ class DTOFactory implements DTOFactoryInterface
                 $max = (int) $matches[1];
             }
         }
-        
+
         return rand($min, $max);
     }
 
@@ -272,14 +275,15 @@ class DTOFactory implements DTOFactoryInterface
     }
 
     /**
-     * Generate fake array value.
+     * Generate fake array data.
+     *
+     * @return array<string>
      */
     protected function generateFakeArray(): array
     {
         $items = ['item1', 'item2', 'item3', 'item4'];
         $count = rand(1, 3);
-        
+
         return array_slice($items, 0, $count);
     }
 }
-

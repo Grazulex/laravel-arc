@@ -34,7 +34,7 @@ class ExampleAddressDTO extends LaravelArcDTO
         // Simple validation for the example
         foreach (['street', 'city', 'postalCode', 'country'] as $field) {
             if (empty($data[$field])) {
-                throw new \InvalidArgumentException("{$field} is required");
+                throw new InvalidArgumentException("{$field} is required");
             }
         }
     }
@@ -75,13 +75,13 @@ class ExampleUserDTO extends LaravelArcDTO
     protected function validate(array $data): void
     {
         if (empty($data['name'])) {
-            throw new \InvalidArgumentException('Name is required');
+            throw new InvalidArgumentException('Name is required');
         }
         if (empty($data['email']) || !filter_var($data['email'], FILTER_VALIDATE_EMAIL)) {
-            throw new \InvalidArgumentException('Valid email is required');
+            throw new InvalidArgumentException('Valid email is required');
         }
         if (!isset($data['age']) || !is_int($data['age']) || $data['age'] < 0) {
-            throw new \InvalidArgumentException('Age must be a positive integer');
+            throw new InvalidArgumentException('Age must be a positive integer');
         }
     }
 }
@@ -100,7 +100,7 @@ class ExampleTeamDTO extends LaravelArcDTO
     protected function validate(array $data): void
     {
         if (empty($data['name'])) {
-            throw new \InvalidArgumentException('Team name is required');
+            throw new InvalidArgumentException('Team name is required');
         }
     }
 }
@@ -117,7 +117,8 @@ $user = ExampleUserDTO::factory()
     ->with('name', 'Jean-Marc Strauven')
     ->with('email', 'jean-marc@example.com')
     ->with('age', 30)
-    ->create();
+    ->create()
+;
 
 echo "Created user: {$user->name} ({$user->email}), Age: {$user->age}\n";
 echo "Role: {$user->role} (default value)\n\n";
@@ -135,7 +136,7 @@ echo "3. 👥 Multiple Instance Generation\n";
 echo "----------------------------------\n";
 
 $users = ExampleUserDTO::fakeMany(3);
-echo "Generated " . count($users) . " users:\n";
+echo 'Generated ' . count($users) . " users:\n";
 foreach ($users as $i => $user) {
     echo "  #{$i}: {$user->name} ({$user->email})\n";
 }
@@ -148,7 +149,8 @@ echo "---------------------------------\n";
 $mixedUser = ExampleUserDTO::factory()
     ->with('name', 'Fixed Name')
     ->fake() // Generate fake data for other fields
-    ->create();
+    ->create()
+;
 
 echo "Mixed user: {$mixedUser->name} (fixed) - {$mixedUser->email} (fake)\n\n";
 
@@ -161,10 +163,11 @@ $batchUser = ExampleUserDTO::factory()
         'name' => 'Batch User',
         'email' => 'batch@example.com',
         'role' => 'admin',
-        'permissions' => ['read', 'write', 'delete']
+        'permissions' => ['read', 'write', 'delete'],
     ])
     ->fakeOnly(['age']) // Only generate fake age
-    ->create();
+    ->create()
+;
 
 echo "Batch user: {$batchUser->name} ({$batchUser->email})\n";
 echo "Role: {$batchUser->role}, Permissions: " . implode(', ', $batchUser->permissions) . "\n\n";
@@ -178,7 +181,8 @@ $userWithAddress = ExampleUserDTO::factory()
     ->with('email', 'address@example.com')
     ->with('age', 25)
     ->fake() // This will generate fake nested data too
-    ->create();
+    ->create()
+;
 
 echo "User with address: {$userWithAddress->name}\n";
 if ($userWithAddress->address) {
@@ -194,11 +198,12 @@ echo "----------------------------------\n";
 $team = ExampleTeamDTO::factory()
     ->with('name', 'Development Team')
     ->fake() // This will generate fake members
-    ->create();
+    ->create()
+;
 
 echo "Team: {$team->name}\n";
 if (!empty($team->members)) {
-    echo "Members (" . count($team->members) . "):\n";
+    echo 'Members (' . count($team->members) . "):\n";
     foreach ($team->members as $i => $member) {
         echo "  #{$i}: {$member->name} ({$member->email})\n";
     }
@@ -216,7 +221,8 @@ $userWithDates = ExampleUserDTO::factory()
     ->with('email', 'dates@example.com')
     ->with('age', 28)
     ->fake()
-    ->create();
+    ->create()
+;
 
 echo "User with dates: {$userWithDates->name}\n";
 if ($userWithDates->birthDate) {
@@ -235,9 +241,10 @@ echo "-------------------------------\n";
 $adminUsers = collect([])
     ->push(ExampleUserDTO::fake(['role' => 'admin', 'permissions' => ['read', 'write', 'delete']]))
     ->push(ExampleUserDTO::fake(['role' => 'admin', 'permissions' => ['read', 'write', 'delete']]))
-    ->toArray();
+    ->toArray()
+;
 
-echo "Generated " . count($adminUsers) . " admin users:\n";
+echo 'Generated ' . count($adminUsers) . " admin users:\n";
 foreach ($adminUsers as $i => $admin) {
     echo "  Admin #{$i}: {$admin->name} - Permissions: " . implode(', ', $admin->permissions) . "\n";
 }
@@ -268,4 +275,3 @@ echo "   - Easy prototyping and demos\n";
 echo "   - Fluent, readable API\n";
 echo "   - Support for nested relationships\n";
 echo "   - Respects DTO validation rules\n";
-

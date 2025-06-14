@@ -1,0 +1,109 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$age\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$birthDate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$createdAt\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 3
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 6
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$permissions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 2
+			path: src/Examples/factory_example.php
+
+		-
+			message: '#^Method Grazulex\\Arc\\LaravelArcDTO\:\:fakeMany\(\) should return array\<static\(Grazulex\\Arc\\LaravelArcDTO\)\> but returns array\<Grazulex\\Arc\\Contracts\\DTOInterface\>\.$#'
+			identifier: return.type
+			count: 1
+			path: src/LaravelArcDTO.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$active\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$address\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$age\.$#'
+			identifier: property.notFound
+			count: 7
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$birthDate\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$createdAt\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$email\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$name\.$#'
+			identifier: property.notFound
+			count: 6
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$permissions\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php
+
+		-
+			message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: tests/Unit/DTOFactoryTest.php

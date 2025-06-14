@@ -36,7 +36,6 @@ interface DTOFactoryInterface
     /**
      * Create multiple DTO instances.
      *
-     * @param int $count
      * @return array<DTOInterface>
      */
     public function createMany(int $count): array;
@@ -49,9 +48,7 @@ interface DTOFactoryInterface
     /**
      * Create multiple DTO instances without persisting.
      *
-     * @param int $count
      * @return array<DTOInterface>
      */
     public function makeMany(int $count): array;
 }
-

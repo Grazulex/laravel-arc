@@ -35,33 +35,37 @@ trait DTOFactoryTrait
 
     /**
      * Quick method to create a DTO with fake data.
+     *
+     * @param null|array<string, mixed> $overrides
      */
     public static function fake(?array $overrides = null): static
     {
         $factory = static::factory()->fake();
-        
+
         if ($overrides) {
             $factory->withAttributes($overrides);
         }
-        
+
+        // @var static
         return $factory->create();
     }
 
     /**
      * Quick method to create multiple DTOs with fake data.
      *
-     * @param int $count
+     * @param null|array<string, mixed> $overrides
+     *
      * @return array<static>
      */
     public static function fakeMany(int $count, ?array $overrides = null): array
     {
         $factory = static::factory();
-        
+
         if ($overrides) {
             $factory->withAttributes($overrides);
         }
-        
+
+        // @var array<static>
         return $factory->fake()->createMany($count);
     }
 }
-

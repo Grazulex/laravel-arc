@@ -38,7 +38,7 @@ use Grazulex\Arc\Traits\DTOFactoryTrait;
 class LaravelArcDTO extends AbstractDTO
 {
     use DTOFactoryTrait;
-    
+
     // Cette classe hérite de toute la logique d'AbstractDTO
     // mais offre un nom plus explicite pour les utilisateurs du package
 }
