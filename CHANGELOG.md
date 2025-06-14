@@ -57,6 +57,38 @@ class UserDTO extends LaravelArcDTO {
 - **Type safety**: Full static analysis support with PHPStan Level 6
 - **Consistency**: Same pattern for all complex types
 
+#### 🔄 Transformation Pipeline System
+- **Pre-processing pipeline**: Apply transformations before casting
+- **Built-in transformers**: TrimTransformer, LowercaseTransformer, UppercaseTransformer, HashTransformer
+- **Extensible system**: Implement `TransformerInterface` for custom transformers
+- **Chained transformations**: Apply multiple transformations in sequence
+- **Example**: `#[Property(type: 'string', transform: [TrimTransformer::class, LowercaseTransformer::class])]`
+
+#### 🔍 Auto-Discovery Relations
+- **Eloquent relation detection**: Automatically detect model relations using reflection
+- **Smart relation mapping**: HasMany → collection, BelongsTo/HasOne → nested
+- **Command integration**: `--with-relations` and `--relations=specific` flags
+- **Intelligent analysis**: Skips getters, setters, and Laravel magic methods
+- **Safe execution**: Graceful error handling for broken relations
+
+#### 🛡️ Smart Validation Rules Generation
+- **Intelligent rule detection**: Based on field names, types, and patterns
+- **Pattern recognition**: email, password, phone, age, country_code, etc.
+- **Strict mode**: `--validation-strict` for enhanced security rules
+- **20+ built-in patterns**: Comprehensive validation rule library
+- **Examples**: 
+  - `email` → `required|email|max:254`
+  - `password` → `required|min:8|regex:/strong_password/`
+  - `age` → `required|integer|min:0|max:150`
+
+#### 🔧 Debug & Analysis Tools
+- **dto:analyze command**: Comprehensive DTO structure analysis
+- **dto:validate command**: Test data validation against DTOs
+- **JSON output support**: Machine-readable analysis results
+- **Interactive validation**: Real-time data testing
+- **Statistics dashboard**: Properties, validation, transformations metrics
+- **Visual output**: Tables and emojis for better readability
+
 #### 🔧 Enhanced Type System
 - **Explicit type declaration**: Clear intent with `type` parameter
 - **Class specification**: Single `class` parameter for all reference types

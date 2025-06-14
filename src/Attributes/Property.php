@@ -6,6 +6,9 @@ use Attribute;
 use BackedEnum;
 
 use function class_exists;
+
+use Grazulex\Arc\Contracts\TransformerInterface;
+
 use function is_subclass_of;
 
 use ReflectionClass;
@@ -23,6 +26,8 @@ class Property
     public readonly ?string $format;
     public readonly ?string $timezone;
     public readonly bool $immutable;
+    /** @var array<string|TransformerInterface> */
+    public readonly array $transform;
 
     public function __construct(
         public readonly string $type,
@@ -35,6 +40,8 @@ class Property
         bool $immutable = false,
         bool $collection = false,
         ?string $class = null,
+        // @var array<string|TransformerInterface> $transform
+        array $transform = [],
     ) {
         // Smart cast detection based on type
         $this->cast = $cast ?? $this->detectCastType($type, $class);
@@ -43,6 +50,7 @@ class Property
         $this->format = $format;
         $this->timezone = $timezone;
         $this->immutable = $immutable;
+        $this->transform = $transform;
     }
 
     /**

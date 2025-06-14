@@ -5,6 +5,7 @@ namespace Grazulex\Arc\Commands;
 use Exception;
 
 use function function_exists;
+use function get_class;
 
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -13,11 +14,15 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
+use function in_array;
 use function is_string;
+
+use ReflectionClass;
+use ReflectionMethod;
 
 class MakeDtoCommand extends Command
 {
-    protected $signature = 'make:dto {name} {--model= : The model to base the DTO on} {--path=app/Data : The path where to create the DTO}';
+    protected $signature = 'make:dto {name} {--model= : The model to base the DTO on} {--path=app/Data : The path where to create the DTO} {--with-relations : Include model relations in the DTO} {--relations=* : Specific relations to include} {--with-validation : Generate smart validation rules} {--validation-strict : Use strict validation rules}';
 
     protected $description = 'Create a new DTO class';
 
@@ -135,6 +140,12 @@ PHP;
             if (method_exists($model, 'getTimestamps') && $model->getTimestamps()) {
                 $properties['created_at'] = ['type' => 'date', 'nullable' => true];
                 $properties['updated_at'] = ['type' => 'date', 'nullable' => true];
+            }
+
+            // Add relations if requested
+            if ($this->option('with-relations') || !empty($this->option('relations'))) {
+                $relations = $this->extractRelationsFromModel($model);
+                $properties = array_merge($properties, $relations);
             }
 
             return $properties;
@@ -279,11 +290,9 @@ PHP;
             default => 'string'
         };
 
-        // Add validation based on attribute name
-        if (str_contains($attribute, 'email')) {
-            $config['validation'] = 'email';
-        } elseif (str_contains($attribute, 'url')) {
-            $config['validation'] = 'url';
+        // Add validation based on attribute name and command options
+        if ($this->option('with-validation')) {
+            $config['validation'] = $this->generateValidationRules($attribute, $config);
         }
 
         // Set default values for boolean fields
@@ -443,16 +452,33 @@ PHP;
         $nullable = $config['nullable'] ?? true;
         $default = $config['default'] ?? null;
         $validation = $config['validation'] ?? null;
+        $class = $config['class'] ?? null;
+        $relationType = $config['relation_type'] ?? null;
+        $relatedModel = $config['related_model'] ?? null;
 
-        $phpType = $this->getPhpType($type, $nullable);
+        $phpType = $this->getPhpType($type, $nullable, $class);
         $attributeParams = [];
+        $comment = '';
+
+        // Handle relations with special comments
+        if ($relationType && $relatedModel) {
+            $modelName = class_basename($relatedModel);
+            $comment = "    // Relation: {$relationType} -> {$modelName}\n";
+        }
 
         if ($type === 'date') {
-            $attribute = 'DateProperty';
+            $attribute = 'Property';
+            $attributeParams[] = "type: 'date'";
             $attributeParams[] = 'required: ' . ($nullable ? 'false' : 'true');
         } else {
             $attribute = 'Property';
             $attributeParams[] = "type: '{$type}'";
+
+            // Add class parameter for nested and collection types
+            if ($class && in_array($type, ['nested', 'collection', 'enum'], true)) {
+                $attributeParams[] = "class: {$class}::class";
+            }
+
             $attributeParams[] = 'required: ' . ($nullable ? 'false' : 'true');
         }
 
@@ -467,10 +493,10 @@ PHP;
 
         $attributeString = implode(', ', $attributeParams);
 
-        return "    #[{$attribute}({$attributeString})]\n    public {$phpType} \${$name};";
+        return $comment . "    #[{$attribute}({$attributeString})]\n    public {$phpType} \${$name};";
     }
 
-    private function getPhpType(string $type, bool $nullable): string
+    private function getPhpType(string $type, bool $nullable, ?string $class = null): string
     {
         $phpType = match ($type) {
             'int' => 'int',
@@ -478,6 +504,9 @@ PHP;
             'bool' => 'bool',
             'array' => 'array',
             'date' => 'Carbon',
+            'nested' => $class ? class_basename($class) : 'mixed',
+            'collection' => 'array',
+            'enum' => $class ? class_basename($class) : 'mixed',
             default => 'string'
         };
 
@@ -509,5 +538,384 @@ PHP;
 
         // Last resort
         return getcwd() . '/database/' . $path;
+    }
+
+    /**
+     * Extract relations from Eloquent model using reflection.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private function extractRelationsFromModel(object $model): array
+    {
+        $relations = [];
+        $specificRelations = $this->option('relations');
+
+        try {
+            $reflectionClass = new ReflectionClass($model);
+            $methods = $reflectionClass->getMethods(ReflectionMethod::IS_PUBLIC);
+
+            foreach ($methods as $method) {
+                $methodName = $method->getName();
+
+                // Skip if specific relations are requested and this isn't one of them
+                if (!empty($specificRelations) && !in_array($methodName, $specificRelations, true)) {
+                    continue;
+                }
+
+                // Skip magic methods, getters, setters, and Laravel methods
+                if ($this->shouldSkipMethod($methodName)) {
+                    continue;
+                }
+
+                // Try to determine if this is a relation method
+                $relationInfo = $this->analyzeRelationMethod($model, $method);
+                if ($relationInfo) {
+                    $relations[$methodName] = $relationInfo;
+
+                    if ($this->output->isVerbose()) {
+                        $this->info("Detected relation: {$methodName} ({$relationInfo['relation_type']}) -> {$relationInfo['related_model']}");
+                    }
+                }
+            }
+        } catch (Exception $e) {
+            $this->warn("Could not analyze relations: {$e->getMessage()}");
+        }
+
+        return $relations;
+    }
+
+    /**
+     * Check if method should be skipped for relation detection.
+     */
+    private function shouldSkipMethod(string $methodName): bool
+    {
+        $skipPrefixes = ['get', 'set', 'is', 'has', 'can', 'should', 'will', 'make', 'create', 'update', 'delete', 'find', 'where', 'scope'];
+        $skipMethods = [
+            '__construct', '__call', '__callStatic', '__get', '__set', '__isset', '__unset',
+            'toArray', 'toJson', 'jsonSerialize', 'save', 'delete', 'fresh', 'refresh',
+            'replicate', 'getKey', 'getTable', 'getFillable', 'getGuarded', 'getCasts',
+            'getDates', 'getHidden', 'getVisible', 'getAppends', 'getMutatedAttributes',
+            'getRelations', 'getConnection', 'newQuery', 'newEloquentBuilder',
+            'boot', 'booted', 'booting', 'creating', 'created', 'updating', 'updated',
+            'saving', 'saved', 'deleting', 'deleted', 'restoring', 'restored',
+            'retrieved', 'observe', 'fill', 'forceFill', 'qualifyColumn', 'removeTableFromKey',
+        ];
+
+        // Skip methods with certain prefixes
+        foreach ($skipPrefixes as $prefix) {
+            if (str_starts_with($methodName, $prefix)) {
+                return true;
+            }
+        }
+
+        // Skip specific methods
+        return in_array($methodName, $skipMethods, true);
+    }
+
+    /**
+     * Analyze a method to determine if it's an Eloquent relation.
+     *
+     * @return null|array<string, mixed>
+     */
+    private function analyzeRelationMethod(object $model, ReflectionMethod $method): ?array
+    {
+        try {
+            // Skip methods with parameters (relations usually don't have parameters)
+            if ($method->getNumberOfRequiredParameters() > 0) {
+                return null;
+            }
+
+            // Try to execute the method to see if it returns a relation
+            $result = $method->invoke($model);
+
+            if (!$result) {
+                return null;
+            }
+
+            $resultClass = get_class($result);
+
+            // Check if it's an Eloquent relation
+            if (!$this->isEloquentRelation($resultClass)) {
+                return null;
+            }
+
+            // Extract relation information
+            $relationType = $this->getRelationType($resultClass);
+            $relatedModel = $this->getRelatedModelClass($result);
+
+            if (!$relationType || !$relatedModel) {
+                return null;
+            }
+
+            // Determine DTO configuration based on relation type
+            return $this->buildRelationConfig($relationType, $relatedModel);
+        } catch (Exception $e) {
+            // Method execution failed, probably not a relation
+            return null;
+        }
+    }
+
+    /**
+     * Check if class is an Eloquent relation.
+     */
+    private function isEloquentRelation(string $className): bool
+    {
+        $relationClasses = [
+            'Illuminate\Database\Eloquent\Relations\BelongsTo',
+            'Illuminate\Database\Eloquent\Relations\HasOne',
+            'Illuminate\Database\Eloquent\Relations\HasMany',
+            'Illuminate\Database\Eloquent\Relations\BelongsToMany',
+            'Illuminate\Database\Eloquent\Relations\HasOneThrough',
+            'Illuminate\Database\Eloquent\Relations\HasManyThrough',
+            'Illuminate\Database\Eloquent\Relations\MorphTo',
+            'Illuminate\Database\Eloquent\Relations\MorphOne',
+            'Illuminate\Database\Eloquent\Relations\MorphMany',
+            'Illuminate\Database\Eloquent\Relations\MorphToMany',
+            'Illuminate\Database\Eloquent\Relations\MorphedByMany',
+        ];
+
+        foreach ($relationClasses as $relationClass) {
+            if (is_a($className, $relationClass, true)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Get relation type from class name.
+     */
+    private function getRelationType(string $className): ?string
+    {
+        $classBasename = class_basename($className);
+
+        return match ($classBasename) {
+            'BelongsTo', 'HasOne', 'MorphTo', 'MorphOne' => 'single',
+            'HasMany', 'BelongsToMany', 'HasOneThrough', 'HasManyThrough', 'MorphMany', 'MorphToMany', 'MorphedByMany' => 'collection',
+            default => null
+        };
+    }
+
+    /**
+     * Get related model class from relation.
+     */
+    private function getRelatedModelClass(object $relation): ?string
+    {
+        try {
+            if (method_exists($relation, 'getRelated')) {
+                $relatedModel = $relation->getRelated();
+
+                return get_class($relatedModel);
+            }
+
+            if (method_exists($relation, 'getModel')) {
+                $relatedModel = $relation->getModel();
+
+                return get_class($relatedModel);
+            }
+        } catch (Exception $e) {
+            // Unable to get related model
+        }
+
+        return null;
+    }
+
+    /**
+     * Build DTO configuration for relation.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildRelationConfig(string $relationType, string $relatedModelClass): array
+    {
+        $relatedModelName = class_basename($relatedModelClass);
+        $dtoClassName = $relatedModelName . 'DTO';
+
+        if ($relationType === 'single') {
+            return [
+                'type' => 'nested',
+                'class' => $dtoClassName,
+                'nullable' => true,
+                'relation_type' => 'single',
+                'related_model' => $relatedModelClass,
+            ];
+        }
+
+        // Collection relation
+        return [
+            'type' => 'collection',
+            'class' => $dtoClassName,
+            'nullable' => false,
+            'relation_type' => 'collection',
+            'related_model' => $relatedModelClass,
+        ];
+    }
+
+    /**
+     * Generate smart validation rules based on field name, type and options.
+     *
+     * @param array<string, mixed> $config
+     */
+    private function generateValidationRules(string $fieldName, array $config): string
+    {
+        $rules = [];
+        $type = $config['type'] ?? 'string';
+        $nullable = $config['nullable'] ?? true;
+        $isStrict = $this->option('validation-strict');
+
+        // Required/nullable rules
+        if (!$nullable) {
+            $rules[] = 'required';
+        } else {
+            $rules[] = 'nullable';
+        }
+
+        // Type-based rules
+        switch ($type) {
+            case 'string':
+                if ($isStrict) {
+                    $rules[] = 'string';
+                    $rules[] = 'max:255'; // Default max length
+                }
+                break;
+
+            case 'int':
+                $rules[] = 'integer';
+                if ($isStrict && str_contains($fieldName, '_id')) {
+                    $rules[] = 'min:1'; // IDs should be positive
+                }
+                break;
+
+            case 'float':
+                $rules[] = 'numeric';
+                if ($isStrict && preg_match('/price|amount|cost/', $fieldName)) {
+                    $rules[] = 'min:0'; // Prices should be non-negative
+                }
+                break;
+
+            case 'bool':
+                $rules[] = 'boolean';
+                break;
+
+            case 'array':
+                $rules[] = 'array';
+                break;
+
+            case 'date':
+                $rules[] = 'date';
+                if ($isStrict) {
+                    if (str_contains($fieldName, 'birth')) {
+                        $rules[] = 'before:today'; // Birth dates should be in the past
+                    } elseif (str_contains($fieldName, 'expir')) {
+                        $rules[] = 'after:today'; // Expiration dates should be in the future
+                    }
+                }
+                break;
+        }
+
+        // Field name-based rules
+        $nameRules = $this->getFieldNameBasedRules($fieldName, $isStrict);
+        $rules = array_merge($rules, $nameRules);
+
+        return implode('|', array_unique($rules));
+    }
+
+    /**
+     * Get validation rules based on field name patterns.
+     *
+     * @return array<string>
+     */
+    private function getFieldNameBasedRules(string $fieldName, bool $isStrict): array
+    {
+        $rules = [];
+
+        // Email validation
+        if (str_contains($fieldName, 'email')) {
+            $rules[] = 'email';
+            if ($isStrict) {
+                $rules[] = 'max:254'; // RFC 5321 limit
+            }
+        }
+
+        // URL validation
+        if (str_contains($fieldName, 'url') || str_contains($fieldName, 'website') || str_contains($fieldName, 'link')) {
+            $rules[] = 'url';
+            if ($isStrict) {
+                $rules[] = 'max:2048'; // Reasonable URL length limit
+            }
+        }
+
+        // Phone validation
+        if (str_contains($fieldName, 'phone') || str_contains($fieldName, 'mobile') || str_contains($fieldName, 'tel')) {
+            if ($isStrict) {
+                $rules[] = 'regex:/^[+]?[0-9\s\-\(\)]{7,20}$/'; // Basic phone format
+            }
+        }
+
+        // Password validation
+        if (str_contains($fieldName, 'password')) {
+            $rules[] = 'min:8';
+            if ($isStrict) {
+                $rules[] = 'regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/'; // Strong password
+            }
+        }
+
+        // Name validation
+        if (preg_match('/(first_name|last_name|full_name|name)$/', $fieldName)) {
+            if ($isStrict) {
+                $rules[] = 'min:2';
+                $rules[] = 'max:50';
+                $rules[] = 'regex:/^[a-zA-Z\s\-\']+$/'; // Letters, spaces, hyphens, apostrophes only
+            }
+        }
+
+        // Postal/ZIP code validation
+        if (str_contains($fieldName, 'zip') || str_contains($fieldName, 'postal') || str_contains($fieldName, 'postcode')) {
+            if ($isStrict) {
+                $rules[] = 'regex:/^[A-Za-z0-9\s\-]{3,10}$/'; // Basic postal code format
+            }
+        }
+
+        // UUID validation
+        if (str_contains($fieldName, 'uuid') || str_ends_with($fieldName, '_uuid')) {
+            $rules[] = 'uuid';
+        }
+
+        // IP address validation
+        if (str_contains($fieldName, 'ip') && !str_contains($fieldName, 'zip')) {
+            $rules[] = 'ip';
+        }
+
+        // Age validation
+        if ($fieldName === 'age') {
+            $rules[] = 'min:0';
+            if ($isStrict) {
+                $rules[] = 'max:150'; // Reasonable age limit
+            }
+        }
+
+        // Status fields
+        if (str_contains($fieldName, 'status')) {
+            if ($isStrict) {
+                $rules[] = 'in:active,inactive,pending,approved,rejected'; // Common status values
+            }
+        }
+
+        // Country code validation
+        if (str_contains($fieldName, 'country_code') || $fieldName === 'country') {
+            if ($isStrict) {
+                $rules[] = 'size:2'; // ISO country codes are 2 characters
+                $rules[] = 'alpha'; // Country codes are alphabetic
+            }
+        }
+
+        // Language code validation
+        if (str_contains($fieldName, 'language') || str_contains($fieldName, 'locale')) {
+            if ($isStrict) {
+                $rules[] = 'regex:/^[a-z]{2}([_\-][A-Z]{2})?$/'; // e.g., en, en_US, en-GB
+            }
+        }
+
+        return $rules;
     }
 }

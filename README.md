@@ -40,8 +40,9 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 
 ## 🚀 Features
 
-### 🎯 **Core Features**
+### 🎯 **Core Features (v2.0)**
 - ✅ **Direct property access** (`$user->name` instead of `$user->getName()`)
+- ✅ **Unified Property syntax** - Single `Property` attribute for all types
 - ✅ **Automatic validation** based on PHP 8+ attributes
 - ✅ **Real-time type validation** with detailed exceptions
 - ✅ **Laravel integration** with automatic validation rules generation
@@ -52,12 +53,17 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 - 🏗️ **Nested DTOs & Collections** - Compose complex data structures
 - 🎨 **Advanced Casting System** - Extensible data transformation pipeline
 - 🏭 **DTO Factory/Builder Pattern** - Generate test data and prototypes
+- 🔄 **Transformation Pipeline** - Pre-processing data before casting
+- 🔍 **Auto-Discovery Relations** - Automatic Eloquent relation detection
+- 🛡️ **Smart Validation Rules** - Intelligent validation generation
 
-### 🛡️ **Developer Experience**
-- 🎯 **Type Safety** - Full compile-time and runtime validation
+### 🛡️ **Developer Experience & Tools**
+- 🎯 **Type Safety** - Full compile-time and runtime validation (PHPStan Level 6)
 - 📝 **Default Values** - Smart property initialization
 - 🚀 **Simple API** - Intuitive and clean interface
 - 🧪 **Test-Friendly** - Built-in factory for test data generation
+- 🔧 **Debug Tools** - `dto:analyze` and `dto:validate` commands
+- 📊 **IDE Integration** - Enhanced autocompletion and refactoring
 
 ## 📦 Installation
 
@@ -355,6 +361,142 @@ $team = new TeamDTO([
 foreach ($team->members as $member) {
     echo $member->name; // Each member is a UserDTO instance
 }
+```
+
+### 🔄 Transformation Pipeline (NEW in v2.0)
+
+Apply data transformations before casting with the new transformation pipeline:
+
+```php
+use Grazulex\Arc\Attributes\Property;
+use Grazulex\Arc\Transformers\TrimTransformer;
+use Grazulex\Arc\Transformers\LowercaseTransformer;
+use Grazulex\Arc\Transformers\UppercaseTransformer;
+use Grazulex\Arc\Transformers\HashTransformer;
+
+class UserDTO extends LaravelArcDTO
+{
+    // Email: trim whitespace and convert to lowercase
+    #[Property(type: 'string', required: true, transform: [TrimTransformer::class, LowercaseTransformer::class])]
+    public string $email;
+    
+    // Country code: trim and convert to uppercase
+    #[Property(type: 'string', required: false, transform: [TrimTransformer::class, UppercaseTransformer::class])]
+    public ?string $country_code;
+    
+    // Password: hash the value (for security)
+    #[Property(type: 'string', required: true, transform: [HashTransformer::class])]
+    public string $password_hash;
+}
+
+$user = new UserDTO([
+    'email' => '  TEST@EXAMPLE.COM  ',     // Becomes: 'test@example.com'
+    'country_code' => '  us  ',             // Becomes: 'US'
+    'password_hash' => 'mypassword123'      // Becomes: hashed value
+]);
+```
+
+#### Available Transformers:
+- **TrimTransformer** - Removes whitespace
+- **LowercaseTransformer** - Converts to lowercase
+- **UppercaseTransformer** - Converts to uppercase
+- **HashTransformer** - Hashes values (configurable algorithm)
+- **Custom Transformers** - Implement `TransformerInterface` for custom logic
+
+### 🔍 Auto-Discovery Relations (NEW in v2.0)
+
+Automatically detect and generate DTO properties from Eloquent model relations:
+
+```bash
+# Generate DTO with all relations
+php artisan make:dto User --model=User --with-relations
+
+# Generate DTO with specific relations only
+php artisan make:dto Order --model=Order --relations=user,items
+```
+
+This automatically generates:
+```php
+class UserDTO extends LaravelArcDTO {
+    // Regular model properties
+    #[Property(type: 'string', required: true)]
+    public string $name;
+    
+    // Auto-detected relations
+    // Relation: collection -> Order
+    #[Property(type: 'collection', class: OrderDTO::class, required: false)]
+    public array $orders;
+    
+    // Relation: single -> Profile
+    #[Property(type: 'nested', class: ProfileDTO::class, required: false)]
+    public ?ProfileDTO $profile;
+}
+```
+
+### 🛡️ Smart Validation Rules (NEW in v2.0)
+
+Intelligent validation rule generation based on field names and types:
+
+```bash
+# Generate DTO with smart validation
+php artisan make:dto User --model=User --with-validation
+
+# Generate with strict validation rules
+php artisan make:dto User --model=User --with-validation --validation-strict
+```
+
+Automatically generates appropriate rules:
+```php
+class UserDTO extends LaravelArcDTO {
+    #[Property(type: 'string', required: true, validation: 'required|email|max:254')]
+    public string $email;
+    
+    #[Property(type: 'string', required: true, validation: 'required|min:8|regex:/strong_password/')]
+    public string $password;
+    
+    #[Property(type: 'int', required: true, validation: 'required|integer|min:0|max:150')]
+    public int $age;
+    
+    #[Property(type: 'string', required: false, validation: 'nullable|regex:/phone_format/')]
+    public ?string $phone;
+}
+```
+
+### 🔧 Debug & Analysis Tools (NEW in v2.0)
+
+Powerful command-line tools for DTO analysis and debugging:
+
+```bash
+# Analyze DTO structure and configuration
+php artisan dto:analyze UserDTO
+php artisan dto:analyze UserDTO --json
+
+# Validate data against DTO
+php artisan dto:validate UserDTO --data='{"name":"John","email":"john@example.com"}'
+php artisan dto:validate UserDTO --file=data.json
+
+# Interactive validation
+php artisan dto:validate UserDTO
+> Enter JSON data: {"name": "John"}
+> ✅ Validation passed!
+```
+
+#### Analysis Output Example:
+```
+📊 DTO Analysis: App\Data\UserDTO
+📁 File: /app/Data/UserDTO.php
+🏷️ Is DTO: ✅ Yes
+
+📈 Statistics:
+┌─────────────────────────────┬───────┐
+│ Metric                      │ Count │
+├─────────────────────────────┼───────┤
+│ Total Properties            │ 5     │
+│ DTO Properties              │ 5     │
+│ Required Properties         │ 3     │
+│ Properties with Validation  │ 2     │
+│ Properties with Transform   │ 3     │
+└─────────────────────────────┴───────┘
 ```
 
 ### 🏭 DTO Factory/Builder Pattern

@@ -12,6 +12,7 @@ use function count;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
+use Grazulex\Arc\Transformation\TransformationManager;
 
 use function is_array;
 use function is_bool;
@@ -147,6 +148,11 @@ trait DTOTrait
         if (isset($properties[$key])) {
             $attribute = $properties[$key]['attribute'];
             $reflectionProperty = $properties[$key]['property'];
+
+            // Apply transformations first (before casting)
+            if ($attribute && !empty($attribute->transform) && TransformationManager::shouldTransform($value, $attribute->transform)) {
+                $value = TransformationManager::transform($value, $attribute->transform);
+            }
 
             // Apply casting if specified
             if ($attribute && $attribute->cast) {
