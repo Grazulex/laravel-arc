@@ -17,6 +17,10 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 - ✅ **Default values**
 - ✅ **Detailed exceptions**
 - ✅ **Simple and intuitive API**
+- 🆕 **Automatic Carbon date transformation**
+- 🆕 **Nested DTOs and collections**
+- 🆕 **Advanced casting system**
+- 🆕 **Timezone support for dates**
 
 ## 📦 Installation
 
@@ -108,9 +112,111 @@ The `Property` attribute allows you to define:
 public string $property;
 ```
 
-## 🎨 Advanced Examples
+## 🎨 Advanced Features
 
-See the `src/Examples/` folder for complete usage examples.
+### Date Properties with Carbon
+
+Automatic transformation of dates to Carbon instances:
+
+```php
+use Grazulex\Arc\Attributes\DateProperty;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
+
+class UserDTO extends LaravelArcDTO
+{
+    #[DateProperty(required: false, format: 'Y-m-d', timezone: 'Europe/Brussels')]
+    public ?Carbon $birthDate;
+
+    #[DateProperty(required: false, immutable: true)]
+    public ?CarbonImmutable $createdAt;
+}
+
+$user = new UserDTO([
+    'birthDate' => '1990-05-15',           // String
+    'createdAt' => time()                  // Unix timestamp
+]);
+
+// Automatic conversion to Carbon instances
+echo $user->birthDate->format('d/m/Y');   // 15/05/1990
+echo $user->createdAt->toDateTimeString(); // 2024-01-15 10:30:00
+
+// Serialization back to strings
+$array = $user->toArray();
+// ['birthDate' => '1990-05-15', 'createdAt' => '2024-01-15 10:30:00']
+```
+
+### Nested DTOs
+
+Embed DTOs within other DTOs:
+
+```php
+use Grazulex\Arc\Attributes\NestedProperty;
+
+class AddressDTO extends LaravelArcDTO
+{
+    #[Property(type: 'string', required: true)]
+    public string $street;
+    
+    #[Property(type: 'string', required: true)]
+    public string $city;
+}
+
+class UserDTO extends LaravelArcDTO
+{
+    #[Property(type: 'string', required: true)]
+    public string $name;
+    
+    #[NestedProperty(dtoClass: AddressDTO::class, required: false)]
+    public ?AddressDTO $address;
+}
+
+$user = new UserDTO([
+    'name' => 'John Doe',
+    'address' => [
+        'street' => '123 Main St',
+        'city' => 'Brussels'
+    ]
+]);
+
+// Direct access to nested properties
+echo $user->address->street; // 123 Main St
+$user->address->city = 'Antwerp';
+```
+
+### Collections of DTOs
+
+Handle arrays of nested DTOs:
+
+```php
+class TeamDTO extends LaravelArcDTO
+{
+    #[Property(type: 'string', required: true)]
+    public string $name;
+    
+    #[NestedProperty(dtoClass: UserDTO::class, required: false, isCollection: true)]
+    public array $members;
+}
+
+$team = new TeamDTO([
+    'name' => 'Development Team',
+    'members' => [
+        ['name' => 'Alice', 'email' => 'alice@example.com'],
+        ['name' => 'Bob', 'email' => 'bob@example.com']
+    ]
+]);
+
+// Access collection members
+foreach ($team->members as $member) {
+    echo $member->name; // Each member is a UserDTO instance
+}
+```
+
+## 🎨 Examples
+
+See the `src/Examples/` folder for complete usage examples including:
+- `AdvancedExampleDTO.php` - Complex nested structures with dates
+- `advanced_usage_example.php` - Practical usage demonstration
 
 ## 🤝 Compatibility
 

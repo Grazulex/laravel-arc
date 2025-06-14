@@ -48,6 +48,14 @@ class InvalidDTOException extends InvalidArgumentException
         return new self("Required property '{$property}' is missing");
     }
 
+    public static function forCastingError(string $castType, mixed $value, string $reason): self
+    {
+        $valueType = get_debug_type($value);
+        $message = "Failed to cast value of type '{$valueType}' to '{$castType}': {$reason}";
+        
+        return new self($message);
+    }
+
     /**
      * @param array<string, array<string>> $errors
      */

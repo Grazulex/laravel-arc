@@ -112,7 +112,7 @@ abstract class AbstractDTO implements DTOInterface
     }
 
     /**
-     * Set default values for missing required properties.
+     * Set default values for missing required properties and initialize nullable properties.
      */
     private function setDefaultsForMissingRequired(): void
     {
@@ -121,12 +121,20 @@ abstract class AbstractDTO implements DTOInterface
         foreach ($properties as $name => $propertyData) {
             if (!$this->has($name)) {
                 $attribute = $propertyData['attribute'];
+                $property = $propertyData['property'];
+                
                 if ($attribute->default !== null) {
                     // Set both the class property and attributes array
                     if (property_exists($this, $name)) {
                         $this->{$name} = $attribute->default;
                     }
                     $this->attributes[$name] = $attribute->default;
+                } elseif (!$attribute->required || ($property->getType() && $property->getType()->allowsNull())) {
+                    // Initialize nullable or optional properties with null
+                    if (property_exists($this, $name)) {
+                        $this->{$name} = null;
+                    }
+                    $this->attributes[$name] = null;
                 }
             }
         }

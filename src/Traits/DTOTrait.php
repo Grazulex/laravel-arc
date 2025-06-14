@@ -8,7 +8,10 @@ use BadMethodCallException;
 
 use function count;
 
+use Grazulex\Arc\Attributes\DateProperty;
+use Grazulex\Arc\Attributes\NestedProperty;
 use Grazulex\Arc\Attributes\Property;
+use Grazulex\Arc\Casting\CastManager;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 
 use function is_array;
@@ -49,6 +52,12 @@ trait DTOTrait
             $reflection = new ReflectionProperty($this, $name);
             if ($reflection->isInitialized($this)) {
                 return $this->{$name};
+            }
+            
+            // If property is not initialized, check if it's nullable
+            $type = $reflection->getType();
+            if ($type && $type->allowsNull()) {
+                return null;
             }
         }
 
@@ -130,7 +139,7 @@ trait DTOTrait
     }
 
     /**
-     * Set an attribute in the DTO with type checking.
+     * Set an attribute in the DTO with type checking and casting.
      */
     public function set(string $key, mixed $value): static
     {
@@ -139,6 +148,11 @@ trait DTOTrait
         if (isset($properties[$key])) {
             $attribute = $properties[$key]['attribute'];
             $reflectionProperty = $properties[$key]['property'];
+
+            // Apply casting if specified
+            if ($attribute && $attribute->cast) {
+                $value = CastManager::cast($value, $attribute);
+            }
 
             // Type checking
             if ($attribute && !$this->isValidType($value, $attribute->type, $reflectionProperty)) {
@@ -186,23 +200,45 @@ trait DTOTrait
         if (!empty($properties)) {
             // Get values from actual properties if they exist and are initialized
             foreach ($properties as $name => $propertyData) {
+                $value = null;
+                $hasValue = false;
+
                 if (property_exists($this, $name)) {
                     $reflection = new ReflectionProperty($this, $name);
                     if ($reflection->isInitialized($this)) {
-                        $result[$name] = $this->{$name};
-                        continue;
+                        $value = $this->{$name};
+                        $hasValue = true;
                     }
                 }
 
                 // Fallback to attributes array
-                if (array_key_exists($name, $this->attributes)) {
-                    $result[$name] = $this->attributes[$name];
-                } else {
-                    // Use default value if available
+                if (!$hasValue && array_key_exists($name, $this->attributes)) {
+                    $value = $this->attributes[$name];
+                    $hasValue = true;
+                }
+
+                // Use default value if available or handle nullable properties
+                if (!$hasValue) {
                     $attribute = $propertyData['attribute'];
+                    $reflection = $propertyData['property'];
+                    
                     if ($attribute?->default !== null) {
-                        $result[$name] = $attribute->default;
+                        $value = $attribute->default;
+                        $hasValue = true;
+                    } elseif (!$attribute->required || ($reflection->getType() && $reflection->getType()->allowsNull())) {
+                        // Property is nullable or not required, set as null
+                        $value = null;
+                        $hasValue = true;
                     }
+                }
+
+                // Apply serialization if we have a value and casting is defined
+                if ($hasValue) {
+                    $attribute = $propertyData['attribute'];
+                    if ($attribute && $attribute->cast && $value !== null) {
+                        $value = CastManager::serialize($value, $attribute);
+                    }
+                    $result[$name] = $value;
                 }
             }
         } else {
@@ -235,7 +271,15 @@ trait DTOTrait
             $properties = [];
 
             foreach ($reflection->getProperties() as $property) {
+                // Check for Property, DateProperty, or NestedProperty attributes
                 $attributes = $property->getAttributes(Property::class);
+                if (empty($attributes)) {
+                    $attributes = $property->getAttributes(DateProperty::class);
+                }
+                if (empty($attributes)) {
+                    $attributes = $property->getAttributes(NestedProperty::class);
+                }
+                
                 if (!empty($attributes)) {
                     $attribute = $attributes[0]->newInstance();
                     $properties[$property->getName()] = [

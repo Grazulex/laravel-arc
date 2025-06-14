@@ -5,6 +5,42 @@ All notable changes to `laravel-arc` will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-06-14
+
+### Added
+- **🆕 Automatic Carbon Date Transformation**: New `DateProperty` attribute for automatic conversion of dates to Carbon instances
+  - Support for custom date formats
+  - Timezone support
+  - Unix timestamp parsing
+  - Both Carbon and CarbonImmutable support
+  - Automatic serialization back to strings
+- **🆕 Nested DTOs**: New `NestedProperty` attribute for embedding DTOs within other DTOs
+  - Automatic conversion from arrays to DTO instances
+  - Support for collections of nested DTOs
+  - Proper serialization and deserialization
+- **🆕 Advanced Casting System**: New `CastManager` class for handling complex data transformations
+  - Extensible casting system
+  - Error handling with detailed exceptions
+  - Reverse casting for serialization
+- **🆕 Enhanced Property Attributes**: Extended `Property` attribute with new parameters
+  - `cast` parameter for specifying casting behavior
+  - `dateFormat` for custom date formats
+  - `nested` for nested DTO class specification
+
+### Enhanced
+- **Improved null handling**: Better support for nullable properties
+- **Enhanced serialization**: toArray() now properly handles nested DTOs and dates
+- **Better error messages**: More descriptive exceptions for casting errors
+- **Type safety**: Improved type checking with casting support
+
+### Examples
+- Added `AdvancedExampleDTO.php` - Complex nested structures with dates
+- Added `demo_advanced_features.php` - Practical demonstration of new features
+- Added comprehensive test suite for advanced features
+
+### Dependencies
+- Added `nesbot/carbon` dependency for date handling
+
 ## [1.4.0] - 2025-06-14
 
 ### 🎉 Major Quality & CI/CD Improvements

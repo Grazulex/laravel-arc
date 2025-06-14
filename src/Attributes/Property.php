@@ -12,5 +12,8 @@ class Property
         public readonly bool $required = true,
         public readonly mixed $default = null,
         public readonly ?string $validation = null,
+        public readonly ?string $cast = null,
+        public readonly ?string $dateFormat = null,
+        public readonly ?string $nested = null,
     ) {}
 }
