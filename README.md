@@ -65,6 +65,38 @@ A Laravel package for elegant and modern Data Transfer Objects (DTOs) management
 composer require grazulex/laravel-arc
 ```
 
+## 🛠️ Artisan Command
+
+Laravel Arc includes a powerful Artisan command to generate DTOs automatically:
+
+```bash
+# Create a basic DTO
+php artisan make:dto User
+
+# Create a DTO from an existing model
+php artisan make:dto User --model=User
+
+# Create a DTO in a custom directory
+php artisan make:dto Product --path=app/DTOs
+
+# Combine model analysis with custom path
+php artisan make:dto Product --model=Product --path=app/Data
+```
+
+### Command Features
+
+- 🧠 **Intelligent Type Detection** - Multi-layered approach for precise type detection
+  - 🎯 **Model Casts Analysis** - Reads `$casts` property for exact type mapping
+  - 🗃️ **Database Schema Inspection** - Analyzes actual column types and nullable constraints
+  - 📄 **Migration File Parsing** - Extracts types from Laravel migration files
+  - 🔍 **Smart Pattern Matching** - Fallback based on naming conventions
+- ✅ **Smart Model Analysis** - Automatically extracts properties from Eloquent models
+- ✅ **Validation Rules** - Generates appropriate validation rules automatically
+- ✅ **Date Handling** - Uses `DateProperty` for timestamp fields with proper Carbon typing
+- ✅ **Directory Creation** - Creates target directories if they don't exist
+- ✅ **Conflict Prevention** - Prevents overwriting existing files
+- ✅ **Flexible Paths** - Supports custom namespace and directory structures
+
 ## 🎯 Quick Usage
 
 ### 1. Create a DTO
@@ -360,22 +392,25 @@ Explore complete usage examples in the [`src/Examples/`](src/Examples/) folder:
 |---------|-------------|
 | **Basic Usage** | |
 | [`UserDTO.php`](src/Examples/UserDTO.php) | Basic user DTO example |
-| [`simple_example.php`](src/Examples/simple_example.php) | Basic DTO usage patterns |
-| [`usage_example.php`](src/Examples/usage_example.php) | General usage demonstration |
+| [`ProductDTO.php`](src/Examples/ProductDTO.php) | Product DTO with various property types |
+| [`SimpleExample.php`](src/Examples/SimpleExample.php) | Basic DTO usage patterns |
+| [`UsageExample.php`](src/Examples/UsageExample.php) | General usage demonstration |
 | **Advanced Features** | |
 | [`AdvancedExampleDTO.php`](src/Examples/AdvancedExampleDTO.php) | Complex nested structures with dates |
+| [`AdvancedModelDTO.php`](src/Examples/AdvancedModelDTO.php) | Generated DTO from model with casts |
 | [`ModernUserDTO.php`](src/Examples/ModernUserDTO.php) | Modern DTO implementation |
-| [`demo_advanced_features.php`](src/Examples/demo_advanced_features.php) | Practical demonstration |
+| [`DemoAdvancedFeatures.php`](src/Examples/DemoAdvancedFeatures.php) | Practical demonstration |
 | **Enums & Factories** | |
 | [`EnumExampleDTO.php`](src/Examples/EnumExampleDTO.php) | Complete enum DTO demonstration |
-| [`enum_simple_example.php`](src/Examples/enum_simple_example.php) | Simple enum usage |
-| [`factory_example.php`](src/Examples/factory_example.php) | DTO Factory usage examples |
-| [`team_example.php`](src/Examples/team_example.php) | Team and member relationships |
+| [`EnumSimpleExample.php`](src/Examples/EnumSimpleExample.php) | Simple enum usage |
+| [`EnumAdvancedExample.php`](src/Examples/EnumAdvancedExample.php) | Advanced enum features |
+| [`FactoryExample.php`](src/Examples/FactoryExample.php) | DTO Factory usage examples |
+| [`TeamExample.php`](src/Examples/TeamExample.php) | Team and member relationships |
 
 ## 🤝 Compatibility
 
-| Requirement | Version |
-|-------------|----------|
+|| Requirement | Version |
+||-------------|----------|
 | **PHP** | 8.2+ |
 | **Laravel** | 11+ / 12+ |
 | **Carbon** | 3.10+ |

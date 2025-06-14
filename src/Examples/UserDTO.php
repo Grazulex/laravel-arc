@@ -2,8 +2,43 @@
 
 namespace Grazulex\Arc\Examples;
 
+use Carbon\Carbon;
+use Grazulex\Arc\Attributes\DateProperty;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
+
+/**
+ * Example DTO created with:
+ * php artisan make:dto User --model=User
+ *
+ * This shows what would be generated for a typical Laravel User model
+ */
+class GeneratedUserDTO extends LaravelArcDTO
+{
+    #[Property(type: 'int', required: false)]
+    public ?int $id;
+
+    #[Property(type: 'string', required: false)]
+    public ?string $name;
+
+    #[Property(type: 'string', required: false, validation: 'email')]
+    public ?string $email;
+
+    #[DateProperty(required: false)]
+    public ?Carbon $email_verified_at;
+
+    #[Property(type: 'string', required: false)]
+    public ?string $password;
+
+    #[Property(type: 'string', required: false)]
+    public ?string $remember_token;
+
+    #[DateProperty(required: false)]
+    public ?Carbon $created_at;
+
+    #[DateProperty(required: false)]
+    public ?Carbon $updated_at;
+}
 
 /**
  * Example UserDTO using the new approach with attributes.

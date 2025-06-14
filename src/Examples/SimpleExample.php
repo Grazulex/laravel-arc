@@ -12,7 +12,7 @@ use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 
 // Simple DTO definition
-class simple_example extends LaravelArcDTO
+class SimpleExample extends LaravelArcDTO
 {
     #[Property(type: 'string', required: true, validation: 'max:100')]
     public string $name;

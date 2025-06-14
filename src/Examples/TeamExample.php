@@ -79,7 +79,7 @@ echo $user->toJson() . "\n\n";
 echo "=== Collections Example ===\n\n";
 
 // Create a DTO that handles collections
-class team_example extends LaravelArcDTO
+class TeamExample extends LaravelArcDTO
 {
     #[Property(type: 'string', required: true)]
     public string $name;
