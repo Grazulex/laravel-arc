@@ -9,6 +9,37 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.2.3] - 2025-06-14
+
+### 🐛 Bug Fixes
+
+#### 🔧 Enhanced Model Instantiation & Type Detection
+- **Fixed test model instantiation**: Improved `canInstantiateModel()` method to properly handle test and mock models
+- **Enhanced cast detection**: Test models now correctly read cast information for accurate type detection
+- **Improved database connection handling**: Better distinction between test models and real models requiring database connection
+- **Fixed type generation**: Models with casts like `'age' => 'integer'` now correctly generate `public int $age` instead of `public ?int $age`
+
+#### 🧪 Test Environment Improvements
+- **MakeDtoAdvancedTest fixed**: All advanced type detection tests now pass correctly
+- **Better test coverage**: Enhanced model cast detection in test environment
+- **Fallback preservation**: Real-world database connection fallback behavior maintained
+
+### 📖 Changes
+- fix: enhance canInstantiateModel method for test model support
+- fix: improve cast detection for accurate type generation
+- improve: better separation between test and production model handling
+- test: fix MakeDtoAdvancedTest type detection assertions
+
+### 🔄 Migration from v2.2.2
+
+No breaking changes in this release. This is a patch version update that enhances type detection reliability.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. Enhanced type detection from model casts
+4. Better test environment compatibility
+
 ## [2.2.2] - 2025-06-14
 
 ### 🐛 Bug Fixes
