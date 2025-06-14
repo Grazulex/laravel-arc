@@ -15,10 +15,12 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 use function in_array;
+use function is_object;
 use function is_string;
 
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
 
 class MakeDtoCommand extends Command
 {
@@ -117,6 +119,13 @@ PHP;
         }
 
         try {
+            // Try to create model instance safely
+            if (!$this->canInstantiateModel($modelClass)) {
+                $this->warn("Cannot instantiate model {$modelClass} (no database connection). Using fallback analysis.");
+
+                return $this->extractPropertiesWithoutModel($modelClass);
+            }
+
             $model = new $modelClass();
             $properties = [];
 
@@ -250,19 +259,45 @@ PHP;
 
             // Get column type from database
             $columnType = Schema::getColumnType($table, $attribute);
-            $columnListing = Schema::getColumnListing($table);
 
-            // Get additional column information if possible
+            // Get column information in a database-agnostic way
             $isNullable = true; // Default to nullable
 
             try {
-                $columns = DB::select("SHOW COLUMNS FROM {$table} LIKE '{$attribute}'");
-                if (!empty($columns)) {
-                    $column = $columns[0];
-                    $isNullable = strtolower($column->Null ?? 'yes') === 'yes';
+                // Use database-agnostic approach to get column info
+                $connection = DB::connection();
+                $driver = $connection->getDriverName();
+
+                if ($driver === 'sqlite') {
+                    // SQLite-specific query
+                    $columns = DB::select("PRAGMA table_info({$table})");
+                    foreach ($columns as $column) {
+                        if ($column->name === $attribute) {
+                            $isNullable = !$column->notnull; // notnull is 1 for NOT NULL, 0 for NULL
+                            break;
+                        }
+                    }
+                } elseif ($driver === 'mysql') {
+                    // MySQL-specific query
+                    $columns = DB::select("SHOW COLUMNS FROM {$table} LIKE '{$attribute}'");
+                    if (!empty($columns)) {
+                        $column = $columns[0];
+                        $isNullable = strtolower($column->Null ?? 'yes') === 'yes';
+                    }
+                } elseif ($driver === 'pgsql') {
+                    // PostgreSQL-specific query
+                    $columns = DB::select('
+                        SELECT is_nullable
+                        FROM information_schema.columns
+                        WHERE table_name = ? AND column_name = ?
+                    ', [$table, $attribute]);
+                    if (!empty($columns)) {
+                        $isNullable = strtolower($columns[0]->is_nullable) === 'yes';
+                    }
                 }
             } catch (Exception $e) {
-                // Ignore database inspection errors
+                // If database-specific queries fail, try Laravel's Schema facade
+                // This is a fallback but might not be as accurate for nullable detection
             }
 
             return $this->mapDatabaseTypeToPhpType($columnType, $attribute, $isNullable);
@@ -627,14 +662,14 @@ PHP;
 
             // Use reflection to analyze method return type instead of invoking it
             $returnType = $method->getReturnType();
-            if ($returnType && $returnType instanceof \ReflectionNamedType) {
+            if ($returnType && $returnType instanceof ReflectionNamedType) {
                 $returnTypeName = $returnType->getName();
                 if ($this->isEloquentRelation($returnTypeName)) {
                     $relationType = $this->getRelationType($returnTypeName);
                     // For now, we'll use a generic approach since we can't invoke the method safely
                     $methodName = $method->getName();
                     $relatedModelClass = $this->guessRelatedModelFromMethodName($methodName);
-                    
+
                     if ($relationType && $relatedModelClass) {
                         return $this->buildRelationConfig($relationType, $relatedModelClass);
                     }
@@ -952,6 +987,7 @@ PHP;
 
             // Try to get the default connection
             DB::connection()->getPdo();
+
             return true;
         } catch (Exception $e) {
             return false;
@@ -966,7 +1002,7 @@ PHP;
         // Convert method name to potential model name
         // e.g., 'posts' -> 'Post', 'comments' -> 'Comment', 'author' -> 'Author'
         $modelName = Str::studly(Str::singular($methodName));
-        
+
         // Try different namespaces
         $possibleClasses = [
             "App\\Models\\{$modelName}",
@@ -982,5 +1018,65 @@ PHP;
 
         // Return a generic class name that can be adjusted later
         return "App\\Models\\{$modelName}";
+    }
+
+    /**
+     * Check if we can safely instantiate a model.
+     */
+    private function canInstantiateModel(string $modelClass): bool
+    {
+        try {
+            if (!class_exists('\\Illuminate\\Support\\Facades\\DB')) {
+                return false;
+            }
+
+            // Try to get the default connection and test it
+            $connection = DB::connection();
+            $pdo = $connection->getPdo();
+
+            // Try a simple query to ensure the connection works
+            $connection->select('SELECT 1');
+
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * Extract properties without instantiating the model.
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    private function extractPropertiesWithoutModel(string $modelClass): array
+    {
+        $properties = [];
+
+        try {
+            $reflection = new ReflectionClass($modelClass);
+
+            // Try to get fillable property statically
+            if ($reflection->hasProperty('fillable')) {
+                $fillableProperty = $reflection->getProperty('fillable');
+                $fillableProperty->setAccessible(true);
+                $fillable = $fillableProperty->getDefaultValue() ?? [];
+
+                foreach ($fillable as $attribute) {
+                    $properties[$attribute] = $this->guessTypeFromPattern($attribute);
+                }
+            }
+
+            // Add common timestamp fields
+            $properties['id'] = ['type' => 'int', 'nullable' => false];
+            $properties['created_at'] = ['type' => 'date', 'nullable' => true];
+            $properties['updated_at'] = ['type' => 'date', 'nullable' => true];
+        } catch (Exception $e) {
+            // Fallback to basic properties
+            $properties['id'] = ['type' => 'int', 'nullable' => false];
+            $properties['created_at'] = ['type' => 'date', 'nullable' => true];
+            $properties['updated_at'] = ['type' => 'date', 'nullable' => true];
+        }
+
+        return $properties;
     }
 }

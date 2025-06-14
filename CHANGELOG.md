@@ -9,6 +9,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 *No unreleased changes*
 
+## [2.2.2] - 2025-06-14
+
+### 🐛 Bug Fixes
+
+#### 🔧 Database Connection & Nullable Detection
+- **Fixed database connection error**: Enhanced `--with-relations` command to handle environments without database connection
+- **Fixed nullable field detection**: Resolved incorrect `required: false` for NOT NULL database fields
+- **Multi-database support**: Added SQLite, MySQL, and PostgreSQL compatibility for nullable field detection
+- **Enhanced model instantiation**: Added safe model instantiation with fallback analysis
+
+#### 🛠️ Code Quality Improvements
+- **PSR-12 compliance**: Fixed all code style issues to meet PSR-12 standards
+- **PHPStan Level 6**: Resolved all static analysis issues with proper type annotations
+- **Enhanced imports**: Added missing function imports for better code organization
+
+### 📖 Changes
+- fix: prevent database connection errors in `--with-relations` command
+- fix: correct nullable field detection using database-specific queries
+- improve: add database connection validation before model instantiation
+- enhance: multi-database compatibility (SQLite, MySQL, PostgreSQL)
+- improve: code style and static analysis compliance
+
+### 🔄 Migration from v2.2.1
+
+No breaking changes in this release. This is a patch version update that fixes critical bugs.
+
+**Simple Update Steps:**
+1. Update your composer dependency: `composer update grazulex/laravel-arc`
+2. No configuration changes required
+3. The `--with-relations` flag now works in all environments
+4. Field nullability detection is now accurate across all database types
+
 ## [2.2.1] - 2025-06-14
 
 ### 🐛 Bug Fixes
