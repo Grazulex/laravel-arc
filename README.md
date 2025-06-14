@@ -121,6 +121,7 @@ php artisan dto:validate UserDTO --data='{"name":"John"}'
 
 ### Quick Links
 - **[Quick Start Guide](https://github.com/Grazulex/laravel-arc/wiki/Quick-Start)** - Get up and running in 5 minutes
+- **[MakeDtoCommand](https://github.com/Grazulex/laravel-arc/wiki/MakeDtoCommand)** - Intelligent DTO generation from models
 - **[Property Attributes](https://github.com/Grazulex/laravel-arc/wiki/Property-Attributes)** - Learn the unified Property syntax
 - **[Advanced Features](https://github.com/Grazulex/laravel-arc/wiki/Advanced-Features)** - Explore all advanced capabilities
 - **[Examples Gallery](https://github.com/Grazulex/laravel-arc/wiki/Examples)** - Real-world usage examples
