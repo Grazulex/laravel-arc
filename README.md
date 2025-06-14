@@ -409,8 +409,8 @@ Explore complete usage examples in the [`src/Examples/`](src/Examples/) folder:
 
 ## 🤝 Compatibility
 
-|| Requirement | Version |
-||-------------|----------|
+| Requirement | Version |
+|-------------|----------|
 | **PHP** | 8.2+ |
 | **Laravel** | 11+ / 12+ |
 | **Carbon** | 3.10+ |
