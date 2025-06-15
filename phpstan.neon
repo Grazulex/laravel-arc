@@ -46,8 +46,10 @@ parameters:
           path: tests/*
         - message: '#^Template type TDeclaringModel on class [a-zA-Z0-9\\:_]+ is not covariant#'
           path: tests/*
-        - message: '#^Method [a-zA-Z0-9\\:_]+ should return [a-zA-Z0-9\\<\\>,\\$\\(\\) ]+ but returns [a-zA-Z0-9\\<\\>,\\$\\(\\) ]+$#'
+        - message: '#^Method [a-zA-Z0-9\\:_]+ should return Illuminate\\Database\\Eloquent\\Relations\\[a-zA-Z]+<[^>]+> but returns#'
           path: tests/*
+        - message: '#^Method [a-zA-Z0-9\\:_]+ should return array<static\(Grazulex\\Arc\\LaravelArcDTO\)> but returns array<Grazulex\\Arc\\Contracts\\DTOInterface>#'
+          path: src/*
     excludePaths:
         - tests/Pest.php
         - vendor
