@@ -48,15 +48,32 @@ class DateCaster extends BaseCaster
         }
     }
 
-    protected function performSerialization(mixed $value, Property $attribute): string
+    /**
+     * Serializes the date value into a format suitable for JSON or other outputs.
+     *
+     * @param mixed $value the value to serialize, expected to be a Carbon instance
+     * @param Property $attribute the property attribute containing serialization options
+     *
+     * @return array<string, int|string>|string the serialized date value
+     */
+    protected function performSerialization(mixed $value, Property $attribute): array|string
     {
         if ($value instanceof Carbon || $value instanceof CarbonImmutable) {
-            // Use format from Property if specified, otherwise use date format for Y-m-d properties
-            if ($attribute->format && $attribute->format === 'Y-m-d') {
-                return $value->toDateString();
+            // If we're explicitly asking for a specific format via the attribute
+            if ($attribute->format) {
+                return $value->format($attribute->format);
             }
 
-            return $value->toDateTimeString();
+            // Return multiple formats by default
+            return [
+                'iso' => $value->toIso8601String(),
+                'diff_from_now' => $value->diffForHumans(),
+                'utc' => $value->toRfc3339String(),
+                'formatted' => $value->format('d/m/Y H:i:s'),
+                'timestamp' => $value->timestamp,
+                'timezone' => $attribute->timezone ?? 'UTC',
+                'local' => $value->setTimezone($attribute->timezone ?? 'UTC')->format('d/m/Y H:i:s'),
+            ];
         }
 
         return (string) $value;

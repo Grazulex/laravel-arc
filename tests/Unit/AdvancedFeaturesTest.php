@@ -115,7 +115,7 @@ describe('Date Property Features', function () {
         $array = $user->toArray();
         
         expect($array['birthDate'])->toBe('1990-05-15');
-        expect($array['createdAt'])->toBe('2024-01-15 10:30:00');
+        expect($array['createdAt']['local'])->toBe('15/01/2024 10:30:00');
     });
 
     it('handles null dates gracefully', function () {
@@ -264,7 +264,7 @@ describe('Combined Advanced Features', function () {
 
         $array = $team->toArray();
         expect($array['members'][0]['birthDate'])->toBe('1990-01-01');
-        expect($array['members'][0]['createdAt'])->toBe('2024-01-15 10:30:00');
+        expect($array['members'][0]['createdAt']['local'])->toBe('15/01/2024 10:30:00');
         expect($array['members'][0]['address']['street'])->toBe('123 Alice Street');
     });
 

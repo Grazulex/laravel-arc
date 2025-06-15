@@ -76,8 +76,8 @@ describe('Refactored Casting Architecture', function () {
         $date = Carbon::parse('2023-01-01');
         $result = CastManager::serialize($date, $dateProperty);
         
-        expect($result)->toBeString();
-        expect($result)->toContain('2023-01-01');
+        expect($result)->toBeArray();
+        expect(array_keys($result))->toContain('iso', 'diff_from_now', 'utc', 'formatted', 'timestamp', 'timezone', 'local');
     });
     
     it('handles unknown cast types gracefully', function () {
@@ -110,7 +110,7 @@ describe('Individual Caster Functionality', function () {
         expect($result)->toBeInstanceOf(Carbon::class);
         
         $serialized = $caster->serialize($result, $property);
-        expect($serialized)->toBeString();
+        expect($serialized)->toBeArray();
     });
     
     it('NestedCaster can identify nested cast types', function () {

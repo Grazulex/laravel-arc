@@ -1,5 +1,41 @@
 # Changelog
 
+All notable changes to `laravel-arc` will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+*No unreleased changes*
+
+## [2.5.0] - 2025-06-15
+
+### 🔄 Enhanced Date Handling & Testing
+
+#### Added
+- **🎯 Rich Date Formats**: Enhanced date serialization with multiple formats
+  - ISO 8601 format
+  - Human-readable diff (e.g., "2 days ago")
+  - UTC RFC3339
+  - Formatted local time
+  - Unix timestamp
+  - Timezone information
+
+#### Changed
+- **📅 Date Serialization**: Improved date handling in DateCaster
+  - Multi-format output by default
+  - Customizable format via Property attribute
+  - Better timezone support
+- **🧪 Updated Tests**: Modified tests to accommodate new date formats
+  - Enhanced date casting tests
+  - Updated integration tests
+
+#### Benefits
+- **🌐 Better DateTime Support**: More flexible date handling for various use cases
+- **🔄 Timezone Awareness**: Improved handling of timezone-specific data
+- **📊 Rich Data Output**: More detailed date information in serialized output
+
 ## [2.4.2] - 2025-06-15
 
 ### 🔧 PHP 8.4 Compatibility & Code Modernization
@@ -18,14 +54,32 @@
 - PHP CS Fixer compatibility with PHP 8.4
 - Static analysis compatibility issues
 
-All notable changes to `laravel-arc` will be documented in this file.
+## [2.4.1] - 2025-06-15
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+### 🔄 Enhanced Date Handling & Testing
 
-## [Unreleased]
+#### Added
+- **🎯 Rich Date Formats**: Enhanced date serialization with multiple formats
+  - ISO 8601 format
+  - Human-readable diff (e.g., "2 days ago")
+  - UTC RFC3339
+  - Formatted local time
+  - Unix timestamp
+  - Timezone information
 
-*No unreleased changes*
+#### Changed
+- **📅 Date Serialization**: Improved date handling in DateCaster
+  - Multi-format output by default
+  - Customizable format via Property attribute
+  - Better timezone support
+- **🧪 Updated Tests**: Modified tests to accommodate new date formats
+  - Enhanced date casting tests
+  - Updated integration tests
+
+#### Benefits
+- **🌐 Better DateTime Support**: More flexible date handling for various use cases
+- **🔄 Timezone Awareness**: Improved handling of timezone-specific data
+- **📊 Rich Data Output**: More detailed date information in serialized output
 
 ## [2.4.0] - 2025-06-15
 
