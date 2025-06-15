@@ -13,6 +13,8 @@
 [![Tests](https://img.shields.io/github/actions/workflow/status/grazulex/laravel-arc/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/grazulex/laravel-arc/actions/workflows/tests.yml)
 [![License](https://img.shields.io/github/license/grazulex/laravel-arc?style=flat-square)](https://github.com/grazulex/laravel-arc/blob/main/LICENSE.md)
 [![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue?style=flat-square)](https://www.php.net/)
+[![Laravel Version](https://img.shields.io/badge/Laravel-12%2B-blue?style=flat-square)](https://laravel.com/)
+
 
 </div>
 
