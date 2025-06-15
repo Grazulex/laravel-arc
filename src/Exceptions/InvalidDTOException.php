@@ -25,7 +25,11 @@ class InvalidDTOException extends InvalidArgumentException
      */
     public static function forValidationErrors(array $errors): self
     {
-        $exception = new self('DTO validation failed: ' . implode(', ', array_keys($errors)));
+        $errorMessages = [];
+        foreach ($errors as $field => $fieldErrors) {
+            $errorMessages[] = $field . ': ' . implode(', ', $fieldErrors);
+        }
+        $exception = new self('DTO validation failed: ' . implode('; ', $errorMessages));
 
         return $exception->setErrors($errors);
     }

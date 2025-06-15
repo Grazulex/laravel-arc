@@ -7,6 +7,7 @@ use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\BaseCaster;
 use Grazulex\Arc\Contracts\DTOInterface;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
+use Illuminate\Database\Eloquent\Model;
 use InvalidArgumentException;
 
 use function is_array;
@@ -24,8 +25,16 @@ class NestedCaster extends BaseCaster
     /**
      * @return array<DTOInterface>|DTOInterface
      */
-    protected function performCast(mixed $value, Property $attribute): array|DTOInterface
+    protected function performCast(mixed $value, Property $attribute): null|array|DTOInterface
     {
+        if ($value === null) {
+            if ($attribute->required) {
+                throw InvalidDTOException::forCastingError('nested', $value, 'Value cannot be null for required nested property');
+            }
+
+            return null;
+        }
+
         if (!$attribute->nested) {
             throw new InvalidArgumentException('Nested class not specified');
         }
@@ -98,11 +107,31 @@ class NestedCaster extends BaseCaster
             return $value;
         }
 
-        if (is_array($value)) {
-            return new $dtoClass($value);
+        if ($value instanceof Model) {
+            // Convert model to array and use fromArray
+            return $dtoClass::fromArray($value->toArray());
         }
 
-        throw new InvalidArgumentException('Value must be an array or instance of ' . $dtoClass);
+        if (is_array($value)) {
+            // Si le tableau contient déjà une instance du DTO
+            if (isset($value[$dtoClass]) && is_array($value[$dtoClass])) {
+                $value = $value[$dtoClass];
+            }
+
+            try {
+                // Utilise la méthode fromArray du DTO si elle existe
+                if (method_exists($dtoClass, 'fromArray')) {
+                    return $dtoClass::fromArray($value);
+                }
+
+                // Sinon, crée une nouvelle instance avec les données
+                return new $dtoClass($value);
+            } catch (Exception $e) {
+                throw $e;
+            }
+        }
+
+        throw new InvalidArgumentException('Value must be an array, Model, or instance of ' . $dtoClass);
     }
 
     /**
@@ -134,6 +163,10 @@ class NestedCaster extends BaseCaster
     {
         if ($value instanceof DTOInterface) {
             return $value->toArray();
+        }
+
+        if (is_array($value) && isset($value['class'])) {
+            return $value['class'];
         }
 
         return is_array($value) ? $value : [];

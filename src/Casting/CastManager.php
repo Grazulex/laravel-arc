@@ -12,6 +12,7 @@ use Grazulex\Arc\Casting\Casters\IntegerCaster;
 use Grazulex\Arc\Casting\Casters\NestedCaster;
 use Grazulex\Arc\Casting\Casters\StringCaster;
 use Grazulex\Arc\Casting\Contracts\CasterInterface;
+use Grazulex\Arc\Contracts\DTOInterface;
 
 /**
  * Manages type casting using dedicated caster classes.
@@ -125,6 +126,11 @@ class CastManager
     {
         if ($value === null) {
             return null;
+        }
+
+        // Si la valeur est un DTO, retourner directement son tableau
+        if ($value instanceof DTOInterface) {
+            return $value->toArray();
         }
 
         $caster = $this->findCasterForType($attribute->cast);

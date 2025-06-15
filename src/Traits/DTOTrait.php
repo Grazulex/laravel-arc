@@ -12,6 +12,7 @@ use function get_class;
 
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Casting\CastManager;
+use Grazulex\Arc\Contracts\DTOInterface;
 use Grazulex\Arc\Contracts\TransformerInterface as LegacyTransformerInterface;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 use Grazulex\Arc\Interfaces\TransformerInterface;
@@ -258,6 +259,10 @@ trait DTOTrait
                     if ($attribute && $attribute->cast && $value !== null) {
                         $value = CastManager::serialize($value, $attribute);
                     }
+                    // Si la valeur est un DTO, on appelle sa méthode toArray()
+                    if ($value instanceof DTOInterface) {
+                        $value = $value->toArray();
+                    }
                     $result[$name] = $value;
                 }
             }
@@ -437,8 +442,14 @@ trait DTOTrait
      */
     private function isValidType(mixed $value, string $expectedType, ReflectionProperty $property): bool
     {
-        if ($value === null && !$property->getType()?->allowsNull()) {
-            return false;
+        // If value is null, check if property type allows null
+        if ($value === null) {
+            return $property->getType()?->allowsNull() ?? true;
+        }
+
+        // Check if it's a nested type
+        if ($expectedType === 'nested') {
+            return true; // Let the NestedCaster handle the validation
         }
 
         return match ($expectedType) {

@@ -17,10 +17,21 @@ class StringCaster extends BaseCaster
         return ['string'];
     }
 
-    protected function performCast(mixed $value, Property $attribute): string
+    protected function performCast(mixed $value, Property $attribute): ?string
     {
+        if ($value === null) {
+            // Si la propriété n'est pas requise OU si le type est nullable, on accepte null
+            if (!$attribute->required) {
+                return null;
+            }
+        }
+
         if (is_string($value)) {
             return $value;
+        }
+
+        if ($value === null) {
+            return null;
         }
 
         return (string) $value;
