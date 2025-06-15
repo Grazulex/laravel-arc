@@ -46,8 +46,8 @@ trait DTOFactoryTrait
             $factory->withAttributes($overrides);
         }
 
-        /** @var static */
-        return (static) $factory->create();
+        // @var static
+        return $factory->create();
     }
 
     /**
@@ -65,7 +65,7 @@ trait DTOFactoryTrait
             $factory->withAttributes($overrides);
         }
 
-        /** @var array<int, static> */
-        return array_map(fn($dto) => (static) $dto, $factory->fake()->createMany($count));
+        // @var array<int, static>
+        return $factory->fake()->createMany($count);
     }
 }
