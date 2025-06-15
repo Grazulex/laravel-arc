@@ -1,6 +1,4 @@
-# Release Notes
-
-## [2.4.0] - 2025-06-15
+# Release Notes - v2.4.0
 
 ### 🔄 Refactoring & Documentation
 
