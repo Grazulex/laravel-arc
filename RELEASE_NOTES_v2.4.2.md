@@ -1,4 +1,4 @@
-# Laravel Arc v2.4.1 Release Notes 🔧
+# Laravel Arc v2.4.2
 
 ## 🛠️ PHP 8.4 Compatibility Update
 
@@ -58,7 +58,7 @@ class UserDTO extends LaravelArcDTO
 
 ---
 
-## 🚀 Migration from v2.4.0
+## 🚀 Migration from v2.4.1
 
 **This is a seamless update with no breaking changes.**
 
@@ -112,5 +112,5 @@ Thank you to everyone who helped test and verify PHP 8.4 compatibility!
 
 ---
 
-*Laravel Arc v2.4.1 - Modern, compatible, reliable.*
+*Laravel Arc v2.4.2 - Modern,
 

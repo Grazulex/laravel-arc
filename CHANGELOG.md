@@ -1,6 +1,6 @@
 # Changelog
 
-## [2.4.1] - 2025-06-15
+## [2.4.2] - 2025-06-15
 
 ### 🔧 PHP 8.4 Compatibility & Code Modernization
 
