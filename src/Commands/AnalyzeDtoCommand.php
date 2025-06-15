@@ -306,6 +306,9 @@ class AnalyzeDtoCommand extends Command
     /**
      * Check if class is a DTO.
      */
+    /**
+     * @param ReflectionClass<object> $class
+     */
     private function isDTOClass(ReflectionClass $class): bool
     {
         // Check if implements DTOInterface
