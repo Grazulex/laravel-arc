@@ -14,7 +14,7 @@ class RelationTestUser extends Model
     protected $fillable = ['name', 'email'];
     
     /**
-     * @return HasMany<RelationTestOrder>
+     * @return HasMany<RelationTestOrder, RelationTestUser>
      */
     public function orders(): HasMany
     {
@@ -22,7 +22,7 @@ class RelationTestUser extends Model
     }
     
     /**
-     * @return HasOne<RelationTestProfile>
+     * @return HasOne<RelationTestProfile, RelationTestUser>
      */
     public function profile(): HasOne
     {
@@ -36,7 +36,7 @@ class RelationTestOrder extends Model
     protected $fillable = ['amount', 'status'];
     
     /**
-     * @return BelongsTo<RelationTestUser>
+     * @return BelongsTo<RelationTestUser, RelationTestOrder>
      */
     public function user(): BelongsTo
     {
@@ -50,7 +50,7 @@ class RelationTestProfile extends Model
     protected $fillable = ['bio', 'avatar'];
     
     /**
-     * @return BelongsTo<RelationTestUser>
+     * @return BelongsTo<RelationTestUser, RelationTestProfile>
      */
     public function user(): BelongsTo
     {
