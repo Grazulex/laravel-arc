@@ -1,40 +1,54 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
     level: 6
     paths:
         - src
         - tests
-    
-    # Only ignore specific patterns that are still needed
     ignoreErrors:
-        # PHPStan template type errors for expect() in tests
-        - '#Unable to resolve the template type TValue in call to function expect#'
-        # Ignore dynamic property access in DTOs (they use magic methods)
-        - '#Access to an undefined property .*DTO::\$.*#'
-        - '#Call to an undefined method .*DTO::get.*#'
-        - '#Call to an undefined method .*DTO::set.*#'
-        # Allow unsafe usage of new static() in DTOs
-        - '#Unsafe usage of new static\(\)#'
-        # Ignore property access issues in tests (test files often access properties dynamically)
-        - '#Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface::\$.*#'
-        # Ignore return type issues in factory trait (trait methods return DTOInterface but we want static)
-        - '#Method .*::(fake|fakeMany)\(\) should return .* but returns .*DTOInterface.*#'
-        # Ignore array value type specifications in new features
-        - '#Method .*Property::__construct\(\) has parameter \$transform with no value type specified in iterable type array#'
-        - '#Method .*AnalyzeDtoCommand::isDTOClass\(\) has parameter \$class with generic class ReflectionClass but does not specify its types#'
-        - '#Unreachable statement - code above always terminates#'
-    
-    # Exclude files (examples and demo files don't need strict analysis)
+        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$testModel#'
+          path: tests/*
+        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$user#'
+          path: tests/*
+        - message: '#Call to function method_exists\(\) with .* will always evaluate to true#'
+          path: tests/*
+        - message: '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$id#'
+          path: tests/*
+        - message: '#Method .* return type has no value type specified in iterable type array#'
+          path: tests/*
+        - message: '#Method .* has parameter .* with no value type specified in iterable type array#'
+          path: tests/*
+        - message: '#Property .* type has no value type specified in iterable type array#'
+          path: tests/*
+        - message: '#Unsafe usage of new static\(\)#'
+          path: src/*
+        - message: '#Unsafe usage of new static\(\)#'
+          path: tests/*
+        - message: '#Method .* has no return type specified#'
+          path: tests/*
+        - message: '#Access to an undefined property .*DTO::\$.*#'
+          path: tests/*
+        - message: '#Call to an undefined method .*DTO::get.*#'
+          path: tests/*
+        - message: '#Call to an undefined method .*DTO::set.*#'
+          path: tests/*
+        - message: '#Call to static method create\(\) on an unknown class Schema#'
+          path: tests/*
+        - message: '#Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface::\$.*#'
+          path: tests/*
+        - message: '#Unable to resolve the template type TValue in call to function expect#'
+          path: tests/*
+        - message: '#Class RealUserDTO uses unknown trait FromModelTrait#'
+          path: tests/*
+        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::artisan\(\)#'
+          path: tests/*
+        - message: '#Parameter \#1 \$object of function get_class expects object#'
+          path: tests/*
+        - message: '#Access to an undefined property Pest\\Mixins\\Expectation.*::\$not#'
+          path: tests/*
     excludePaths:
         - tests/Pest.php
-        - tests/Feature/Commands/MakeDtoRelationsTest.php
-        - tests/Feature/Commands/MakeDtoValidationTest.php
         - vendor
         - src/Examples/
-    
-    # Include Laravel stubs
+    treatPhpDocTypesAsCertain: false
     bootstrapFiles:
         - vendor/autoload.php
 
