@@ -10,7 +10,10 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
-/** @property Model $testModel */
+/**
+ * @property Model $testModel
+ * @property \Illuminate\Foundation\Application $app
+ */
 
 /**
  * Integration test DTO for real model conversion.
@@ -46,17 +49,20 @@ describe('DTOFromModelTrait Integration', function () {
     
     beforeEach(function () {
         // Create test table if using SQLite
-        Schema::create('test_users', function ($table) {
-            $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->integer('age')->nullable();
-            $table->boolean('is_active')->default(true);
-            $table->timestamps();
-        });
+        if (!Schema::hasTable('test_users')) {
+            Schema::create('test_users', function ($table) {
+                $table->id();
+                $table->string('name');
+                $table->string('email')->unique();
+                $table->integer('age')->nullable();
+                $table->boolean('is_active')->default(true);
+                $table->timestamps();
+            });
+        }
         
+        // Create test model class
         // Create a real model for testing
-        $this->testModel = new class extends Model {
+        $model = new class extends Model {
             protected $table = 'test_users';
             protected $fillable = ['name', 'email', 'age', 'is_active'];
             /** @var array<string, string> */
@@ -66,13 +72,18 @@ describe('DTOFromModelTrait Integration', function () {
                 'updated_at' => 'datetime'
             ];
         };
+        
+        // Store the model class name for use in tests
+        app()->instance('TestModel', get_class($model));
     });
     
     describe('with real Eloquent models', function () {
         
         it('creates DTO from real Eloquent model', function () {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = app('TestModel');
             /** @var Model $user */
-            $user = $this->testModel::create([
+            $user = $modelClass::query()->create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30,
@@ -92,15 +103,17 @@ describe('DTOFromModelTrait Integration', function () {
         });
         
         it('creates DTOs from collection of real models', function () {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = app('TestModel');
             /** @var Model $user1 */
-            $user1 = $this->testModel::create([
+            $user1 = $modelClass::query()->create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30
             ]);
             
             /** @var Model $user2 */
-            $user2 = $this->testModel::create([
+            $user2 = $modelClass::query()->create([
                 'name' => 'Jane Smith',
                 'email' => 'jane@example.com',
                 'age' => 25
@@ -108,7 +121,7 @@ describe('DTOFromModelTrait Integration', function () {
             
             // Get collection
             /** @var Collection<int, Model> $users */
-            $users = $this->testModel::all();
+$users = $modelClass::all();
             
             // Convert to DTOs
             $dtos = RealUserDTO::fromModels($users);
@@ -122,8 +135,10 @@ describe('DTOFromModelTrait Integration', function () {
         });
         
         it('works with fromModelWithLoadedRelations on real models', function () {
+            /** @var class-string<Model> $modelClass */
+            $modelClass = app()->make('TestModel');
             /** @var Model $user */
-            $user = $this->testModel::create([
+            $user = $modelClass::query()->create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30

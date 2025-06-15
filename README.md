@@ -12,7 +12,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-arc.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-arc)
 [![Tests](https://img.shields.io/github/actions/workflow/status/grazulex/laravel-arc/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/grazulex/laravel-arc/actions/workflows/tests.yml)
 [![License](https://img.shields.io/github/license/grazulex/laravel-arc?style=flat-square)](https://github.com/grazulex/laravel-arc/blob/main/LICENSE.md)
-[![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue?style=flat-square)](https://www.php.net/)
+[![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue?style=flat-square)](https://www.php.net/)
 
 </div>
 
@@ -129,11 +129,11 @@ php artisan dto:validate UserDTO --data='{"name":"John"}'
 
 ## 📋 Requirements
 
-| Requirement | Version |
-|-------------|----------|
-| **PHP** | 8.2+ |
+| Requirement | Version   |
+|-------------|-----------|
+| **PHP** | 8.3+      |
 | **Laravel** | 11+ / 12+ |
-| **Carbon** | 3.10+ |
+| **Carbon** | 3.10+     |
 
 ## 🔄 Migration from v1
 
