@@ -44,6 +44,12 @@ parameters:
           path: tests/*
         - message: '#Access to an undefined property Pest\\Mixins\\Expectation.*::\$not#'
           path: tests/*
+        - message: '#Method \S+ should return \S+ but returns \S+#'
+          path: tests/*
+        - message: '#Method Grazulex\\Arc\\LaravelArcDTO::fake\(\) should return static\(Grazulex\\Arc\\LaravelArcDTO\) but returns Grazulex\\Arc\\Contracts\\DTOInterface#'
+          path: src/*
+        - message: '#Method Grazulex\\Arc\\LaravelArcDTO::fakeMany\(\) should return array<static\(Grazulex\\Arc\\LaravelArcDTO\)> but returns array<Grazulex\\Arc\\Contracts\\DTOInterface>#'
+          path: src/*
     excludePaths:
         - tests/Pest.php
         - vendor

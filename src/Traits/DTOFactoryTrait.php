@@ -65,7 +65,7 @@ trait DTOFactoryTrait
             $factory->withAttributes($overrides);
         }
 
-        // @var array<static>
+        // @var array<int, static>
         return $factory->fake()->createMany($count);
     }
 }
