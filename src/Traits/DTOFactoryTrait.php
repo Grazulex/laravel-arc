@@ -3,6 +3,7 @@
 namespace Grazulex\Arc\Traits;
 
 use Grazulex\Arc\Contracts\DTOFactoryInterface;
+use Grazulex\Arc\Contracts\DTOInterface;
 use Grazulex\Arc\Factory\DTOFactory;
 
 trait DTOFactoryTrait
@@ -38,7 +39,7 @@ trait DTOFactoryTrait
      *
      * @param null|array<string, mixed> $overrides
      */
-    public static function fake(?array $overrides = null): static
+    public static function fake(?array $overrides = null): DTOInterface|static
     {
         $factory = static::factory()->fake();
 
@@ -46,8 +47,10 @@ trait DTOFactoryTrait
             $factory->withAttributes($overrides);
         }
 
-        // @var static
-        return $factory->create();
+        /** @var static $result */
+        $result = $factory->create();
+
+        return $result;
     }
 
     /**
@@ -55,7 +58,7 @@ trait DTOFactoryTrait
      *
      * @param null|array<string, mixed> $overrides
      *
-     * @return array<static>
+     * @return array<int, DTOInterface|static>
      */
     public static function fakeMany(int $count, ?array $overrides = null): array
     {
@@ -65,7 +68,9 @@ trait DTOFactoryTrait
             $factory->withAttributes($overrides);
         }
 
-        // @var array<int, static>
-        return $factory->fake()->createMany($count);
+        /** @var array<int, static> $result */
+        $result = $factory->fake()->createMany($count);
+
+        return $result;
     }
 }

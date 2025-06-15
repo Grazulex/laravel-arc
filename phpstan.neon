@@ -4,10 +4,6 @@ parameters:
         - src
         - tests
     ignoreErrors:
-        - message: '#^Method Grazulex\\Arc\\LaravelArcDTO::fake\(\) should return static\(Grazulex\\Arc\\LaravelArcDTO\) but returns Grazulex\\Arc\\Contracts\\DTOInterface#'
-          path: src/*
-        - message: '#^Method Grazulex\\Arc\\LaravelArcDTO::fakeMany\(\) should return array<static\(Grazulex\\Arc\\LaravelArcDTO\)> but returns array<Grazulex\\Arc\\Contracts\\DTOInterface>#'
-          path: src/*
         - message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$id#'
           path: tests/*
         - message: '#^Unsafe usage of new static\(\)#'
