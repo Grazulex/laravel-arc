@@ -4,52 +4,50 @@ parameters:
         - src
         - tests
     ignoreErrors:
-        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$testModel#'
+        - message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase::\$testModel#'
           path: tests/*
-        - message: '#Access to an undefined property PHPUnit\\Framework\\TestCase::\$user#'
+        - message: '#^Access to an undefined property PHPUnit\\Framework\\TestCase::\$user#'
           path: tests/*
-        - message: '#Call to function method_exists\(\) with .* will always evaluate to true#'
+        - message: '#^Call to function method_exists\(\) with .* will always evaluate to true#'
           path: tests/*
-        - message: '#Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$id#'
+        - message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model::\$id#'
           path: tests/*
-        - message: '#Method .* return type has no value type specified in iterable type array#'
+        - message: '#^Method .* return type has no value type specified in iterable type array#'
           path: tests/*
-        - message: '#Method .* has parameter .* with no value type specified in iterable type array#'
+        - message: '#^Method .* has parameter .* with no value type specified in iterable type array#'
           path: tests/*
-        - message: '#Property .* type has no value type specified in iterable type array#'
+        - message: '#^Property .* type has no value type specified in iterable type array#'
           path: tests/*
-        - message: '#Unsafe usage of new static\(\)#'
+        - message: '#^Unsafe usage of new static\(\)#'
           path: src/*
-        - message: '#Unsafe usage of new static\(\)#'
+        - message: '#^Unsafe usage of new static\(\)#'
           path: tests/*
-        - message: '#Method .* has no return type specified#'
+        - message: '#^Method .* has no return type specified#'
           path: tests/*
-        - message: '#Access to an undefined property .*DTO::\$.*#'
+        - message: '#^Access to an undefined property .*DTO::\$.*#'
           path: tests/*
-        - message: '#Call to an undefined method .*DTO::get.*#'
+        - message: '#^Call to an undefined method .*DTO::get.*#'
           path: tests/*
-        - message: '#Call to an undefined method .*DTO::set.*#'
+        - message: '#^Call to an undefined method .*DTO::set.*#'
           path: tests/*
-        - message: '#Call to static method create\(\) on an unknown class Schema#'
+        - message: '#^Call to static method create\(\) on an unknown class Schema#'
           path: tests/*
-        - message: '#Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface::\$.*#'
+        - message: '#^Access to an undefined property Grazulex\\Arc\\Contracts\\DTOInterface::\$.*#'
           path: tests/*
-        - message: '#Unable to resolve the template type TValue in call to function expect#'
+        - message: '#^Unable to resolve the template type TValue in call to function expect#'
           path: tests/*
-        - message: '#Class RealUserDTO uses unknown trait FromModelTrait#'
+        - message: '#^Class RealUserDTO uses unknown trait FromModelTrait#'
           path: tests/*
-        - message: '#Call to an undefined method PHPUnit\\Framework\\TestCase::artisan\(\)#'
+        - message: '#^Call to an undefined method PHPUnit\\Framework\\TestCase::artisan\(\)#'
           path: tests/*
-        - message: '#Parameter \#1 \$object of function get_class expects object#'
+        - message: '#^Parameter \#1 \$object of function get_class expects object#'
           path: tests/*
-        - message: '#Access to an undefined property Pest\\Mixins\\Expectation.*::\$not#'
+        - message: '#^Access to an undefined property Pest\\Mixins\\Expectation.*::\$not#'
           path: tests/*
-        - message: '#Method \S+ should return \S+ but returns \S+#'
+        - message: '#^Template type TDeclaringModel on class [a-zA-Z0-9\\:_]+ is not covariant#'
           path: tests/*
-        - message: '#Method Grazulex\\Arc\\LaravelArcDTO::fake\(\) should return static\(Grazulex\\Arc\\LaravelArcDTO\) but returns Grazulex\\Arc\\Contracts\\DTOInterface#'
-          path: src/*
-        - message: '#Method Grazulex\\Arc\\LaravelArcDTO::fakeMany\(\) should return array<static\(Grazulex\\Arc\\LaravelArcDTO\)> but returns array<Grazulex\\Arc\\Contracts\\DTOInterface>#'
-          path: src/*
+        - message: '#^Method [a-zA-Z0-9\\:_]+ should return [a-zA-Z0-9\\<\\>,\\$\\(\\) ]+ but returns [a-zA-Z0-9\\<\\>,\\$\\(\\) ]+$#'
+          path: tests/*
     excludePaths:
         - tests/Pest.php
         - vendor
