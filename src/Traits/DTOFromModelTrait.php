@@ -5,6 +5,11 @@ namespace Grazulex\Arc\Traits;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 
+use function in_array;
+
+use ReflectionClass;
+use ReflectionException;
+
 /**
  * Trait to create DTOs from Eloquent models.
  *
@@ -49,12 +54,19 @@ trait DTOFromModelTrait
             if ($model->relationLoaded($relation)) {
                 $relationData = $model->{$relation};
 
+                /** @var Collection<(int|string), Model> $relationData */
                 if ($relationData instanceof Collection) {
                     // Handle collection relations (HasMany, BelongsToMany)
-                    $data[$relation] = $relationData->toArray();
+                    // @var array<int|string, array|static>
+                    $data[$relation] = $relationData->map(function (Model $item) use ($relation): array|static {
+                        $relatedDTOClass = self::getRelatedDTOClass($relation);
+
+                        return $relatedDTOClass ? $relatedDTOClass::fromModel($item) : $item->toArray();
+                    })->toArray();
                 } elseif ($relationData instanceof Model) {
                     // Handle single model relations (HasOne, BelongsTo)
-                    $data[$relation] = $relationData->toArray();
+                    $relatedDTOClass = self::getRelatedDTOClass($relation);
+                    $data[$relation] = $relatedDTOClass ? $relatedDTOClass::fromModel($relationData) : $relationData->toArray();
                 } else {
                     // Handle other types (null, primitives)
                     $data[$relation] = $relationData;
@@ -99,10 +111,17 @@ trait DTOFromModelTrait
         foreach ($loadedRelations as $relation) {
             $relationData = $model->{$relation};
 
+            /** @var Collection<(int|string), Model> $relationData */
             if ($relationData instanceof Collection) {
-                $data[$relation] = $relationData->toArray();
+                // @var array<int|string, array|static>
+                $data[$relation] = $relationData->map(function (Model $item) use ($relation): array|static {
+                    $relatedDTOClass = self::getRelatedDTOClass($relation);
+
+                    return $relatedDTOClass ? $relatedDTOClass::fromModel($item) : $item->toArray();
+                })->toArray();
             } elseif ($relationData instanceof Model) {
-                $data[$relation] = $relationData->toArray();
+                $relatedDTOClass = self::getRelatedDTOClass($relation);
+                $data[$relation] = $relatedDTOClass ? $relatedDTOClass::fromModel($relationData) : $relationData->toArray();
             } else {
                 $data[$relation] = $relationData;
             }
@@ -121,5 +140,41 @@ trait DTOFromModelTrait
     public static function fromModelsWithLoadedRelations(Collection $models): array
     {
         return $models->map(fn (Model $model) => static::fromModelWithLoadedRelations($model))->toArray();
+    }
+
+    /**
+     * Get the DTO class for a given relation name.
+     *
+     * @param string $relation Relation name
+     *
+     * @return null|string The DTO class name or null if not found
+     */
+    private static function getRelatedDTOClass(string $relation): ?string
+    {
+        // Reflect on the current DTO class
+        $reflection = new ReflectionClass(static::class);
+
+        // Look for a property matching the relation name
+        try {
+            $property = $reflection->getProperty($relation);
+
+            // Get Property attribute
+            $attributes = $property->getAttributes(\Grazulex\Arc\Attributes\Property::class);
+
+            foreach ($attributes as $attribute) {
+                $instance = $attribute->newInstance();
+                if (in_array($instance->type, ['nested', 'relation', 'dto'], true) && $instance->class) {
+                    return $instance->class;
+                }
+            }
+        } catch (ReflectionException $e) {
+            // Property not found, try to infer from naming convention
+            $guessedClass = '\\App\\Data\\' . ucfirst(rtrim($relation, 's')) . 'DTO';
+            if (class_exists($guessedClass)) {
+                return $guessedClass;
+            }
+        }
+
+        return null;
     }
 }

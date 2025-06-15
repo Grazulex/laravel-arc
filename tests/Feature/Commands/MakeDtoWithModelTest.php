@@ -74,7 +74,7 @@ describe('MakeDtoCommand with Model', function () {
             ->and($content)->toContain('$phone')
             ->and($content)->toContain('$website_url')
             ->and($content)->toContain('url')
-            ->and($content)->toContain('DateProperty')
+            ->and($content)->toContain('Property(type: \'date\'')
             ->and($content)->toContain('$created_at')
             ->and($content)->toContain('$updated_at');
     });

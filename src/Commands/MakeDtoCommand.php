@@ -84,9 +84,6 @@ namespace {$namespace};
 
 use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Attributes\Property;
-use Grazulex\Arc\Attributes\DateProperty;
-use Grazulex\Arc\Attributes\EnumProperty;
-use Grazulex\Arc\Attributes\NestedProperty;
 use Carbon\Carbon;
 
 class {$name} extends LaravelArcDTO

@@ -16,7 +16,7 @@
         "pestphp/pest": "^2.0|^3.0",
         "pestphp/pest-plugin-laravel": "^2.0|^3.0",
         "phpstan/phpstan": "^2.1",
-        "friendsofphp/php-cs-fixer": "^3.75"
+        "friendsofphp/php-cs-fixer": "dev-master as 3.99"
     },
     "autoload": {
         "psr-4": {
@@ -58,6 +58,9 @@
     "config": {
         "allow-plugins": {
             "pestphp/pest-plugin": true
+        },
+        "platform": {
+            "php": "8.3.99"
         }
     }
 }

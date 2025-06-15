@@ -19,7 +19,7 @@ class NestedCaster extends BaseCaster
 {
     protected function getSupportedCastTypes(): array
     {
-        return ['nested'];
+        return ['nested', 'dto', 'relation'];
     }
 
     /**
@@ -35,11 +35,12 @@ class NestedCaster extends BaseCaster
             return null;
         }
 
-        if (!$attribute->nested) {
-            throw new InvalidArgumentException('Nested class not specified');
-        }
+        // Get the DTO class from either nested or class property
+        $dtoClass = $attribute->nested ?? $attribute->class;
 
-        $dtoClass = $attribute->nested;
+        if (!$dtoClass) {
+            throw new InvalidArgumentException('DTO class not specified');
+        }
 
         if (!class_exists($dtoClass)) {
             throw InvalidDTOException::forCastingError('nested', $value, "Class {$dtoClass} does not exist");

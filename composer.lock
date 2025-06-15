@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "615834c192907c953cd1a05dc427de07",
+    "content-hash": "88020c74018e9b8ff97f3f34f2fb9c74",
     "packages": [
         {
             "name": "brick/math",
@@ -6252,16 +6252,16 @@
         },
         {
             "name": "friendsofphp/php-cs-fixer",
-            "version": "v3.75.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer.git",
-                "reference": "399a128ff2fdaf4281e4e79b755693286cdf325c"
+                "reference": "e7288c7f6917615d353f98bd1606016ac4f35963"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/399a128ff2fdaf4281e4e79b755693286cdf325c",
-                "reference": "399a128ff2fdaf4281e4e79b755693286cdf325c",
+                "url": "https://api.github.com/repos/PHP-CS-Fixer/PHP-CS-Fixer/zipball/e7288c7f6917615d353f98bd1606016ac4f35963",
+                "reference": "e7288c7f6917615d353f98bd1606016ac4f35963",
                 "shasum": ""
             },
             "require": {
@@ -6302,6 +6302,7 @@
                 "php-cs-fixer/phpunit-constraint-isidenticalstring": "^1.6",
                 "php-cs-fixer/phpunit-constraint-xmlmatchesxsd": "^1.6",
                 "phpunit/phpunit": "^9.6.22 || ^10.5.45 || ^11.5.12",
+                "symfony/polyfill-php84": "^1.31",
                 "symfony/var-dumper": "^5.4.48 || ^6.4.18 || ^7.2.3",
                 "symfony/yaml": "^5.4.45 || ^6.4.18 || ^7.2.3"
             },
@@ -6309,6 +6310,7 @@
                 "ext-dom": "For handling output formats in XML",
                 "ext-mbstring": "For handling non-UTF8 characters."
             },
+            "default-branch": true,
             "bin": [
                 "php-cs-fixer"
             ],
@@ -6344,7 +6346,7 @@
             ],
             "support": {
                 "issues": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/issues",
-                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/v3.75.0"
+                "source": "https://github.com/PHP-CS-Fixer/PHP-CS-Fixer/tree/master"
             },
             "funding": [
                 {
@@ -6352,7 +6354,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-31T18:40:42+00:00"
+            "time": "2025-06-14T11:04:35+00:00"
         },
         {
             "name": "hamcrest/hamcrest-php",
@@ -10590,14 +10592,26 @@
             "time": "2024-03-03T12:36:25+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "package": "friendsofphp/php-cs-fixer",
+            "version": "9999999-dev",
+            "alias": "3.99",
+            "alias_normalized": "3.99.0.0"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": {},
+    "stability-flags": {
+        "friendsofphp/php-cs-fixer": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.3"
     },
     "platform-dev": {},
+    "platform-overrides": {
+        "php": "8.3.99"
+    },
     "plugin-api-version": "2.6.0"
 }

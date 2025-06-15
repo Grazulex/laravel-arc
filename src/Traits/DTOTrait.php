@@ -447,9 +447,9 @@ trait DTOTrait
             return $property->getType()?->allowsNull() ?? true;
         }
 
-        // Check if it's a nested type
-        if ($expectedType === 'nested') {
-            return true; // Let the NestedCaster handle the validation
+        // Check if it's a nested/relation type
+        if (in_array($expectedType, ['nested', 'dto', 'relation'], true)) {
+            return $value instanceof DTOInterface || is_array($value);
         }
 
         return match ($expectedType) {

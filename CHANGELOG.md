@@ -1,5 +1,23 @@
 # Changelog
 
+## [2.4.1] - 2025-06-15
+
+### 🔧 PHP 8.4 Compatibility & Code Modernization
+
+#### Added
+- Full PHP 8.4 compatibility
+- Enhanced IDE support for modern attribute system
+
+#### Changed
+- Updated to unified Property attribute system
+- Modernized date handling with `Property(type: 'date')`
+- Improved test suite for PHP 8.4 compatibility
+
+#### Fixed
+- Legacy DateProperty references in tests
+- PHP CS Fixer compatibility with PHP 8.4
+- Static analysis compatibility issues
+
 All notable changes to `laravel-arc` will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),

@@ -6,6 +6,9 @@ use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\Contracts\DTOInterface;
 use Grazulex\Arc\Exceptions\InvalidDTOException;
 use Grazulex\Arc\Traits\DTOTrait;
+
+use function in_array;
+
 use ReflectionClass;
 
 abstract class AbstractDTO implements DTOInterface
@@ -58,14 +61,16 @@ abstract class AbstractDTO implements DTOInterface
                 }
 
                 // Type validation
-                $rule[] = match ($attribute->type) {
-                    'string' => 'string',
-                    'int', 'integer' => 'integer',
-                    'float', 'double' => 'numeric',
-                    'bool', 'boolean' => 'boolean',
-                    'array' => 'array',
-                    default => 'string' // Default fallback
-                };
+                if (!in_array($attribute->type, ['nested', 'dto', 'relation'], true)) {
+                    $rule[] = match ($attribute->type) {
+                        'string' => 'string',
+                        'int', 'integer' => 'integer',
+                        'float', 'double' => 'numeric',
+                        'bool', 'boolean' => 'boolean',
+                        'array' => 'array',
+                        default => 'string' // Default fallback
+                    };
+                }
 
                 // Custom validation if provided
                 if ($attribute->validation) {

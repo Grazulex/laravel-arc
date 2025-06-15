@@ -20,6 +20,7 @@ use UnitEnum;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Property
 {
+    public ?string $class = null;
     public readonly ?string $cast;
     public readonly ?string $nested;
     public readonly bool $isCollection;

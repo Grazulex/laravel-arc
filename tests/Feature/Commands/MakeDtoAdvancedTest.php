@@ -86,7 +86,7 @@ describe('MakeDtoCommand Advanced Features', function () {
             // Decimal cast should map to float
             ->and($content)->toContain('public float $salary')
             // DateTime casts should use DateProperty
-            ->and($content)->toContain('DateProperty')
+            ->and($content)->toContain('Property(type: \'date\'')
             ->and($content)->toContain('public ?Carbon $created_at')
             ->and($content)->toContain('public ?Carbon $updated_at');
     });
