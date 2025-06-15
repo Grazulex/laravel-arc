@@ -129,11 +129,11 @@ php artisan dto:validate UserDTO --data='{"name":"John"}'
 
 ## 📋 Requirements
 
-| Requirement | Version   |
-|-------------|-----------|
-| **PHP** | 8.3+      |
-| **Laravel** | 11+ / 12+ |
-| **Carbon** | 3.10+     |
+| Requirement | Version |
+|-------------|-----|
+| **PHP** | 8.3+ |
+| **Laravel** | 12+ |
+| **Carbon** | 3.10+ |
 
 ## 🔄 Migration from v1
 
