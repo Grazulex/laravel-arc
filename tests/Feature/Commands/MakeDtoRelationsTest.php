@@ -4,6 +4,7 @@ use Grazulex\Arc\Commands\MakeDtoCommand;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\File;
 
 // Mock models for testing
@@ -12,12 +13,18 @@ class RelationTestUser extends Model
     protected $table = 'users';
     protected $fillable = ['name', 'email'];
     
+    /**
+     * @return HasMany<RelationTestOrder, RelationTestUser>
+     */
     public function orders(): HasMany
     {
         return $this->hasMany(RelationTestOrder::class);
     }
     
-    public function profile(): \Illuminate\Database\Eloquent\Relations\HasOne
+    /**
+     * @return HasOne<RelationTestProfile, RelationTestUser>
+     */
+    public function profile(): HasOne
     {
         return $this->hasOne(RelationTestProfile::class);
     }
@@ -28,6 +35,9 @@ class RelationTestOrder extends Model
     protected $table = 'orders';
     protected $fillable = ['amount', 'status'];
     
+    /**
+     * @return BelongsTo<RelationTestUser, RelationTestOrder>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(RelationTestUser::class);
@@ -39,6 +49,9 @@ class RelationTestProfile extends Model
     protected $table = 'profiles';
     protected $fillable = ['bio', 'avatar'];
     
+    /**
+     * @return BelongsTo<RelationTestUser, RelationTestProfile>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(RelationTestUser::class);

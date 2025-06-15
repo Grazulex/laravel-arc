@@ -4,15 +4,20 @@ use Carbon\Carbon;
 use Grazulex\Arc\Attributes\Property;
 use Grazulex\Arc\LaravelArcDTO;
 use Grazulex\Arc\Traits\DTOFromModelTrait;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
+use Tests\TestCase;
+
+/** @property Model $testModel */
 
 /**
  * Integration test DTO for real model conversion.
  */
 class RealUserDTO extends LaravelArcDTO
 {
-    use FromModelTrait;
+    use DTOFromModelTrait;
     
     #[Property(type: 'int', required: false)]
     public ?int $id;
@@ -36,7 +41,7 @@ class RealUserDTO extends LaravelArcDTO
     public ?Carbon $updated_at;
 }
 
-describe('FromModelTrait Integration', function () {
+describe('DTOFromModelTrait Integration', function () {
     uses(RefreshDatabase::class);
     
     beforeEach(function () {
@@ -54,6 +59,7 @@ describe('FromModelTrait Integration', function () {
         $this->testModel = new class extends Model {
             protected $table = 'test_users';
             protected $fillable = ['name', 'email', 'age', 'is_active'];
+            /** @var array<string, string> */
             protected $casts = [
                 'is_active' => 'boolean',
                 'created_at' => 'datetime',
@@ -65,8 +71,8 @@ describe('FromModelTrait Integration', function () {
     describe('with real Eloquent models', function () {
         
         it('creates DTO from real Eloquent model', function () {
-            // Create a real model instance
-            $user = $this->testModel->create([
+            /** @var Model $user */
+            $user = $this->testModel::create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30,
@@ -86,21 +92,23 @@ describe('FromModelTrait Integration', function () {
         });
         
         it('creates DTOs from collection of real models', function () {
-            // Create multiple models
-            $user1 = $this->testModel->create([
+            /** @var Model $user1 */
+            $user1 = $this->testModel::create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30
             ]);
             
-            $user2 = $this->testModel->create([
+            /** @var Model $user2 */
+            $user2 = $this->testModel::create([
                 'name' => 'Jane Smith',
                 'email' => 'jane@example.com',
                 'age' => 25
             ]);
             
             // Get collection
-            $users = $this->testModel->all();
+            /** @var Collection<int, Model> $users */
+            $users = $this->testModel::all();
             
             // Convert to DTOs
             $dtos = RealUserDTO::fromModels($users);
@@ -113,9 +121,9 @@ describe('FromModelTrait Integration', function () {
             expect($dtos[1]->name)->toBe('Jane Smith');
         });
         
-        
         it('works with fromModelWithLoadedRelations on real models', function () {
-            $user = $this->testModel->create([
+            /** @var Model $user */
+            $user = $this->testModel::create([
                 'name' => 'John Doe',
                 'email' => 'john@example.com',
                 'age' => 30

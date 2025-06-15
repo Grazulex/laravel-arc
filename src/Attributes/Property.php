@@ -29,6 +29,9 @@ class Property
     /** @var array<string|TransformerInterface> */
     public readonly array $transform;
 
+    /**
+     * @param array<class-string> $transform
+     */
     public function __construct(
         public readonly string $type,
         public readonly bool $required = true,
