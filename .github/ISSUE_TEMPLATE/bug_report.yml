@@ -43,9 +43,9 @@ body:
       label: Version
       description: What version of our software are you running?
       options:
-        - 1.0.0 (Default)
-        - 1.1.0
-        - 1.2.0
+        - 2.5.0 (Default)
+        - 2.0.*
+        - 1.0.*
         - dev-main
     validations:
       required: true
