@@ -58,26 +58,13 @@ final class DtoDefinitionInitCommand extends Command
     private function buildYamlTemplate(string $name, string $model, string $table): string
     {
         $namespace = DtoPaths::dtoNamespace();
+        $stubPath = __DIR__ . '/stubs/dto-definition.stub';
+        $stub = file_get_contents($stubPath);
 
-        return <<<YAML
-dto: {$name}
-model: {$model}
-table: {$table}
-
-fields:
-  # Example field, replace or expand manually
-  - name: id
-    type: int
-    nullable: false
-    readonly: true
-
-relations: []
-
-options:
-  timestamps: true
-  soft_deletes: false
-  expose_hidden_by_default: false
-  namespace: {$namespace}
-YAML;
+        return str_replace(
+            ['{{ name }}', '{{ model }}', '{{ table }}', '{{ namespace }}'],
+            [$name, $model, $table, $namespace],
+            $stub
+        );
     }
 }

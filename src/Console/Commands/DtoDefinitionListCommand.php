@@ -19,7 +19,6 @@ final class DtoDefinitionListCommand extends Command
 
     public function handle(): int
     {
-        // ✅ Résout correctement le path même en test
         $rawPath = $this->option('path') ?? DtoPaths::definitionDir();
         $path = realpath($rawPath) ?: $rawPath;
 
