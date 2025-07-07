@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites>
+  <testsuite name="/home/jean-marc-strauven/Dev/laravel-arc/phpunit.xml" tests="6" assertions="18" errors="0" failures="0" skipped="0" time="0.209553">
+    <testsuite name="Feature" tests="6" assertions="18" errors="0" failures="0" skipped="0" time="0.209553">
+      <testsuite name="Tests\Feature\DtoDefinitionCommandsTest" file="tests/Feature/DtoDefinitionCommandsTest.php" tests="2" assertions="11" errors="0" failures="0" skipped="0" time="0.139509">
+        <testcase name="it creates a YAML DTO definition file with dto:definition-init" file="tests/Feature/DtoDefinitionCommandsTest.php::it creates a YAML DTO definition file with dto:definition-init" class="Tests\Feature\DtoDefinitionCommandsTest" classname="Tests.Feature.DtoDefinitionCommandsTest" assertions="8" time="0.118709"/>
+        <testcase name="it lists the generated YAML file with dto:definition-list" file="tests/Feature/DtoDefinitionCommandsTest.php::it lists the generated YAML file with dto:definition-list" class="Tests\Feature\DtoDefinitionCommandsTest" classname="Tests.Feature.DtoDefinitionCommandsTest" assertions="3" time="0.020800"/>
+      </testsuite>
+      <testsuite name="Tests\Feature\ConfigTest" file="tests/Feature/ConfigTest.php" tests="4" assertions="7" errors="0" failures="0" skipped="0" time="0.070045">
+        <testcase name="it allows manual override of namespace via config" file="tests/Feature/ConfigTest.php::it allows manual override of namespace via config" class="Tests\Feature\ConfigTest" classname="Tests.Feature.ConfigTest" assertions="1" time="0.021077"/>
+        <testcase name="it can resolve paths via DtoPaths helper" file="tests/Feature/ConfigTest.php::it can resolve paths via DtoPaths helper" class="Tests\Feature\ConfigTest" classname="Tests.Feature.ConfigTest" assertions="2" time="0.016985"/>
+        <testcase name="it automatically infers namespace from output path" file="tests/Feature/ConfigTest.php::it automatically infers namespace from output path" class="Tests\Feature\ConfigTest" classname="Tests.Feature.ConfigTest" assertions="1" time="0.015984"/>
+        <testcase name="it loads the dto configuration correctly" file="tests/Feature/ConfigTest.php::it loads the dto configuration correctly" class="Tests\Feature\ConfigTest" classname="Tests.Feature.ConfigTest" assertions="3" time="0.015998"/>
+      </testsuite>
+    </testsuite>
+  </testsuite>
+</testsuites>
