@@ -1,0 +1,60 @@
+name: ✨ Feature Request
+description: Suggest a new feature or enhancement to the Laravel Arc package.
+title: "[Feature] "
+labels:
+  - type:feature
+body:
+  - type:markdown
+    attributes:
+      value: |
+        🚀 **Thank you for suggesting a new feature!**  
+        Please provide as much detail as possible so we can evaluate and plan its implementation.
+
+  - type:input
+    id: summary
+    attributes:
+      label: Feature Summary
+      description: What is the feature you’d like to propose?
+      placeholder: e.g. Support "boolean" field generation in DTO
+    validations:
+      required: true
+
+  - type:textarea
+    id: motivation
+    attributes:
+      label: Why is this feature useful?
+      description: Describe the problem this feature solves or what value it adds.
+      placeholder: e.g. We want to be able to define boolean flags like "is_active" in YAML and generate the appropriate DTO code.
+    validations:
+      required: true
+
+  - type:textarea
+    id: proposal
+    attributes:
+      label: Proposed implementation
+      description: How do you imagine this being implemented? (classes, logic, interaction with existing system)
+      placeholder: e.g. Create BooleanFieldGenerator implementing FieldGeneratorInterface...
+    validations:
+      required: false
+
+  - type:textarea
+    id: examples
+    attributes:
+      label: YAML Example (optional)
+      description: Provide an example of how the YAML would look like with this feature.
+      placeholder: |
+        fields:
+          is_active:
+            type: boolean
+            default: true
+    validations:
+      required: false
+
+  - type:input
+    id: related
+    attributes:
+      label: Related issues / tasks (if any)
+      description: Link any related issues, PRs, or discussions.
+      placeholder: #24, #17
+    validations:
+      required: false
