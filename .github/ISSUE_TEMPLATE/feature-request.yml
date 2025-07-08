@@ -1,47 +1,50 @@
-name: ✨ Feature Request
-description: Suggest a new feature or enhancement to the Laravel Arc package.
+name: Feature Request
+description: Suggest a new feature or enhancement for the Laravel Arc package.
 title: "[Feature] "
 labels:
   - type:feature
 body:
-  - type:markdown
+  - type: markdown
     attributes:
       value: |
-        🚀 **Thank you for suggesting a new feature!**  
-        Please provide as much detail as possible so we can evaluate and plan its implementation.
+        ## 🚀 New Feature Suggestion
 
-  - type:input
+        Thank you for suggesting a new feature! Please describe it as clearly as possible so we can evaluate it properly.
+
+  - type: input
     id: summary
     attributes:
-      label: Feature Summary
-      description: What is the feature you’d like to propose?
-      placeholder: e.g. Support "boolean" field generation in DTO
+      label: What is the feature?
+      description: A short description of the proposed feature.
+      placeholder: e.g. Add support for "boolean" fields in DTO generation
     validations:
       required: true
 
-  - type:textarea
+  - type: textarea
     id: motivation
     attributes:
       label: Why is this feature useful?
-      description: Describe the problem this feature solves or what value it adds.
-      placeholder: e.g. We want to be able to define boolean flags like "is_active" in YAML and generate the appropriate DTO code.
+      description: Describe the problem this feature would solve.
+      placeholder: |
+        e.g. We need to define boolean flags in YAML like `is_active` and generate default values accordingly.
     validations:
       required: true
 
-  - type:textarea
+  - type: textarea
     id: proposal
     attributes:
-      label: Proposed implementation
-      description: How do you imagine this being implemented? (classes, logic, interaction with existing system)
-      placeholder: e.g. Create BooleanFieldGenerator implementing FieldGeneratorInterface...
+      label: How should it be implemented?
+      description: Give technical hints on how it could be built (optional).
+      placeholder: |
+        e.g. Create `BooleanFieldGenerator` class that implements `FieldGeneratorInterface`.
     validations:
       required: false
 
-  - type:textarea
-    id: examples
+  - type: textarea
+    id: yaml-example
     attributes:
       label: YAML Example (optional)
-      description: Provide an example of how the YAML would look like with this feature.
+      description: Provide an example of how the YAML config would look with this feature.
       placeholder: |
         fields:
           is_active:
@@ -50,11 +53,11 @@ body:
     validations:
       required: false
 
-  - type:input
-    id: related
+  - type: input
+    id: related-issues
     attributes:
-      label: Related issues / tasks (if any)
-      description: Link any related issues, PRs, or discussions.
-      placeholder: #24, #17
+      label: Related issues or PRs
+      description: Link any related issues or pull requests.
+      placeholder: e.g. #17, #42
     validations:
       required: false
