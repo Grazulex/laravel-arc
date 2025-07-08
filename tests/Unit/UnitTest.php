@@ -6,7 +6,6 @@ namespace Grazulex\LaravelArc\Tests\Unit;
 
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionInitCommand;
 use Grazulex\LaravelArc\Support\DtoPaths;
-
 use Illuminate\Support\Facades\File;
 
 beforeEach(function () {
@@ -27,7 +26,7 @@ it('initializes a DTO YAML definition file', function () {
         '--model' => $model,
         '--table' => $table,
     ])
-        ->expectsOutput("DTO YAML created at: ".DtoPaths::definitionFilePath($name))
+        ->expectsOutput('DTO YAML created at: '.DtoPaths::definitionFilePath($name))
         ->assertExitCode(0);
 
     expect(File::exists(DtoPaths::definitionFilePath($name)))->toBeTrue();

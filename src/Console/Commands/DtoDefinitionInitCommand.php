@@ -58,7 +58,7 @@ final class DtoDefinitionInitCommand extends Command
     private function buildYamlTemplate(string $name, string $model, string $table): string
     {
         $namespace = DtoPaths::dtoNamespace();
-        $stubPath = __DIR__ . '/stubs/dto-definition.stub';
+        $stubPath = __DIR__.'/stubs/dto-definition.stub';
         $stub = file_get_contents($stubPath);
 
         return str_replace(
