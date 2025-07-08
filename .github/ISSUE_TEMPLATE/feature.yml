@@ -1,36 +1,46 @@
-name: "✨ Feature Request"
-description: Propose a new feature for Laravel Arc
-labels: ["type:feature", "status:discussion"]
+name: 💡 Feature Request
+description: Suggest a new idea or feature for Laravel Arc
+title: "[Feature] <Your short title here>"
+labels: [type:feature]
 body:
-  - type: textarea
-    id: motivation
+  - type: input
+    id: title
     attributes:
-      label: Problem or Need
-      description: What problem are you trying to solve? Why is this needed?
-      placeholder: |
-        I often need to generate DTOs for deeply nested models, and currently...
-    validations:
-      required: true
-
-  - type: textarea
-    id: proposal
-    attributes:
-      label: Proposed Solution
-      description: Describe the feature or enhancement you'd like to see.
-      placeholder: |
-        I'd like to support nested DTO generation with customizable transformers...
+      label: Feature title
+      placeholder: e.g. Add support for `date` field type
     validations:
       required: true
 
   - type: dropdown
-    id: scope
+    id: area
     attributes:
-      label: Area
+      label: Area / Component
+      description: Which part of the codebase is affected?
       options:
         - generator
         - validation
         - docs
         - tests
-        - other
+        - cli
+        - internal
     validations:
-      required: false
+      required: true
+
+  - type: textarea
+    id: need
+    attributes:
+      label: What problem does this feature solve?
+      placeholder: |
+        Describe the pain point or need you're trying to address.
+        Example: "Currently there's no support for date/time fields..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Describe your proposed solution
+      placeholder: |
+        How would you implement this feature? Include examples or expected YAML syntax if possible.
+    validations:
+      required: true
