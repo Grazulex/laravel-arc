@@ -62,8 +62,8 @@ final class DtoDefinitionInitCommand extends Command
         $stub = file_get_contents($stubPath);
 
         return str_replace(
-            ['{{ name }}', '{{ model }}', '{{ table }}', '{{ namespace }}'],
-            [$name, $model, $table, $namespace],
+            ['{{ name }}', '{{ model }}', '{{ table }}', '{{ namespace }}', '{{ today }}'],
+            [$name, $model, $table, $namespace, date('Y-m-d')],
             $stub
         );
     }
