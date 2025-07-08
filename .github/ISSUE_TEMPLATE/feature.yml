@@ -3,13 +3,6 @@ description: Suggest a new idea or feature for Laravel Arc
 title: "[Feature] <Your short title here>"
 labels: [type:feature]
 body:
-  - type: input
-    id: title
-    attributes:
-      label: Feature title
-      placeholder: e.g. Add support for `date` field type
-    validations:
-      required: true
 
   - type: dropdown
     id: area
