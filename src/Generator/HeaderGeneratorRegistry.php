@@ -4,22 +4,25 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Generator;
 
-use Grazulex\LaravelArc\Generator\Contracts\HeaderGeneratorContract;
+use Grazulex\LaravelArc\Contracts\HeaderGenerator;
+use InvalidArgumentException;
 
 final class HeaderGeneratorRegistry
 {
     /**
-     * @var HeaderGeneratorContract[]
+     * @var HeaderGenerator[]
      */
     private array $generators = [];
 
-    public function __construct(iterable $generators)
+    public function __construct(array $generators)
     {
         foreach ($generators as $generator) {
-            if ($generator instanceof HeaderGeneratorContract) {
-                $this->generators[] = $generator;
+            if (! $generator instanceof HeaderGenerator) {
+                throw new InvalidArgumentException('Each generator must implement HeaderGenerator.');
             }
         }
+
+        $this->generators = $generators;
     }
 
     public function generateAll(array $yaml, string $dtoName): array

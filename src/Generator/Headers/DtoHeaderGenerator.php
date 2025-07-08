@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Generator\Headers;
 
-use Grazulex\LaravelArc\Generator\Contracts\HeaderGeneratorContract;
+use Grazulex\LaravelArc\Contracts\HeaderGenerator;
 
-final class DtoHeaderGenerator implements HeaderGeneratorContract
+final class DtoHeaderGenerator implements HeaderGenerator
 {
     public function supports(string $key): bool
     {
