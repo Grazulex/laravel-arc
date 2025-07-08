@@ -1,0 +1,36 @@
+name: "✨ Feature Request"
+description: Propose a new feature for Laravel Arc
+labels: ["type:feature", "status:discussion"]
+body:
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Problem or Need
+      description: What problem are you trying to solve? Why is this needed?
+      placeholder: |
+        I often need to generate DTOs for deeply nested models, and currently...
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed Solution
+      description: Describe the feature or enhancement you'd like to see.
+      placeholder: |
+        I'd like to support nested DTO generation with customizable transformers...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Area
+      options:
+        - generator
+        - validation
+        - docs
+        - tests
+        - other
+    validations:
+      required: false
