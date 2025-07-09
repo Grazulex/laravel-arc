@@ -13,9 +13,11 @@ final class DecimalFieldGenerator implements FieldGenerator
         return $type === 'decimal';
     }
 
-    public function generate(string $name, array $config): string
+    public function generate(string $name, array $definition): string
     {
 
-        return "public string \${$name} {$defaultCode};";
+        $default = $definition['default'] ?? "''";
+
+        return "public string \${$name} = {$default};";
     }
 }
