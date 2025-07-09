@@ -13,7 +13,7 @@ it('calls the correct generator for a string field', function () {
         new StringFieldGenerator(),
     ]);
 
-    $result = $registry->generate('name', ['type' => 'string', 'default' => "'test'"]);
+    $result = $registry->generate('name', ['type' => 'string', 'default' => 'test']);
 
     expect($result)->toBe("public string \$name = 'test';");
 });
@@ -53,7 +53,7 @@ it('Calls the correct generator for a decimal field', function () {
         new DecimalFieldGenerator(),
     ]);
 
-    $result = $registry->generate('price', ['type' => 'decimal', 'default' => "'19.99'"]);
+    $result = $registry->generate('price', ['type' => 'decimal', 'default' => '19.99']);
 
     expect($result)->toBe("public string \$price = '19.99';");
 });

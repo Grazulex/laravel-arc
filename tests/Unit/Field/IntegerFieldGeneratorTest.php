@@ -29,5 +29,5 @@ it('generates integer fields correctly', function () {
         'type' => 'integer',
     ]);
 
-    expect($code)->toBe('public int $name = 0;');
+    expect($code)->toBe('public int $name;');
 });

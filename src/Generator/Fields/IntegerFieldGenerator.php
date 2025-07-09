@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Fields;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Support\FieldBuilder;
 
 final class IntegerFieldGenerator implements FieldGenerator
 {
@@ -15,8 +16,6 @@ final class IntegerFieldGenerator implements FieldGenerator
 
     public function generate(string $name, array $definition): string
     {
-        $default = isset($definition['default']) ? (int) $definition['default'] : '0';
-
-        return "public int \${$name} = {$default};";
+        return FieldBuilder::generate($name, 'integer', $definition);
     }
 }

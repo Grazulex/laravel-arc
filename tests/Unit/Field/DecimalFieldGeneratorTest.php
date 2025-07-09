@@ -15,11 +15,11 @@ it('generates float fields correctly', function () {
         'default' => '1.75',
     ]);
 
-    expect($code)->toBe('public string $name = 1.75;');
+    expect($code)->toBe("public string \$name = '1.75';");
 
     $code = $generator->generate('name', [
         'type' => 'decimal',
     ]);
 
-    expect($code)->toBe("public string \$name = '';");
+    expect($code)->toBe("public string \$name;");
 });

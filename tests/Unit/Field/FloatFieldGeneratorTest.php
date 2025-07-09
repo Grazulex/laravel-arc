@@ -29,5 +29,5 @@ it('generates float fields correctly', function () {
         'type' => 'float',
     ]);
 
-    expect($code)->toBe('public float $name = 0.0;');
+    expect($code)->toBe('public float $name;');
 });

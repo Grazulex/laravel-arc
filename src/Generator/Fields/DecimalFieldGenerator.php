@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Fields;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Support\FieldBuilder;
 
 final class DecimalFieldGenerator implements FieldGenerator
 {
@@ -15,9 +16,6 @@ final class DecimalFieldGenerator implements FieldGenerator
 
     public function generate(string $name, array $definition): string
     {
-
-        $default = $definition['default'] ?? "''";
-
-        return "public string \${$name} = {$default};";
+        return FieldBuilder::generate($name, 'decimal', $definition);
     }
 }

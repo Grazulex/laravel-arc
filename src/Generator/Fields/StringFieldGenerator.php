@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Fields;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Support\FieldBuilder;
 
 final class StringFieldGenerator implements FieldGenerator
 {
@@ -15,8 +16,6 @@ final class StringFieldGenerator implements FieldGenerator
 
     public function generate(string $name, array $definition): string
     {
-        $default = $definition['default'] ?? "''";
-
-        return "public string \${$name} = {$default};";
+        return FieldBuilder::generate($name, 'string', $definition);
     }
 }
