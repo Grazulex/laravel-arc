@@ -7,6 +7,7 @@ use Grazulex\LaravelArc\Generator\Fields\DecimalFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\FloatFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\IntegerFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\StringFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\BooleanFieldGenerator;
 
 it('calls the correct generator for a string field', function () {
     $registry = new FieldGeneratorRegistry([
@@ -56,6 +57,16 @@ it('Calls the correct generator for a decimal field', function () {
     $result = $registry->generate('price', ['type' => 'decimal', 'default' => '19.99']);
 
     expect($result)->toBe("public string \$price = '19.99';");
+});
+
+it('Calls the correct generator for a boolean field', function () {
+    $registry = new FieldGeneratorRegistry([
+        new BooleanFieldGenerator(),
+    ]);
+
+    $result = $registry->generate('is_active', ['type' => 'boolean', 'default' => true]);
+
+    expect($result)->toBe("public bool \$is_active = true;");
 });
 
 it('throws if no generator supports the field type', function () {

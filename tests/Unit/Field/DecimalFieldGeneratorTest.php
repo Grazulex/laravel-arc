@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\DecimalFieldGenerator;
 
-it('generates float fields correctly', function () {
+it('generates decimal fields correctly', function () {
     $generator = new DecimalFieldGenerator();
 
     expect($generator->supports('decimal'))->toBeTrue();
