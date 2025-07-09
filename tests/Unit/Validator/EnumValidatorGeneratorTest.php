@@ -22,7 +22,7 @@ describe('EnumValidatorGenerator', function () {
         ]);
 
         expect($rules)->toBe([
-            'status' => ['required', 'in:draft,published'],
+            'status' => ['in:draft,published', 'required'],
         ]);
     });
 
