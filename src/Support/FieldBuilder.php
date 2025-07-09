@@ -15,7 +15,8 @@ final class FieldBuilder
         $phpType = FieldTypeResolver::resolvePhpType($type, $nullable);
 
         if ($defaultDefined) {
-            $defaultCode = ' = '.DefaultValueCaster::cast($type, $default);
+            $casted = DefaultValueCaster::cast($type, $default);
+            $defaultCode = $casted !== '' ? ' = ' . $casted : '';
         } elseif ($nullable) {
             $defaultCode = ' = null';
         } else {

@@ -10,6 +10,7 @@ final class DefaultValueCaster
     {
         return match ($type) {
             'string', 'uuid' => "'".addslashes((string) $value)."'",
+            'date', 'datetime', 'time' => is_null($value) ? 'null' : '',
             'integer' => (string) (int) $value,
             'float' => (string) (float) $value,
             'decimal' => "'".$value."'", // use string for precision
