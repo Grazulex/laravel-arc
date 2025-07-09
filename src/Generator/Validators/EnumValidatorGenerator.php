@@ -5,23 +5,26 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
-use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
-final class EnumValidatorGenerator implements ValidatorGenerator
+final class EnumValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
     public function supports(string $type): bool
     {
         return $type === 'enum';
     }
 
-    public function generate(string $name, array $definition): array
+    public function generate(string $name, array $config): array
     {
-        $rules = [];
-
-        if (! empty($definition['values']) && is_array($definition['values'])) {
-            $rules[] = 'in:'.implode(',', $definition['values']);
+        if (! $this->isMatchingType($config, 'enum')) {
+            return [];
         }
 
-        return [$name => ValidatorRuleBuilder::build($rules, $definition)];
+        if (! isset($config['values']) || ! is_array($config['values'])) {
+            return [];
+        }
+
+        $rules = ['in:'.implode(',', $config['values'])];
+
+        return [$name => $this->applyRequiredIfNeeded($config, $rules)];
     }
 }

@@ -32,12 +32,12 @@ describe('ValidatorGeneratorRegistry', function () {
         $mockGenerator = mock(ValidatorGenerator::class);
         $mockGenerator->shouldReceive('supports')->with('enum')->andReturn(true);
         $mockGenerator->shouldReceive('generate')
-            ->with('status', ['values' => ['active', 'inactive']])
+            ->with('status', ['type' => 'enum', 'values' => ['active', 'inactive']])
             ->andReturn(['status' => ['required', 'in:active,inactive']]);
 
         $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
 
-        $result = $registry->generate('status', 'enum', ['values' => ['active', 'inactive']]);
+        $result = $registry->generate('status', 'enum', ['type' => 'enum', 'values' => ['active', 'inactive']]);
         expect($result)->toBe([
             'status' => ['required', 'in:active,inactive'],
         ]);
@@ -46,7 +46,7 @@ describe('ValidatorGeneratorRegistry', function () {
     it('uses the first matching generator when multiple support the type', function () {
         $first = mock(ValidatorGenerator::class);
         $first->shouldReceive('supports')->with('string')->andReturn(true);
-        $first->shouldReceive('generate')->with('name', ['max' => 255])
+        $first->shouldReceive('generate')->with('name', ['type' => 'string', 'max' => 255])
             ->andReturn(['name' => ['string', 'max:255']]);
 
         $second = mock(ValidatorGenerator::class);
@@ -55,7 +55,7 @@ describe('ValidatorGeneratorRegistry', function () {
 
         $registry = new ValidatorGeneratorRegistry([$first, $second]);
 
-        $result = $registry->generate('name', 'string', ['max' => 255]);
+        $result = $registry->generate('name', 'string', ['type' => 'string', 'max' => 255]);
 
         expect($result)->toBe([
             'name' => ['string', 'max:255'],

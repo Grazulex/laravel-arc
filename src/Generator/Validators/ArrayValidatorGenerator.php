@@ -5,19 +5,26 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
-use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
-final class ArrayValidatorGenerator implements ValidatorGenerator
+final class ArrayValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
     public function supports(string $type): bool
     {
-        return in_array($type, ['array', 'json'], true);
+        return $type === 'array';
     }
 
-    public function generate(string $name, array $definition): array
+    public function generate(string $name, array $config): array
     {
-        $rules = ValidatorRuleBuilder::build(['array'], $definition);
+        if (! $this->isMatchingType($config, 'array')) {
+            return [];
+        }
 
-        return [$name => $rules];
+        $rules = ['array'];
+
+        if (isset($config['rules']) && is_array($config['rules'])) {
+            $rules = array_merge($rules, $config['rules']);
+        }
+
+        return [$name => $this->applyRequiredIfNeeded($config, $rules)];
     }
 }

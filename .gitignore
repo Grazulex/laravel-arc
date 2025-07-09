@@ -27,3 +27,4 @@ package-lock.json
 .env.example.local
 /.phpunit.cache
 cache.sqlite
+/build

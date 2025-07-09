@@ -12,26 +12,39 @@ describe('BooleanValidatorGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates boolean rule with required', function () {
+    it('generates boolean rule with required and custom rules', function () {
         $generator = new BooleanValidatorGenerator();
 
-        $rules = $generator->generate('flag', [
+        $rules = $generator->generate('active', [
             'type' => 'boolean',
-            'required' => true,
+            'rules' => ['in:0,1'],
         ]);
 
         expect($rules)->toBe([
-            'flag' => ['boolean', 'required'],
+            'active' => ['required', 'boolean', 'in:0,1'],
         ]);
     });
 
-    it('returns only boolean rule when no extras given', function () {
+    it('generates boolean rule without required if nullable is true', function () {
         $generator = new BooleanValidatorGenerator();
 
-        $rules = $generator->generate('flag', ['type' => 'boolean']);
+        $rules = $generator->generate('active', [
+            'type' => 'boolean',
+            'nullable' => true,
+        ]);
 
         expect($rules)->toBe([
-            'flag' => ['boolean'],
+            'active' => ['boolean'],
         ]);
+    });
+
+    it('returns empty array if type does not match', function () {
+        $generator = new BooleanValidatorGenerator();
+
+        $rules = $generator->generate('active', [
+            'type' => 'float',
+        ]);
+
+        expect($rules)->toBe([]);
     });
 });

@@ -12,26 +12,37 @@ describe('UuidValidatorGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates uuid rule with required', function () {
+    it('generates uuid rule with required and extras', function () {
         $generator = new UuidValidatorGenerator();
 
         $rules = $generator->generate('uuid', [
             'type' => 'uuid',
-            'required' => true,
+            'rules' => ['exists:users,id'],
         ]);
 
         expect($rules)->toBe([
-            'uuid' => ['uuid', 'required'],
+            'uuid' => ['required', 'uuid', 'exists:users,id'],
         ]);
     });
 
-    it('returns only uuid rule when no extras given', function () {
+    it('generates uuid rule without required if nullable is true', function () {
         $generator = new UuidValidatorGenerator();
 
-        $rules = $generator->generate('uuid', ['type' => 'uuid']);
+        $rules = $generator->generate('uuid', [
+            'type' => 'uuid',
+            'nullable' => true,
+        ]);
 
         expect($rules)->toBe([
             'uuid' => ['uuid'],
         ]);
+    });
+
+    it('returns empty array if type does not match', function () {
+        $generator = new UuidValidatorGenerator();
+
+        $rules = $generator->generate('uuid', ['type' => 'string']);
+
+        expect($rules)->toBe([]);
     });
 });

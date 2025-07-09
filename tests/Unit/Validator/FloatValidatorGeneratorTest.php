@@ -12,27 +12,37 @@ describe('FloatValidatorGenerator', function () {
         expect($generator->supports('integer'))->toBeFalse();
     });
 
-    it('generates numeric rule with required and custom rules', function () {
+    it('generates float (numeric) rule with required and extras', function () {
         $generator = new FloatValidatorGenerator();
 
         $rules = $generator->generate('price', [
             'type' => 'float',
-            'required' => true,
-            'rules' => ['min:0'],
+            'rules' => ['min:0', 'max:999.99'],
         ]);
 
         expect($rules)->toBe([
-            'price' => ['numeric', 'required', 'min:0'],
+            'price' => ['required', 'numeric', 'min:0', 'max:999.99'],
         ]);
     });
 
-    it('returns only numeric rule when no extras given', function () {
+    it('generates rule without required if nullable is true', function () {
         $generator = new FloatValidatorGenerator();
 
-        $rules = $generator->generate('price', ['type' => 'float']);
+        $rules = $generator->generate('price', [
+            'type' => 'float',
+            'nullable' => true,
+        ]);
 
         expect($rules)->toBe([
             'price' => ['numeric'],
         ]);
+    });
+
+    it('returns empty array if type does not match', function () {
+        $generator = new FloatValidatorGenerator();
+
+        $rules = $generator->generate('price', ['type' => 'string']);
+
+        expect($rules)->toBe([]);
     });
 });

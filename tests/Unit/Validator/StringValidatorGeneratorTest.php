@@ -22,7 +22,7 @@ describe('StringValidatorGenerator', function () {
         ]);
 
         expect($rules)->toBe([
-            'name' => ['string', 'required', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
         ]);
     });
 
@@ -32,7 +32,7 @@ describe('StringValidatorGenerator', function () {
         $rules = $generator->generate('name', ['type' => 'string']);
 
         expect($rules)->toBe([
-            'name' => ['string'],
+            'name' => ['required', 'string'],
         ]);
     });
 });

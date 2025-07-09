@@ -9,30 +9,40 @@ describe('IntegerValidatorGenerator', function () {
         $generator = new IntegerValidatorGenerator();
 
         expect($generator->supports('integer'))->toBeTrue();
-        expect($generator->supports('string'))->toBeFalse();
+        expect($generator->supports('float'))->toBeFalse();
     });
 
-    it('generates integer rule with required and custom rules', function () {
+    it('generates integer rule with required and extras', function () {
         $generator = new IntegerValidatorGenerator();
 
-        $rules = $generator->generate('age', [
+        $rules = $generator->generate('quantity', [
             'type' => 'integer',
-            'required' => true,
-            'rules' => ['min:18'],
+            'rules' => ['min:1', 'max:100'],
         ]);
 
         expect($rules)->toBe([
-            'age' => ['integer', 'required', 'min:18'],
+            'quantity' => ['required', 'integer', 'min:1', 'max:100'],
         ]);
     });
 
-    it('returns only integer rule when no extras given', function () {
+    it('generates rule without required if nullable is true', function () {
         $generator = new IntegerValidatorGenerator();
 
-        $rules = $generator->generate('age', ['type' => 'integer']);
+        $rules = $generator->generate('quantity', [
+            'type' => 'integer',
+            'nullable' => true,
+        ]);
 
         expect($rules)->toBe([
-            'age' => ['integer'],
+            'quantity' => ['integer'],
         ]);
+    });
+
+    it('returns empty array if type does not match', function () {
+        $generator = new IntegerValidatorGenerator();
+
+        $rules = $generator->generate('quantity', ['type' => 'string']);
+
+        expect($rules)->toBe([]);
     });
 });

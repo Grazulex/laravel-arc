@@ -1,0 +1,30 @@
+header:
+  namespace: App\DTO
+  class: ProductData
+  model: App\Models\Product
+
+fields:
+  id:
+    type: integer
+  name:
+    type: string
+  price:
+    type: float
+    nullable: true
+    default: 0.0
+  available:
+    type: boolean
+    default: true
+  tags:
+    type: array
+  status:
+    type: enum
+    values: [draft, published, archived]
+
+relations:
+  category:
+    type: belongsTo
+    target: App\Models\Category
+
+options:
+  timestamps: true

@@ -12,42 +12,38 @@ describe('EnumValidatorGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates a rule for enum values', function () {
+    it('returns empty array if values are missing or not an array', function () {
+        $generator = new EnumValidatorGenerator();
+
+        expect($generator->generate('status', ['type' => 'enum']))->toBe([]);
+        expect($generator->generate('status', ['type' => 'enum', 'values' => null]))->toBe([]);
+        expect($generator->generate('status', ['type' => 'string']))->toBe([]);
+    });
+
+    it('generates enum rule with required by default', function () {
         $generator = new EnumValidatorGenerator();
 
         $rules = $generator->generate('status', [
             'type' => 'enum',
             'values' => ['draft', 'published'],
-            'rules' => ['required'],
         ]);
 
         expect($rules)->toBe([
-            'status' => ['in:draft,published', 'required'],
+            'status' => ['required', 'in:draft,published'],
         ]);
     });
 
-    it('returns rule only for in: when no extra rules given', function () {
+    it('generates enum rule without required if nullable is true', function () {
         $generator = new EnumValidatorGenerator();
 
         $rules = $generator->generate('status', [
             'type' => 'enum',
             'values' => ['draft', 'published'],
+            'nullable' => true,
         ]);
 
         expect($rules)->toBe([
             'status' => ['in:draft,published'],
-        ]);
-    });
-
-    it('returns empty array when no values or enum given', function () {
-        $generator = new EnumValidatorGenerator();
-
-        $rules = $generator->generate('status', [
-            'type' => 'enum',
-        ]);
-
-        expect($rules)->toBe([
-            'status' => [],
         ]);
     });
 });
