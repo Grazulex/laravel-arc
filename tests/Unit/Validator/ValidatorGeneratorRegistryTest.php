@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
 use Grazulex\LaravelArc\Generator\ValidatorGeneratorRegistry;
-use InvalidArgumentException;
 
 describe('ValidatorGeneratorRegistry', function () {
     it('throws exception when invalid generator is provided', function () {

@@ -4,30 +4,32 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\TextFieldGenerator;
 
-it('supports text type', function () {
-    $generator = new TextFieldGenerator();
+describe('TextFieldGenerator', function () {
+    it('supports text type', function () {
+        $generator = new TextFieldGenerator();
 
-    expect($generator->supports('text'))->toBeTrue();
-    expect($generator->supports('string'))->toBeFalse();
-});
+        expect($generator->supports('text'))->toBeTrue();
+        expect($generator->supports('string'))->toBeFalse();
+    });
 
-it('generates nullable text field with null default', function () {
-    $generator = new TextFieldGenerator();
+    it('generates nullable text field with null default', function () {
+        $generator = new TextFieldGenerator();
 
-    $code = $generator->generate('content', [
-        'nullable' => true,
-    ]);
+        $code = $generator->generate('content', [
+            'nullable' => true,
+        ]);
 
-    expect($code)->toBe('public ?string $content = null;');
-});
+        expect($code)->toBe('public ?string $content = null;');
+    });
 
-it('generates text field with default value', function () {
-    $generator = new TextFieldGenerator();
+    it('generates text field with default value', function () {
+        $generator = new TextFieldGenerator();
 
-    $code = $generator->generate('content', [
-        'default' => 'Hello world',
-    ]);
+        $code = $generator->generate('content', [
+            'default' => 'Hello world',
+        ]);
 
-    expect($code)->toContain('public');
-    expect($code)->toContain('$content =');
+        expect($code)->toContain('public');
+        expect($code)->toContain('$content =');
+    });
 });
