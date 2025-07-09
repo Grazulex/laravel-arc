@@ -15,38 +15,39 @@ describe('EnumValidatorGenerator', function () {
     it('generates a rule for enum values', function () {
         $generator = new EnumValidatorGenerator();
 
-        $rule = $generator->generate('status', [
+        $rules = $generator->generate('status', [
+            'type' => 'enum',
+            'values' => ['draft', 'published'],
+            'rules' => ['required'],
+        ]);
+
+        expect($rules)->toBe([
+            'status' => ['required', 'in:draft,published'],
+        ]);
+    });
+
+    it('returns rule only for in: when no extra rules given', function () {
+        $generator = new EnumValidatorGenerator();
+
+        $rules = $generator->generate('status', [
             'type' => 'enum',
             'values' => ['draft', 'published'],
         ]);
 
-        expect($rule)->toBe('in:draft,published');
+        expect($rules)->toBe([
+            'status' => ['in:draft,published'],
+        ]);
     });
 
-    it('generates a rule for PHP enum class', function () {
+    it('returns empty array when no values or enum given', function () {
         $generator = new EnumValidatorGenerator();
 
-        $rule = $generator->generate('status', [
+        $rules = $generator->generate('status', [
             'type' => 'enum',
-            'enum' => 'App\\Enums\\PostStatus',
         ]);
 
-        expect($rule)->toBe('Rule::enum(App\\Enums\\PostStatus::class)');
-    });
-
-    it('returns null when values are not set in config', function () {
-        $generator = new EnumValidatorGenerator();
-
-        $rule = $generator->generate('status', ['type' => 'enum']);
-
-        expect($rule)->toBeNull();
-    });
-
-    it('returns null when enum and values are not set in config', function () {
-        $generator = new EnumValidatorGenerator();
-
-        $rule = $generator->generate('status', ['type' => 'other']);
-
-        expect($rule)->toBeNull();
+        expect($rules)->toBe([
+            'status' => [],
+        ]);
     });
 });

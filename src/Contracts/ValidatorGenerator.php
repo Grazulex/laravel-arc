@@ -8,5 +8,8 @@ interface ValidatorGenerator
 {
     public function supports(string $type): bool;
 
-    public function generate(string $name, array $config): ?string;
+    /**
+     * @return array<string, array<string>> Laravel-style validation rules
+     */
+    public function generate(string $name, array $config): array;
 }

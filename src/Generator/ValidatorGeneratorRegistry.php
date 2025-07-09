@@ -9,8 +9,10 @@ use InvalidArgumentException;
 
 final class ValidatorGeneratorRegistry
 {
-    /** @var ValidatorGenerator[] */
-    private array $generators = [];
+    /**
+     * @var array<ValidatorGenerator>
+     */
+    private array $generators;
 
     public function __construct(array $generators)
     {
@@ -23,7 +25,10 @@ final class ValidatorGeneratorRegistry
         }
     }
 
-    public function generate(string $name, string $type, array $config): ?string
+    /**
+     * @return array<string, array<string>> Laravel-style rules (e.g. ['email' => ['required', 'email']])
+     */
+    public function generate(string $name, string $type, array $config): array
     {
         foreach ($this->generators as $generator) {
             if ($generator->supports($type)) {
@@ -31,6 +36,6 @@ final class ValidatorGeneratorRegistry
             }
         }
 
-        return null;
+        return [];
     }
 }

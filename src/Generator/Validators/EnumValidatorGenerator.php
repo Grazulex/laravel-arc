@@ -13,20 +13,18 @@ final class EnumValidatorGenerator implements ValidatorGenerator
         return $type === 'enum';
     }
 
-    public function generate(string $name, array $config): ?string
+    public function generate(string $name, array $definition): array
     {
-        // Enum PHP native ?
-        if (isset($config['enum'])) {
-            return "Rule::enum({$config['enum']}::class)";
+        $rules = [];
+
+        if (! empty($definition['rules']) && is_array($definition['rules'])) {
+            $rules = [...$rules, ...$definition['rules']];
         }
 
-        // Enum simple (valeurs fixées)
-        if (! isset($config['values']) || ! is_array($config['values'])) {
-            return null;
+        if (! empty($definition['values']) && is_array($definition['values'])) {
+            $rules[] = 'in:'.implode(',', $definition['values']);
         }
 
-        $inList = implode(',', array_map('trim', $config['values']));
-
-        return "in:{$inList}";
+        return [$name => $rules];
     }
 }
