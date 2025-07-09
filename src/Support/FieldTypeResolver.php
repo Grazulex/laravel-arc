@@ -9,17 +9,23 @@ final class FieldTypeResolver
     public static function resolvePhpType(string $baseType, bool $nullable = false): string
     {
         return ($nullable ? '?' : '').match ($baseType) {
-            'string' => 'string',
-            'integer' => 'int',
+            // chaînes
+            'string', 'text', 'uuid', 'enum', 'id' => 'string',
+
+            // nombres
+            'integer', 'bigint' => 'int',
             'float' => 'float',
-            'decimal' => 'string', // for precision (e.g. money)
+            'decimal' => 'string', // sécurité / précision (ex: money)
+
+            // booléens
             'boolean' => 'bool',
-            'array',
-            'json' => 'array',
-            'datetime',
-            'date',
-            'time' => '\Carbon\Carbon',
-            'uuid' => 'string',
+
+            // structures
+            'array', 'json' => 'array',
+
+            // objets date
+            'datetime', 'date', 'time' => '\Carbon\Carbon',
+
             default => 'mixed',
         };
     }

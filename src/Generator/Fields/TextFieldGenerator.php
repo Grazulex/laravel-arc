@@ -7,15 +7,15 @@ namespace Grazulex\LaravelArc\Generator\Fields;
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
 use Grazulex\LaravelArc\Support\FieldBuilder;
 
-final class DateTimeFieldGenerator implements FieldGenerator
+final class TextFieldGenerator implements FieldGenerator
 {
     public function supports(string $type): bool
     {
-        return $type === 'datetime';
+        return $type === 'text';
     }
 
     public function generate(string $name, array $config): string
     {
-        return FieldBuilder::generate($name, 'datetime', $config);
+        return FieldBuilder::generate($name, 'text', $config);
     }
 }

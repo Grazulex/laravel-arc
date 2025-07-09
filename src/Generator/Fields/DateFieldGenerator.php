@@ -1,11 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Grazulex\LaravelArc\Generator\Fields;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
 use Grazulex\LaravelArc\Support\FieldBuilder;
 
-class DateFieldGenerator implements FieldGenerator
+final class DateFieldGenerator implements FieldGenerator
 {
     public function supports(string $type): bool
     {

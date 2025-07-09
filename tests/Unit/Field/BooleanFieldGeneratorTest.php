@@ -13,10 +13,10 @@ it('generates boolean fields correctly', function () {
 
     $code = $generator->generate('name', [
         'type' => 'boolean',
-        'default' => True,
+        'default' => true,
     ]);
 
-    expect($code)->toBe("public bool \$name = true;");
+    expect($code)->toBe('public bool $name = true;');
 
     $code = $generator->generate('name', [
         'type' => 'bool',

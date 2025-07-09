@@ -9,13 +9,23 @@ final class DefaultValueCaster
     public static function cast(string $type, mixed $value): string
     {
         return match ($type) {
-            'string', 'uuid' => "'".addslashes((string) $value)."'",
+            // strings
+            'string', 'text', 'uuid', 'enum', 'id' => "'".addslashes((string) $value)."'",
+
+            // dates
             'date', 'datetime', 'time' => is_null($value) ? 'null' : '',
-            'integer' => (string) (int) $value,
+
+            // numbers
+            'integer', 'bigint' => (string) (int) $value,
             'float' => (string) (float) $value,
-            'decimal' => "'".$value."'", // use string for precision
+            'decimal' => "'".$value."'", // force string for precision
+
+            // booleans
             'boolean' => $value ? 'true' : 'false',
+
+            // structures
             'array', 'json' => var_export($value, true),
+
             default => 'null',
         };
     }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Grazulex\LaravelArc\Generator\Fields\DateTimeFieldGenerator;
 
 it('generates nullable datetime field with null default', function () {
@@ -9,7 +11,7 @@ it('generates nullable datetime field with null default', function () {
         'nullable' => true,
     ]);
 
-    expect($code)->toBe("public ?\\Carbon\\Carbon \$published_at = null;");
+    expect($code)->toBe('public ?\\Carbon\\Carbon $published_at = null;');
 });
 
 it('generates non-nullable datetime field without default', function () {
@@ -19,7 +21,7 @@ it('generates non-nullable datetime field without default', function () {
         'nullable' => false,
     ]);
 
-    expect($code)->toBe("public \\Carbon\\Carbon \$updated_at;");
+    expect($code)->toBe('public \\Carbon\\Carbon $updated_at;');
 });
 
 it('ignores string default value for datetime', function () {
@@ -30,7 +32,7 @@ it('ignores string default value for datetime', function () {
         'nullable' => false,
     ]);
 
-    expect($code)->toBe("public \\Carbon\\Carbon \$scheduled_at;");
+    expect($code)->toBe('public \\Carbon\\Carbon $scheduled_at;');
 });
 
 it('handles explicit null default for datetime', function () {
@@ -41,5 +43,5 @@ it('handles explicit null default for datetime', function () {
         'nullable' => true,
     ]);
 
-    expect($code)->toBe("public ?\\Carbon\\Carbon \$deleted_at = null;");
+    expect($code)->toBe('public ?\\Carbon\\Carbon $deleted_at = null;');
 });

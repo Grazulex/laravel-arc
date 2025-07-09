@@ -16,7 +16,7 @@ final class FieldBuilder
 
         if ($defaultDefined) {
             $casted = DefaultValueCaster::cast($type, $default);
-            $defaultCode = $casted !== '' ? ' = ' . $casted : '';
+            $defaultCode = $casted !== '' ? ' = '.$casted : '';
         } elseif ($nullable) {
             $defaultCode = ' = null';
         } else {
