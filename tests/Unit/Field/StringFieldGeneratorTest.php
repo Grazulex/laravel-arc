@@ -14,4 +14,10 @@ it('generates string fields correctly', function () {
     ]);
 
     expect($code)->toBe("public string \$name = 'John';");
+
+    $code = $generator->generate('name', [
+        'type' => 'string',
+    ]);
+
+    expect($code)->toBe("public string \$name = '';");
 });
