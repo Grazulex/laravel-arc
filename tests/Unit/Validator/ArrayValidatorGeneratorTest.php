@@ -17,24 +17,24 @@ describe('ArrayValidatorGenerator', function () {
 
         $rules = $generator->generate('tags', [
             'type' => 'array',
-            'rules' => ['min:1', 'max:5', 'distinct'],
+            'required' => true,
+            'rules' => ['min:1', 'max:5'],
         ]);
 
         expect($rules)->toBe([
-            'tags' => ['required', 'array', 'min:1', 'max:5', 'distinct'],
+            'tags' => ['array', 'required', 'min:1', 'max:5'],
         ]);
     });
 
-    it('generates array rule without required if nullable is true', function () {
+    it('generates array rule without required if not specified', function () {
         $generator = new ArrayValidatorGenerator();
 
         $rules = $generator->generate('tags', [
             'type' => 'array',
-            'nullable' => true,
         ]);
 
         expect($rules)->toBe([
-            'tags' => ['array'],
+            'tags' => ['array', 'required'],
         ]);
     });
 

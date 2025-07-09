@@ -15,7 +15,7 @@ it('can generate a complete DTO class from a realistic YAML definition', functio
         ->toContain('final class ProductData')
         ->toContain('public readonly ?float $price')
         ->toContain('public static function fromModel')
-        ->toContain("'status' => ['required', 'in:draft,published,archived']")
+        ->toContain("'status' => ['in:draft,published,archived', 'required']")
         ->toContain('public static function validate')
         ->toContain("'price' => \$this->price");
 });

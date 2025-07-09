@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
+use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
 final class StringValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
@@ -19,13 +20,7 @@ final class StringValidatorGenerator extends BaseValidatorGenerator implements V
             return [];
         }
 
-        $rules = ['string'];
-
-        if (isset($config['rules']) && is_array($config['rules'])) {
-            $rules = array_merge($rules, $config['rules']);
-        }
-
-        $rules = $this->applyRequiredIfNeeded($config, $rules);
+        $rules = ValidatorRuleBuilder::build(['string'], $config);
 
         return [$name => $rules];
     }

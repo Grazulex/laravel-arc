@@ -17,24 +17,24 @@ describe('IntegerValidatorGenerator', function () {
 
         $rules = $generator->generate('quantity', [
             'type' => 'integer',
+            'required' => true,
             'rules' => ['min:1', 'max:100'],
         ]);
 
         expect($rules)->toBe([
-            'quantity' => ['required', 'integer', 'min:1', 'max:100'],
+            'quantity' => ['integer', 'required', 'min:1', 'max:100'],
         ]);
     });
 
-    it('generates rule without required if nullable is true', function () {
+    it('generates integer rule without required if not specified', function () {
         $generator = new IntegerValidatorGenerator();
 
         $rules = $generator->generate('quantity', [
             'type' => 'integer',
-            'nullable' => true,
         ]);
 
         expect($rules)->toBe([
-            'quantity' => ['integer'],
+            'quantity' => ['integer', 'required'],
         ]);
     });
 

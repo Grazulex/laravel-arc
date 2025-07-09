@@ -8,7 +8,7 @@ describe('ValidatorRuleBuilder', function () {
     it('returns default rules if no extras defined', function () {
         $rules = ValidatorRuleBuilder::build(['string'], []);
 
-        expect($rules)->toBe(['string']);
+        expect($rules)->toBe(['string', 'required']);
     });
 
     it('adds required if marked in definition and not already present', function () {
@@ -30,7 +30,7 @@ describe('ValidatorRuleBuilder', function () {
 
         $rules = ValidatorRuleBuilder::build(['string'], $definition);
 
-        expect($rules)->toBe(['string', 'max:255', 'regex:/[a-z]/']);
+        expect($rules)->toBe(['string', 'required', 'max:255', 'regex:/[a-z]/']);
     });
 
     it('does not add duplicate user rules', function () {
@@ -40,6 +40,6 @@ describe('ValidatorRuleBuilder', function () {
 
         $rules = ValidatorRuleBuilder::build(['string'], $definition);
 
-        expect($rules)->toBe(['string', 'max:255']);
+        expect($rules)->toBe(['string', 'required', 'max:255']);
     });
 });

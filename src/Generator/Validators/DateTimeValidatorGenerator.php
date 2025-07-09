@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
+use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
 final class DateTimeValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
@@ -21,12 +22,8 @@ final class DateTimeValidatorGenerator extends BaseValidatorGenerator implements
             return [];
         }
 
-        $rules = [$type]; // Laravel accepts 'datetime', 'date', 'time' as validation rules
+        $rules = ValidatorRuleBuilder::build([$type], $config);
 
-        if (isset($config['rules']) && is_array($config['rules'])) {
-            $rules = array_merge($rules, $config['rules']);
-        }
-
-        return [$name => $this->applyRequiredIfNeeded($config, $rules)];
+        return [$name => $rules];
     }
 }

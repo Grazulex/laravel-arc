@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
+use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
 final class BooleanValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
@@ -19,12 +20,8 @@ final class BooleanValidatorGenerator extends BaseValidatorGenerator implements 
             return [];
         }
 
-        $rules = ['boolean'];
+        $rules = ValidatorRuleBuilder::build(['boolean'], $config);
 
-        if (isset($config['rules']) && is_array($config['rules'])) {
-            $rules = array_merge($rules, $config['rules']);
-        }
-
-        return [$name => $this->applyRequiredIfNeeded($config, $rules)];
+        return [$name => $rules];
     }
 }

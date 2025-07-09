@@ -9,40 +9,40 @@ describe('BooleanValidatorGenerator', function () {
         $generator = new BooleanValidatorGenerator();
 
         expect($generator->supports('boolean'))->toBeTrue();
-        expect($generator->supports('string'))->toBeFalse();
+        expect($generator->supports('integer'))->toBeFalse();
     });
 
-    it('generates boolean rule with required and custom rules', function () {
+    it('generates boolean rule with required and extras', function () {
         $generator = new BooleanValidatorGenerator();
 
-        $rules = $generator->generate('active', [
+        $rules = $generator->generate('is_active', [
             'type' => 'boolean',
+            'required' => true,
             'rules' => ['in:0,1'],
         ]);
 
         expect($rules)->toBe([
-            'active' => ['required', 'boolean', 'in:0,1'],
+            'is_active' => ['boolean', 'required', 'in:0,1'],
         ]);
     });
 
-    it('generates boolean rule without required if nullable is true', function () {
+    it('generates rule without required if not set', function () {
         $generator = new BooleanValidatorGenerator();
 
-        $rules = $generator->generate('active', [
+        $rules = $generator->generate('is_active', [
             'type' => 'boolean',
-            'nullable' => true,
         ]);
 
         expect($rules)->toBe([
-            'active' => ['boolean'],
+            'is_active' => ['boolean', 'required'],
         ]);
     });
 
-    it('returns empty array if type does not match', function () {
+    it('returns empty array if type is incorrect', function () {
         $generator = new BooleanValidatorGenerator();
 
-        $rules = $generator->generate('active', [
-            'type' => 'float',
+        $rules = $generator->generate('is_active', [
+            'type' => 'string',
         ]);
 
         expect($rules)->toBe([]);

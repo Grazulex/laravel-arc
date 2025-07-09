@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Validators;
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
+use Grazulex\LaravelArc\Support\ValidatorRuleBuilder;
 
 final class EnumValidatorGenerator extends BaseValidatorGenerator implements ValidatorGenerator
 {
@@ -15,16 +16,14 @@ final class EnumValidatorGenerator extends BaseValidatorGenerator implements Val
 
     public function generate(string $name, array $config): array
     {
-        if (! $this->isMatchingType($config, 'enum')) {
+        if (! $this->isMatchingType($config, 'enum') || ! isset($config['values']) || ! is_array($config['values'])) {
             return [];
         }
 
-        if (! isset($config['values']) || ! is_array($config['values'])) {
-            return [];
-        }
+        $enumRule = 'in:'.implode(',', $config['values']);
 
-        $rules = ['in:'.implode(',', $config['values'])];
+        $rules = ValidatorRuleBuilder::build([$enumRule], $config);
 
-        return [$name => $this->applyRequiredIfNeeded($config, $rules)];
+        return [$name => $rules];
     }
 }

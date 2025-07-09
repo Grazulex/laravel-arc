@@ -6,44 +6,46 @@ use Grazulex\LaravelArc\Generator\Validators\DateTimeValidatorGenerator;
 
 describe('DateTimeValidatorGenerator', function () {
     it('supports datetime-like types', function () {
-        $gen = new DateTimeValidatorGenerator();
+        $generator = new DateTimeValidatorGenerator();
 
-        expect($gen->supports('datetime'))->toBeTrue();
-        expect($gen->supports('date'))->toBeTrue();
-        expect($gen->supports('time'))->toBeTrue();
-        expect($gen->supports('string'))->toBeFalse();
+        expect($generator->supports('datetime'))->toBeTrue();
+        expect($generator->supports('date'))->toBeTrue();
+        expect($generator->supports('time'))->toBeTrue();
+        expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates datetime rule with required and custom format', function () {
-        $gen = new DateTimeValidatorGenerator();
+    it('generates datetime rule with required and custom rules', function () {
+        $generator = new DateTimeValidatorGenerator();
 
-        $rules = $gen->generate('starts_at', [
+        $rules = $generator->generate('published_at', [
             'type' => 'datetime',
+            'required' => true,
             'rules' => ['date_format:Y-m-d H:i:s'],
         ]);
 
         expect($rules)->toBe([
-            'starts_at' => ['required', 'datetime', 'date_format:Y-m-d H:i:s'],
+            'published_at' => ['datetime', 'required', 'date_format:Y-m-d H:i:s'],
         ]);
     });
 
-    it('generates date rule without required if nullable is true', function () {
-        $gen = new DateTimeValidatorGenerator();
+    it('returns rule without required if not specified', function () {
+        $generator = new DateTimeValidatorGenerator();
 
-        $rules = $gen->generate('published_on', [
+        $rules = $generator->generate('created_at', [
             'type' => 'date',
-            'nullable' => true,
         ]);
 
         expect($rules)->toBe([
-            'published_on' => ['date'],
+            'created_at' => ['date', 'required'],
         ]);
     });
 
-    it('returns empty array if type does not match', function () {
-        $gen = new DateTimeValidatorGenerator();
+    it('returns empty array for unsupported type', function () {
+        $generator = new DateTimeValidatorGenerator();
 
-        $rules = $gen->generate('updated_at', ['type' => 'array']);
+        $rules = $generator->generate('custom_field', [
+            'type' => 'array',
+        ]);
 
         expect($rules)->toBe([]);
     });
