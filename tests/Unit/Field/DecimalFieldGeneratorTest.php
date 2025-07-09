@@ -21,5 +21,5 @@ it('generates float fields correctly', function () {
         'type' => 'decimal',
     ]);
 
-    expect($code)->toBe("public string \$name;");
+    expect($code)->toBe('public string $name;');
 });

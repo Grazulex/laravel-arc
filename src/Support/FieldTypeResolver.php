@@ -1,24 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Grazulex\LaravelArc\Support;
 
-class FieldTypeResolver
+final class FieldTypeResolver
 {
     public static function resolvePhpType(string $baseType, bool $nullable = false): string
     {
-        return ($nullable ? '?' : '') . match ($baseType) {
-            'string'   => 'string',
-            'integer'  => 'int',
-            'float'    => 'float',
-            'decimal'  => 'string', // for precision (e.g. money)
-            'boolean'  => 'bool',
+        return ($nullable ? '?' : '').match ($baseType) {
+            'string' => 'string',
+            'integer' => 'int',
+            'float' => 'float',
+            'decimal' => 'string', // for precision (e.g. money)
+            'boolean' => 'bool',
             'array',
-            'json'     => 'array',
+            'json' => 'array',
             'datetime',
             'date',
-            'time'     => '\Carbon\Carbon',
-            'uuid'     => 'string',
-            default    => 'mixed',
+            'time' => '\Carbon\Carbon',
+            'uuid' => 'string',
+            default => 'mixed',
         };
     }
 }

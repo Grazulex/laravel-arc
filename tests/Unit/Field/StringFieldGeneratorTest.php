@@ -21,5 +21,5 @@ it('generates string fields correctly', function () {
         'type' => 'string',
     ]);
 
-    expect($code)->toBe("public string \$name;");
+    expect($code)->toBe('public string $name;');
 });

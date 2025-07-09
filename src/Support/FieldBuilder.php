@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Grazulex\LaravelArc\Support;
 
-class FieldBuilder
+final class FieldBuilder
 {
     public static function generate(string $name, string $type, array $config): string
     {
@@ -13,7 +15,7 @@ class FieldBuilder
         $phpType = FieldTypeResolver::resolvePhpType($type, $nullable);
 
         if ($defaultDefined) {
-            $defaultCode = ' = ' . DefaultValueCaster::cast($type, $default);
+            $defaultCode = ' = '.DefaultValueCaster::cast($type, $default);
         } elseif ($nullable) {
             $defaultCode = ' = null';
         } else {
