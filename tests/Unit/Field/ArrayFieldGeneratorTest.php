@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\ArrayFieldGenerator;
 
+it('supports array type', function () {
+    $generator = new ArrayFieldGenerator();
+
+    expect($generator->supports('array'))->toBeTrue();
+    expect($generator->supports('string'))->toBeFalse();
+});
+
 it('generates nullable array field with null default', function () {
     $generator = new ArrayFieldGenerator();
 

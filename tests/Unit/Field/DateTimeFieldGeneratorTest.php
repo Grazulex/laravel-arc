@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\DateTimeFieldGenerator;
 
+it('supports datetime type', function () {
+    $generator = new DateTimeFieldGenerator();
+
+    expect($generator->supports('datetime'))->toBeTrue();
+    expect($generator->supports('string'))->toBeFalse();
+});
+
 it('generates nullable datetime field with null default', function () {
     $generator = new DateTimeFieldGenerator();
 

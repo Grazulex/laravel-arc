@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\UuidFieldGenerator;
 
+it('supports uuid type', function () {
+    $generator = new UuidFieldGenerator();
+
+    expect($generator->supports('uuid'))->toBeTrue();
+    expect($generator->supports('string'))->toBeFalse();
+});
+
 it('generates nullable uuid field with null default', function () {
     $generator = new UuidFieldGenerator();
 

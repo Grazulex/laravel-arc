@@ -4,6 +4,13 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\Fields\TextFieldGenerator;
 
+it('supports text type', function () {
+    $generator = new TextFieldGenerator();
+
+    expect($generator->supports('text'))->toBeTrue();
+    expect($generator->supports('string'))->toBeFalse();
+});
+
 it('generates nullable text field with null default', function () {
     $generator = new TextFieldGenerator();
 
