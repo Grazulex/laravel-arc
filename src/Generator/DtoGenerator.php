@@ -10,6 +10,8 @@ final class DtoGenerator
         private HeaderGeneratorRegistry $headers,
         private FieldGeneratorRegistry $fields,
         private RelationGeneratorRegistry $relations,
+        private ValidatorGeneratorRegistry $validators,
+        private OptionGeneratorRegistry $options,
     ) {}
 
     public static function make(): self
@@ -21,6 +23,7 @@ final class DtoGenerator
             $context->fields(),
             $context->relations(),
             $context->validators(),
+            $context->options(),
         );
     }
 
@@ -28,6 +31,7 @@ final class DtoGenerator
     public function generateFromDefinition(array $yaml): string
     {
         $class = $this->headers->generate('dto', $yaml['header'] ?? []);
+
         $properties = [];
 
         foreach ($yaml['fields'] ?? [] as $name => $def) {
@@ -38,6 +42,22 @@ final class DtoGenerator
             $relationCode = $this->relations->generate($name, $def);
             if ($relationCode !== null && $relationCode !== '' && $relationCode !== '0') {
                 $properties[] = $relationCode;
+            }
+        }
+
+        // Process validators if present
+        foreach ($yaml['validators'] ?? [] as $name => $def) {
+            $validatorCode = $this->validators->generate($name, $def['type'] ?? 'default', $def);
+            if ($validatorCode !== null && $validatorCode !== '' && $validatorCode !== '0') {
+                $properties[] = $validatorCode;
+            }
+        }
+
+        // Process options if present
+        foreach ($yaml['options'] ?? [] as $name => $def) {
+            $optionCode = $this->options->generate($name, $def);
+            if ($optionCode !== null && $optionCode !== '' && $optionCode !== '0') {
+                $properties[] = $optionCode;
             }
         }
 

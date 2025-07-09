@@ -8,14 +8,21 @@ use Grazulex\LaravelArc\Generator\Fields\ArrayFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\BooleanFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\DateFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\DateTimeFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\DecimalFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\EnumFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\FloatFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\IdFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\IntegerFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\JsonFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\StringFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\TextFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\TimeFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\UuidFieldGenerator;
 use Grazulex\LaravelArc\Generator\Headers\DtoHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\ModelHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\TableHeaderGenerator;
+use Grazulex\LaravelArc\Generator\Options\SoftDeletesOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\TimestampsOptionGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToManyRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\HasManyRelationGenerator;
@@ -27,9 +34,9 @@ final class DtoGenerationContext
     public function headers(): HeaderGeneratorRegistry
     {
         return new HeaderGeneratorRegistry([
-            new DtoHeaderGenerator(),
-            new ModelHeaderGenerator(),
-            new TableHeaderGenerator(),
+            'dto' => new DtoHeaderGenerator(),
+            'model' => new ModelHeaderGenerator(),
+            'table' => new TableHeaderGenerator(),
         ]);
     }
 
@@ -37,14 +44,19 @@ final class DtoGenerationContext
     {
         return new FieldGeneratorRegistry([
             new StringFieldGenerator(),
-            new IntegerFieldGenerator(),
+            new ArrayFieldGenerator(),
             new BooleanFieldGenerator(),
-            new FloatFieldGenerator(),
-            new UuidFieldGenerator(),
             new DateFieldGenerator(),
             new DateTimeFieldGenerator(),
-            new ArrayFieldGenerator(),
+            new DecimalFieldGenerator(),
             new EnumFieldGenerator(),
+            new FloatFieldGenerator(),
+            new IdFieldGenerator(),
+            new IntegerFieldGenerator(),
+            new JsonFieldGenerator(),
+            new TextFieldGenerator(),
+            new TimeFieldGenerator(),
+            new UuidFieldGenerator(),
         ]);
     }
 
@@ -62,6 +74,15 @@ final class DtoGenerationContext
     {
         return new ValidatorGeneratorRegistry([
             new EnumValidatorGenerator(),
+            // Ajoute ici d’autres validators si disponibles
+        ]);
+    }
+
+    public function options(): OptionGeneratorRegistry
+    {
+        return new OptionGeneratorRegistry([
+            new TimestampsOptionGenerator(),
+            new SoftDeletesOptionGenerator(),
         ]);
     }
 }

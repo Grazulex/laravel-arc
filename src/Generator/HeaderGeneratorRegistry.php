@@ -10,19 +10,28 @@ use InvalidArgumentException;
 final class HeaderGeneratorRegistry
 {
     /**
-     * @var HeaderGenerator[]
+     * @var array<string, HeaderGenerator>
      */
     private array $generators = [];
 
     public function __construct(array $generators)
     {
-        foreach ($generators as $generator) {
+        foreach ($generators as $key => $generator) {
             if (! $generator instanceof HeaderGenerator) {
                 throw new InvalidArgumentException('Each generator must implement HeaderGenerator.');
             }
+
+            $this->generators[$key] = $generator;
+        }
+    }
+
+    public function generate(string $type, array $data): string
+    {
+        if (! isset($this->generators[$type])) {
+            throw new InvalidArgumentException("Unknown header generator type: {$type}");
         }
 
-        $this->generators = $generators;
+        return $this->generators[$type]->generate($data, $type);
     }
 
     public function generateAll(array $yaml, string $dtoName): array
