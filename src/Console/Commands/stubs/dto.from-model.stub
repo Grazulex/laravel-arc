@@ -1,0 +1,6 @@
+    public static function fromModel({{ modelFQCN }} $model): self
+    {
+        return new self(
+{{ assignments }}
+        );
+    }
