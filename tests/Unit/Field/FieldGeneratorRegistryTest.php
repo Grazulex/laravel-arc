@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 use Grazulex\LaravelArc\Generator\FieldGeneratorRegistry;
-use Grazulex\LaravelArc\Generator\Fields\StringFieldGenerator;
-use Grazulex\LaravelArc\Generator\Fields\IntegerFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\FloatFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\IntegerFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\StringFieldGenerator;
 
 it('calls the correct generator for a string field', function () {
     $registry = new FieldGeneratorRegistry([
@@ -22,7 +24,7 @@ it('calls the correct generator for an integer field', function () {
 
     $result = $registry->generate('age', ['type' => 'integer', 'default' => 30]);
 
-    expect($result)->toBe("public int \$age = 30;");
+    expect($result)->toBe('public int $age = 30;');
 });
 
 it('calls the correct generator for a float field', function () {
@@ -32,12 +34,11 @@ it('calls the correct generator for a float field', function () {
 
     $result = $registry->generate('height', ['type' => 'float', 'default' => 1.75]);
 
-    expect($result)->toBe("public float \$height = 1.75;");
+    expect($result)->toBe('public float $height = 1.75;');
 });
 
 it('throws if no generator supports the field type', function () {
     $registry = new FieldGeneratorRegistry([]);
-
 
     $registry->generate('age', ['type' => 'long', 'default' => 3.14]);
 })->throws(InvalidArgumentException::class, "No generator found for field type 'long'");

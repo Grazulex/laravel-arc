@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Grazulex\LaravelArc\Generator;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
 use InvalidArgumentException;
 
-class FieldGeneratorRegistry
+final class FieldGeneratorRegistry
 {
     /** @var FieldGenerator[] */
-    protected array $generators;
+    private array $generators;
 
     public function __construct(array $generators)
     {

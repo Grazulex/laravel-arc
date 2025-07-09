@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Grazulex\LaravelArc\Generator\Fields\StringFieldGenerator;
 
 it('generates string fields correctly', function () {

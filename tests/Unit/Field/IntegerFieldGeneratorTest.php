@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Grazulex\LaravelArc\Generator\Fields\IntegerFieldGenerator;
 
 it('generates integer fields correctly', function () {
@@ -14,18 +16,18 @@ it('generates integer fields correctly', function () {
         'default' => 100,
     ]);
 
-    expect($code)->toBe("public int \$name = 100;");
+    expect($code)->toBe('public int $name = 100;');
 
     $code = $generator->generate('name', [
         'type' => 'integer',
         'default' => 100,
     ]);
 
-    expect($code)->toBe("public int \$name = 100;");
+    expect($code)->toBe('public int $name = 100;');
 
     $code = $generator->generate('name', [
-        'type' => 'integer'
+        'type' => 'integer',
     ]);
 
-    expect($code)->toBe("public int \$name = 0;");
+    expect($code)->toBe('public int $name = 0;');
 });

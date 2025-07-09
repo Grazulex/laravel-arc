@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Grazulex\LaravelArc\Generator\Fields\FloatFieldGenerator;
 
 it('generates float fields correctly', function () {
@@ -14,18 +16,18 @@ it('generates float fields correctly', function () {
         'default' => '1.75',
     ]);
 
-    expect($code)->toBe("public float \$name = 1.75;");
+    expect($code)->toBe('public float $name = 1.75;');
 
     $code = $generator->generate('name', [
         'type' => 'float',
         'default' => '1.75',
     ]);
 
-    expect($code)->toBe("public float \$name = 1.75;");
+    expect($code)->toBe('public float $name = 1.75;');
 
     $code = $generator->generate('name', [
         'type' => 'float',
     ]);
 
-    expect($code)->toBe("public float \$name = 0.0;");
+    expect($code)->toBe('public float $name = 0.0;');
 });
