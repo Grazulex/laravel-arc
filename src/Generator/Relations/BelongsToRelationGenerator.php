@@ -7,11 +7,11 @@ namespace Grazulex\LaravelArc\Generator\Relations;
 use Grazulex\LaravelArc\Contracts\RelationGenerator;
 use Grazulex\LaravelArc\Support\DtoNamespaceResolver;
 
-final class HasOneRelationGenerator implements RelationGenerator
+final class BelongsToRelationGenerator implements RelationGenerator
 {
     public function supports(string $type): bool
     {
-        return $type === 'hasOne';
+        return $type === 'belongsTo';
     }
 
     public function generate(string $name, array $definition): string

@@ -38,7 +38,7 @@ describe('ValidatorGeneratorRegistry', function () {
         expect($result)->toBe('Rule::enum(StatusEnum::class)');
     });
 
-    it('uses first matching generator when multiple support the type', function () {
+    it('uses the first matching generator when multiple support the type', function () {
         $firstGenerator = mock(ValidatorGenerator::class);
         $firstGenerator->shouldReceive('supports')->with('string')->andReturn(true);
         $firstGenerator->shouldReceive('generate')->with('name', ['max' => 255])->andReturn('string|max:255');

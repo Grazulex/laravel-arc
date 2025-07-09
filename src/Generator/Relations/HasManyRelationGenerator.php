@@ -7,11 +7,11 @@ namespace Grazulex\LaravelArc\Generator\Relations;
 use Grazulex\LaravelArc\Contracts\RelationGenerator;
 use Grazulex\LaravelArc\Support\DtoNamespaceResolver;
 
-final class HasOneRelationGenerator implements RelationGenerator
+final class HasManyRelationGenerator implements RelationGenerator
 {
     public function supports(string $type): bool
     {
-        return $type === 'hasOne';
+        return $type === 'hasMany';
     }
 
     public function generate(string $name, array $definition): string
@@ -22,7 +22,8 @@ final class HasOneRelationGenerator implements RelationGenerator
         $dtoClass = DtoNamespaceResolver::resolveDtoClass($dto);
 
         return <<<PHP
-    public {$dtoClass} \$$name;
+    /** @var {$dtoClass}[] */
+    public array \$$name;
 PHP;
     }
 }
