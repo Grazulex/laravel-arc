@@ -11,7 +11,6 @@ fields:
   # Example field, replace or expand manually
   - name: id
     type: int
-    nullable: false
     readonly: true
     rules: []
 

@@ -18,7 +18,7 @@ describe('TextFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('content', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?string $content = null;');

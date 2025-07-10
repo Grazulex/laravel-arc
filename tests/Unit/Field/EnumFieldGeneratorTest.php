@@ -18,7 +18,7 @@ describe('EnumFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('status', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?string $status = null;');

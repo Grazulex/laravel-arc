@@ -10,22 +10,20 @@ fields:
     type: string
   description:
     type: string
+    nullable: true
     rules: [max:500]
   price:
     type: float
     rules: [min:0]
   tags:
     type: array
+    nullable: true
     rules: [distinct]
   status:
     type: enum
     values: [draft, published, archived]
   available:
     type: boolean
-  created_at:
-    type: datetime
-  published_at:
-    type: datetime
 
 relations:
   category:

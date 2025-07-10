@@ -452,7 +452,6 @@ fields:
     rules: [min:2, max:255]
   description:
     type: text
-    nullable: true
   price:
     type: decimal
     rules: [numeric, min:0]
@@ -461,7 +460,6 @@ fields:
     default: true
   tags:
     type: array
-    nullable: true
 
 relations:
   category:
@@ -497,11 +495,9 @@ fields:
     rules: [email, unique:users]
   email_verified_at:
     type: datetime
-    nullable: true
   profile:
     type: dto
     dto: profile
-    nullable: true
 
 relations:
   posts:
@@ -526,19 +522,15 @@ header:
 fields:
   age:
     type: integer
-    nullable: true
     rules: [min:13, max:120]
   bio:
     type: text
-    nullable: true
     rules: [max:500]
   website:
     type: string
-    nullable: true
     rules: [url]
   avatar:
     type: string
-    nullable: true
 
 options:
   timestamps: false
@@ -581,10 +573,8 @@ fields:
     rules: [size:3]
   shipping_address:
     type: json
-    nullable: true
   metadata:
     type: json
-    nullable: true
 
 relations:
   customer:

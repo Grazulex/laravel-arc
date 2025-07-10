@@ -18,7 +18,7 @@ describe('UuidFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('uuid', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?string $uuid = null;');

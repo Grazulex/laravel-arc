@@ -18,7 +18,7 @@ describe('DateFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('birth_date', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $birth_date = null;');
@@ -29,7 +29,7 @@ describe('DateFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('created_on', [
-            'nullable' => false,
+            'required' => true,
         ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $created_on;');
@@ -41,7 +41,7 @@ describe('DateFieldGenerator', function () {
 
         $code = $generator->generate('start_date', [
             'default' => '2024-01-01',
-            'nullable' => false,
+            'required' => true,
         ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $start_date;');
@@ -53,7 +53,7 @@ describe('DateFieldGenerator', function () {
 
         $code = $generator->generate('end_date', [
             'default' => null,
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $end_date = null;');

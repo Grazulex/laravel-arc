@@ -8,7 +8,8 @@ final class FieldBuilder
 {
     public static function generate(string $name, string $type, array $config): string
     {
-        $nullable = $config['nullable'] ?? false;
+        $required = $config['required'] ?? true;
+        $nullable = ! $required;
         $defaultDefined = array_key_exists('default', $config);
         $default = $config['default'] ?? null;
 

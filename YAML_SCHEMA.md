@@ -188,11 +188,11 @@ fields:
   
   age:
     type: integer
-    rules: [nullable, integer, min:13, max:120]
+    rules: [integer, min:13, max:120]
   
   website:
     type: string
-    rules: [nullable, url, max:255]
+    rules: [url, max:255]
   
   tags:
     type: array
@@ -228,7 +228,6 @@ fields:
   # Null defaults
   deleted_at:
     type: datetime
-    nullable: true
     default: null
 ```
 

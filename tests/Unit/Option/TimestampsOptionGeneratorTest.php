@@ -11,7 +11,7 @@ describe('TimestampsOptionGenerator', function () {
 
         expect($result)->toBe([
             'created_at' => ['type' => 'datetime'],
-            'updated_at' => ['type' => 'datetime'],
+            'updated_at' => ['type' => 'datetime', 'nullable' => true],
         ]);
     });
 

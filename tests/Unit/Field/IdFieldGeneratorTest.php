@@ -18,7 +18,7 @@ describe('IdFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('user_id', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?string $user_id = null;');

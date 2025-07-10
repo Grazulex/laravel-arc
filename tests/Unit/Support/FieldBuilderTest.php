@@ -14,7 +14,7 @@ describe('FieldBuilder', function () {
 
     it('generates nullable integer without default', function () {
         $code = FieldBuilder::generate('age', 'integer', [
-            'nullable' => true,
+            'required' => false,
         ]);
         expect($code)->toBe('public ?int $age = null;');
     });

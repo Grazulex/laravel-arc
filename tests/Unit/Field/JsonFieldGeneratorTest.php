@@ -18,7 +18,7 @@ describe('JsonFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('metadata', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?array $metadata = null;');

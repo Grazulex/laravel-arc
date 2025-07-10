@@ -18,7 +18,7 @@ describe('ArrayFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('items', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?array $items = null;');

@@ -18,7 +18,7 @@ describe('TimeFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('alarm', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $alarm = null;');

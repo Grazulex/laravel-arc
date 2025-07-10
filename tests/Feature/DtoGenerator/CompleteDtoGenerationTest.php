@@ -34,8 +34,6 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain('public readonly float $price')
             ->toContain('public readonly ?array $tags')
             ->toContain('public readonly bool $available')
-            ->toContain('public readonly \\Carbon\\Carbon $created_at')
-            ->toContain('public readonly ?\\Carbon\\Carbon $published_at')
             ->toContain('public static function fromModel')
             ->toContain('public function toArray')
             ->toContain('public static function rules')
@@ -45,7 +43,8 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain("'description' => ['string', 'max:500']")
             ->toContain('public static function validate')
             ->toContain('category') // relation
-            ->toContain('public readonly \\Carbon\\Carbon $updated_at') // timestamps
+            ->toContain('public readonly \\Carbon\\Carbon $created_at') // timestamps
+            ->toContain('public readonly ?\\Carbon\\Carbon $updated_at') // timestamps
             ->toContain('public readonly ?\\Carbon\\Carbon $deleted_at'); // soft deletes
     });
 });

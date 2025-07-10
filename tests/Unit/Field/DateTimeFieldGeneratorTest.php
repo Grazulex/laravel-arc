@@ -18,7 +18,7 @@ describe('DateTimeFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('published_at', [
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $published_at = null;');
@@ -53,7 +53,7 @@ describe('DateTimeFieldGenerator', function () {
 
         $code = $generator->generate('deleted_at', [
             'default' => null,
-            'nullable' => true,
+            'required' => false,
         ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $deleted_at = null;');
