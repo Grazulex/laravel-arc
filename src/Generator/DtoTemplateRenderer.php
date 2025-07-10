@@ -39,13 +39,15 @@ final class DtoTemplateRenderer
         string $className,
         string $properties,
         string $constructor,
-        string $methods
+        string $methods,
+        string $headerExtra = '',
+        string $extendsClause = ''
     ): string {
         $stub = file_get_contents(__DIR__.'/../Console/Commands/stubs/dto.class.stub');
 
         return str_replace(
-            ['{{ namespace }}', '{{ class }}', '{{ properties }}', '{{ constructor }}', '{{ methods }}'],
-            [$namespace, $className, $properties, $constructor, $methods],
+            ['{{ namespace }}', '{{ class }}', '{{ properties }}', '{{ constructor }}', '{{ methods }}', '{{ header_extra }}', '{{ extends_clause }}'],
+            [$namespace, $className, $properties, $constructor, $methods, $headerExtra, $extendsClause],
             $stub
         );
     }
@@ -55,7 +57,9 @@ final class DtoTemplateRenderer
         string $className,
         array $fields,
         string $modelFQCN,
-        array $extraMethods = []
+        array $extraMethods = [],
+        string $headerExtra = '',
+        string $extendsClause = ''
     ): string {
         $constructor = collect($fields)->map(
             function (array $definition, string $name): string {
@@ -82,7 +86,9 @@ final class DtoTemplateRenderer
             $className,
             '', // properties block not used
             $constructor,
-            implode("\n\n", array_merge($baseMethods, $extraMethods))
+            implode("\n\n", array_merge($baseMethods, $extraMethods)),
+            $headerExtra,
+            $extendsClause
         );
     }
 }

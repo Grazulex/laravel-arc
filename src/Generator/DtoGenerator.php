@@ -44,6 +44,20 @@ final class DtoGenerator
         $modelFQCN = $this->headers->generate('model', $header, $context);
         $this->headers->generate('table', $header, $context);
 
+        // --- Collect header extras ---
+        $headerExtras = [];
+        $useStatements = $this->headers->generate('use', $header, $context);
+        if (!empty($useStatements)) {
+            $headerExtras[] = $useStatements;
+        }
+        
+        $extendsClause = $this->headers->generate('extends', $header, $context);
+        
+        $headerExtra = implode("\n", $headerExtras);
+        if (!empty($headerExtra)) {
+            $headerExtra .= "\n";
+        }
+
         // --- Inject extra fields from options ---
         foreach ($optionDefinitions as $name => $value) {
             $generator = $this->options->get($name);
@@ -121,7 +135,9 @@ final class DtoGenerator
             $className,
             $fieldDefinitions, // important: includes both base and expanded
             $modelFQCN,
-            $methods
+            $methods,
+            $headerExtra,
+            $extendsClause
         );
     }
 }

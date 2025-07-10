@@ -19,8 +19,10 @@ use Grazulex\LaravelArc\Generator\Fields\TextFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\TimeFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\UuidFieldGenerator;
 use Grazulex\LaravelArc\Generator\Headers\DtoHeaderGenerator;
+use Grazulex\LaravelArc\Generator\Headers\ExtendsHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\ModelHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\TableHeaderGenerator;
+use Grazulex\LaravelArc\Generator\Headers\UseHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Options\SoftDeletesOptionGenerator;
 use Grazulex\LaravelArc\Generator\Options\TimestampsOptionGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToManyRelationGenerator;
@@ -44,6 +46,8 @@ final class DtoGenerationContext
             'dto' => new DtoHeaderGenerator(),
             'model' => new ModelHeaderGenerator(),
             'table' => new TableHeaderGenerator(),
+            'use' => new UseHeaderGenerator(),
+            'extends' => new ExtendsHeaderGenerator(),
         ]);
     }
 
