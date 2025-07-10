@@ -19,7 +19,7 @@ fields:
     type: string
   price:
     type: float
-    nullable: true
+    required: false
   created_at:
     type: datetime
 YML;

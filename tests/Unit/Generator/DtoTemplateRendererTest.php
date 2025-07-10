@@ -13,9 +13,9 @@ describe('DtoTemplateRenderer', function () {
         $modelFQCN = '\\App\\Models\\User';
 
         $fields = [
-            'id' => ['type' => 'integer', 'nullable' => false],
-            'name' => ['type' => 'string', 'nullable' => false],
-            'email' => ['type' => 'string', 'nullable' => true],
+            'id' => ['type' => 'integer', 'required' => true],
+            'name' => ['type' => 'string', 'required' => true],
+            'email' => ['type' => 'string', 'required' => false],
         ];
 
         $code = $renderer->renderFullDto($namespace, $className, $fields, $modelFQCN);
@@ -70,8 +70,8 @@ describe('DtoTemplateRenderer', function () {
         $modelFQCN = '\\App\\Models\\Settings';
 
         $fields = [
-            'options' => ['type' => 'array', 'nullable' => false],
-            'notes' => ['type' => 'string', 'nullable' => true],
+            'options' => ['type' => 'array', 'required' => true],
+            'notes' => ['type' => 'string', 'required' => false],
         ];
 
         $code = $renderer->renderFullDto($namespace, $className, $fields, $modelFQCN);
@@ -92,7 +92,7 @@ describe('DtoTemplateRenderer', function () {
 
         $fields = [
             'starts_at' => ['type' => 'datetime'],
-            'ends_at' => ['type' => 'datetime', 'nullable' => true],
+            'ends_at' => ['type' => 'datetime', 'required' => false],
         ];
 
         $code = $renderer->renderFullDto($namespace, $className, $fields, $modelFQCN);

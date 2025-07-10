@@ -10,14 +10,14 @@ fields:
     type: string
   description:
     type: string
-    nullable: true
+    required: false
     rules: [max:500]
   price:
     type: float
     rules: [min:0]
   tags:
     type: array
-    nullable: true
+    required: false
     rules: [distinct]
   status:
     type: enum

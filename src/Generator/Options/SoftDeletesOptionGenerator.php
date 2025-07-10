@@ -18,7 +18,7 @@ final class SoftDeletesOptionGenerator implements FieldExpandingOptionGenerator
     {
         if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
             return [
-                'deleted_at' => ['type' => 'datetime', 'nullable' => true],
+                'deleted_at' => ['type' => 'datetime', 'required' => false],
             ];
         }
 

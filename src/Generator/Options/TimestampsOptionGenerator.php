@@ -19,7 +19,7 @@ final class TimestampsOptionGenerator implements FieldExpandingOptionGenerator
         if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
             return [
                 'created_at' => ['type' => 'datetime'],
-                'updated_at' => ['type' => 'datetime', 'nullable' => true],
+                'updated_at' => ['type' => 'datetime', 'required' => false],
             ];
         }
 

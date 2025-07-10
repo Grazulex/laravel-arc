@@ -10,7 +10,7 @@ fields:
     type: string
   price:
     type: float
-    nullable: true
+    required: false
     default: 0.0
   available:
     type: boolean

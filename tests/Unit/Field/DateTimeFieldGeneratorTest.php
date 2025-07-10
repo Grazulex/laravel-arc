@@ -29,7 +29,7 @@ describe('DateTimeFieldGenerator', function () {
         $context = new DtoGenerationContext();
 
         $code = $generator->generate('updated_at', [
-            'nullable' => false,
+            'required' => true,
         ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $updated_at;');
@@ -41,7 +41,7 @@ describe('DateTimeFieldGenerator', function () {
 
         $code = $generator->generate('scheduled_at', [
             'default' => '2024-07-09 13:00:00',
-            'nullable' => false,
+            'required' => true,
         ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $scheduled_at;');

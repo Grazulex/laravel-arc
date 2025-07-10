@@ -61,7 +61,7 @@ final class DtoTemplateRenderer
             function (array $definition, string $name): string {
                 $type = FieldTypeResolver::resolvePhpType(
                     $definition['type'] ?? 'mixed',
-                    $definition['nullable'] ?? false
+                    ! ($definition['required'] ?? true)
                 );
 
                 $default = array_key_exists('default', $definition) && $definition['default'] === null
