@@ -13,7 +13,7 @@ describe('TimeFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable time field with null default', function () {
+    it('generates non-required time field with null default', function () {
         $generator = new TimeFieldGenerator();
         $context = new DtoGenerationContext();
 

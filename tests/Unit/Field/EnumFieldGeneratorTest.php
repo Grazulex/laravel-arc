@@ -13,7 +13,7 @@ describe('EnumFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable enum field with null default', function () {
+    it('generates non-required enum field with null default', function () {
         $generator = new EnumFieldGenerator();
         $context = new DtoGenerationContext();
 

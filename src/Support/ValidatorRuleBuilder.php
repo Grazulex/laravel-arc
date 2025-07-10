@@ -16,7 +16,7 @@ final class ValidatorRuleBuilder
         $rules = $defaultRules;
 
         // Add 'required' if needed (but not if already defined manually)
-        if (! ($definition['nullable'] ?? false) && ! in_array('required', $rules, true)) {
+        if (($definition['required'] ?? true) && ! in_array('required', $rules, true)) {
             $rules[] = 'required';
         }
 

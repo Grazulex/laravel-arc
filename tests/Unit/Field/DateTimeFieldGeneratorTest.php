@@ -13,7 +13,7 @@ describe('DateTimeFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable datetime field with null default', function () {
+    it('generates non-required datetime field with null default', function () {
         $generator = new DateTimeFieldGenerator();
         $context = new DtoGenerationContext();
 
@@ -24,7 +24,7 @@ describe('DateTimeFieldGenerator', function () {
         expect($code)->toBe('public ?\\Carbon\\Carbon $published_at = null;');
     });
 
-    it('generates non-nullable datetime field without default', function () {
+    it('generates required datetime field without default', function () {
         $generator = new DateTimeFieldGenerator();
         $context = new DtoGenerationContext();
 

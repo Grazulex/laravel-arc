@@ -62,7 +62,7 @@ describe('DtoTemplateRenderer', function () {
             ->toContain("'active' => \$this->active");
     });
 
-    it('can handle nullable and array types in renderFullDto', function () {
+    it('can handle required and optional types in renderFullDto', function () {
         $renderer = new DtoTemplateRenderer();
 
         $namespace = 'App\\DTO';

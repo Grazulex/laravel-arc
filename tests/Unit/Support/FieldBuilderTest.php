@@ -12,7 +12,7 @@ describe('FieldBuilder', function () {
         expect($code)->toBe("public string \$name = 'John';");
     });
 
-    it('generates nullable integer without default', function () {
+    it('generates non-required integer without default', function () {
         $code = FieldBuilder::generate('age', 'integer', [
             'required' => false,
         ]);

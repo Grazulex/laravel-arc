@@ -13,7 +13,7 @@ describe('UuidFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable uuid field with null default', function () {
+    it('generates non-required uuid field with null default', function () {
         $generator = new UuidFieldGenerator();
         $context = new DtoGenerationContext();
 

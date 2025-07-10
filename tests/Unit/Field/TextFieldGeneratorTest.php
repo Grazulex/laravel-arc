@@ -13,7 +13,7 @@ describe('TextFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable text field with null default', function () {
+    it('generates non-required text field with null default', function () {
         $generator = new TextFieldGenerator();
         $context = new DtoGenerationContext();
 

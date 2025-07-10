@@ -13,7 +13,7 @@ describe('JsonFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable json field with null default', function () {
+    it('generates non-required json field with null default', function () {
         $generator = new JsonFieldGenerator();
         $context = new DtoGenerationContext();
 

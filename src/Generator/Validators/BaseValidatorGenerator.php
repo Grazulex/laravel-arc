@@ -15,11 +15,11 @@ abstract class BaseValidatorGenerator
     }
 
     /**
-     * Ajoute la règle 'required' si le champ n'est pas nullable.
+     * Ajoute la règle 'required' si le champ est requis.
      */
     protected function applyRequiredIfNeeded(array $config, array $rules): array
     {
-        if (! ($config['nullable'] ?? false)) {
+        if ($config['required'] ?? true) {
             array_unshift($rules, 'required');
         }
 

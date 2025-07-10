@@ -13,7 +13,7 @@ describe('IdFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable id field with null default', function () {
+    it('generates non-required id field with null default', function () {
         $generator = new IdFieldGenerator();
         $context = new DtoGenerationContext();
 

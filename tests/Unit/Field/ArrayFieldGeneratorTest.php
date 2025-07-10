@@ -13,7 +13,7 @@ describe('ArrayFieldGenerator', function () {
         expect($generator->supports('string'))->toBeFalse();
     });
 
-    it('generates nullable array field with null default', function () {
+    it('generates non-required array field with null default', function () {
         $generator = new ArrayFieldGenerator();
         $context = new DtoGenerationContext();
 
