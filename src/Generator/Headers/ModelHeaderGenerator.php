@@ -22,6 +22,6 @@ final class ModelHeaderGenerator implements HeaderGenerator
             return '\\App\\Models\\Model';
         }
 
-        return '\\'.mb_ltrim($model, '\\');
+        return '\\'.ltrim($model, '\\');
     }
 }
