@@ -3,6 +3,10 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  use:
+    - App\Traits\HasUuid
+    - App\Traits\Sluggable
+  extends: BaseDTO
 
 fields:
   id:
