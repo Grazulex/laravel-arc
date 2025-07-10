@@ -16,7 +16,6 @@ fields:
   
   description:
     type: text
-    nullable: true
     rules: [max:1000]
   
   price:
@@ -39,16 +38,13 @@ fields:
   
   tags:
     type: array
-    nullable: true
     rules: [array, distinct]
   
   specifications:
     type: json
-    nullable: true
   
   published_at:
     type: datetime
-    nullable: true
 
 relations:
   category:

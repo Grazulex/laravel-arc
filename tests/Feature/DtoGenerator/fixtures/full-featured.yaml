@@ -10,7 +10,6 @@ fields:
     type: string
   description:
     type: string
-    nullable: true
     rules: [max:500]
   price:
     type: float
@@ -18,7 +17,6 @@ fields:
   tags:
     type: array
     rules: [distinct]
-    nullable: true
   status:
     type: enum
     values: [draft, published, archived]
@@ -28,7 +26,6 @@ fields:
     type: datetime
   published_at:
     type: datetime
-    nullable: true
 
 relations:
   category:

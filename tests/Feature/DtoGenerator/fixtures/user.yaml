@@ -19,7 +19,6 @@ fields:
   profile:
     type: dto
     dto: profile
-    nullable: true
 
 options:
   timestamps: true

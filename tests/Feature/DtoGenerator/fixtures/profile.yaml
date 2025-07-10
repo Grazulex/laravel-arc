@@ -6,15 +6,12 @@ header:
 fields:
   age:
     type: integer
-    nullable: true
 
   bio:
     type: string
-    nullable: true
 
   website:
     type: string
-    nullable: true
 
   timestamps: false
   soft_deletes: false

@@ -102,7 +102,6 @@ return [
        rules: [email, unique:users]
      email_verified_at:
        type: datetime
-       nullable: true
 
    relations:
      posts:
@@ -185,7 +184,6 @@ The `fields` section defines all DTO properties. Each field supports the followi
 |-----------|------|---------|-------------|
 | `type` | string | - | Field type (see [Field Types](#field-types)) |
 | `required` | boolean | false | Whether the field is required |
-| `nullable` | boolean | false | Whether the field can be null |
 | `default` | mixed | - | Default value for the field |
 | `rules` | array | [] | Laravel validation rules |
 
@@ -198,7 +196,6 @@ fields:
     rules: [min:2, max:100]
   price:
     type: float
-    nullable: true
     default: 0.0
     rules: [min:0]
 ```
@@ -218,7 +215,6 @@ status:
 tags:
   type: array
   rules: [distinct]
-  nullable: true
 ```
 
 **DTO Fields (nested DTOs):**
@@ -226,7 +222,6 @@ tags:
 profile:
   type: dto
   dto: profile  # References another DTO definition
-  nullable: true
 ```
 
 ### Relations Section

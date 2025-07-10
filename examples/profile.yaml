@@ -7,22 +7,18 @@ header:
 fields:
   age:
     type: integer
-    nullable: true
     rules: [min:13, max:120]
   
   bio:
     type: text
-    nullable: true
     rules: [max:500]
   
   website:
     type: string
-    nullable: true
     rules: [url]
   
   avatar:
     type: string
-    nullable: true
 
 options:
   timestamps: false

@@ -56,7 +56,6 @@ The fields section defines all properties of the DTO. Each field is defined as a
 |-----------|------|---------|----------|-------------|
 | `type` | string | - | Yes | Field data type (see [Field Types](#field-types)) |
 | `required` | boolean | `false` | No | Whether the field is required |
-| `nullable` | boolean | `false` | No | Whether the field can be null |
 | `default` | mixed | - | No | Default value for the field |
 | `rules` | array | `[]` | No | Laravel validation rules |
 
@@ -76,7 +75,6 @@ name:
 ```yaml
 age:
   type: integer
-  nullable: true
   rules: [min:0, max:150]
 ```
 
@@ -98,7 +96,6 @@ is_active:
 ```yaml
 tags:
   type: array
-  nullable: true
   rules: [array, distinct]
 ```
 
@@ -106,7 +103,6 @@ tags:
 ```yaml
 metadata:
   type: json
-  nullable: true
 ```
 
 #### Specialized Types
@@ -137,7 +133,6 @@ id:
 ```yaml
 description:
   type: text
-  nullable: true
   rules: [max:1000]
 ```
 
@@ -154,21 +149,18 @@ amount:
 ```yaml
 created_at:
   type: datetime
-  nullable: true
 ```
 
 **Date**
 ```yaml
 birth_date:
   type: date
-  nullable: true
 ```
 
 **Time**
 ```yaml
 notification_time:
   type: time
-  nullable: true
 ```
 
 #### Complex Types
@@ -178,7 +170,6 @@ notification_time:
 profile:
   type: dto
   dto: profile  # References profile.yaml definition
-  nullable: true
 ```
 
 ### Validation Rules
@@ -333,7 +324,6 @@ fields:
   
   description:
     type: text
-    nullable: true
     rules: [max:1000]
   
   # Numeric fields
@@ -360,24 +350,20 @@ fields:
   # Array field
   tags:
     type: array
-    nullable: true
     rules: [array, distinct]
   
   # JSON field
   specifications:
     type: json
-    nullable: true
   
   # Date fields
   published_at:
     type: datetime
-    nullable: true
   
   # Nested DTO
   category_details:
     type: dto
     dto: category
-    nullable: true
 
 relations:
   category:

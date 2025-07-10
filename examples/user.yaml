@@ -21,7 +21,6 @@ fields:
   
   email_verified_at:
     type: datetime
-    nullable: true
 
 options:
   timestamps: true

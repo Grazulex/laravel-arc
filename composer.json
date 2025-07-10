@@ -1,7 +1,15 @@
 {
     "name": "grazulex/laravel-arc",
     "description": "A Laravel package for elegant and modern Data Transfer Objects (DTOs) management with automatic validation and direct property access",
-    "keywords": ["laravel", "dto", "data-transfer-object", "validation", "attributes", "php8", "pest"],
+    "keywords": [
+        "laravel",
+        "dto",
+        "data-transfer-object",
+        "validation",
+        "attributes",
+        "php8",
+        "pest"
+    ],
     "type": "library",
     "homepage": "https://github.com/grazulex/laravel-arc",
     "require": {
@@ -66,6 +74,12 @@
         ],
         "rector": [
             "./vendor/bin/rector"
+        ],
+        "full": [
+            "composer run-script pint",
+            "composer run-script phpstan",
+            "composer run-script rector",
+            "composer run-script test"
         ]
     },
     "config": {
