@@ -10,6 +10,10 @@ final class SoftDeletesOptionGenerator implements OptionGenerator
 {
     public function generate(mixed $value): ?string
     {
-        return $value ? 'public bool $softDeletes = true;' : null;
+        if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+            return 'public bool $softDeletes = true;';
+        }
+
+        return null;
     }
 }

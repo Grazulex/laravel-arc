@@ -7,8 +7,6 @@ namespace Grazulex\LaravelArc\Generator;
 final class DtoGenerator
 {
     public function __construct(
-        // private HeaderGeneratorRegistry $headers,
-        // private FieldGeneratorRegistry $fields,
         private RelationGeneratorRegistry $relations,
         private ValidatorGeneratorRegistry $validators,
         private OptionGeneratorRegistry $options,
@@ -19,8 +17,6 @@ final class DtoGenerator
         $context = new DtoGenerationContext();
 
         return new self(
-            // $context->headers(),
-            // $context->fields(),
             $context->relations(),
             $context->validators(),
             $context->options(),
@@ -42,7 +38,7 @@ final class DtoGenerator
 
         // Validation rules for fields
         foreach ($fields as $name => $def) {
-            $fieldRules = $this->validators->generate($name, $def['type'] ?? 'string', $def);
+            $fieldRules = $this->validators->generate($name, $def);
             if ($fieldRules !== []) {
                 $rules = array_merge($rules, $fieldRules);
             }
@@ -65,9 +61,18 @@ final class DtoGenerator
         }
 
         // Generate rules() and validate() methods
-        if ($rules !== []) {
+        $allRules = [];
+
+        foreach ($fields as $name => $def) {
+            $fieldRules = $this->validators->generate($name, $def);
+            foreach ($fieldRules as $field => $ruleSet) {
+                $allRules[$field] = $ruleSet;
+            }
+        }
+
+        if ($allRules !== []) {
             $lines = [];
-            foreach ($rules as $field => $ruleSet) {
+            foreach ($allRules as $field => $ruleSet) {
                 $joined = implode("', '", $ruleSet);
                 $lines[] = "        '{$field}' => ['{$joined}'],";
             }
@@ -75,35 +80,29 @@ final class DtoGenerator
             $rulesCode = implode("\n", $lines);
 
             $methods[] = <<<PHP
-        public static function rules(): array
-        {
-            return [
-    $rulesCode
-            ];
-        }
-    
-        public static function validate(array \$data): \Illuminate\Contracts\Validation\Validator
-        {
-            return \Illuminate\Support\Facades\Validator::make(\$data, static::rules());
-        }
-    PHP;
+            public static function rules(): array
+            {
+                return [
+                    $rulesCode
+                ];
+            }
+
+            public static function validate(array \$data): \Illuminate\Contracts\Validation\Validator
+            {
+                return \Illuminate\Support\Facades\Validator::make(\$data, static::rules());
+            }
+            PHP;
         }
 
         // Generate class using template system
         $renderer = new DtoTemplateRenderer();
 
-        $baseDto = $renderer->renderFullDto(
+        return $renderer->renderFullDto(
             $namespace,
             $className,
             $fields,
-            $modelFQCN
+            $modelFQCN,
+            $methods // ✅ FIX: now injected properly into the template
         );
-
-        // Append all extra methods
-        if ($methods !== []) {
-            return mb_rtrim($baseDto, "}\n")."\n\n".implode("\n\n", $methods)."\n}";
-        }
-
-        return $baseDto;
     }
 }

@@ -54,7 +54,8 @@ final class DtoTemplateRenderer
         string $namespace,
         string $className,
         array $fields,
-        string $modelFQCN
+        string $modelFQCN,
+        array $extraMethods = []
     ): string {
         $constructor = collect($fields)->map(function ($definition, $name): string {
             $type = FieldTypeResolver::resolvePhpType(
@@ -65,7 +66,7 @@ final class DtoTemplateRenderer
             return str_repeat(' ', 8)."public readonly {$type} \${$name},";
         })->implode("\n");
 
-        $methods = [
+        $baseMethods = [
             $this->renderFromModel($modelFQCN, $fields),
             $this->renderToArray($fields),
         ];
@@ -73,9 +74,9 @@ final class DtoTemplateRenderer
         return $this->renderClass(
             $namespace,
             $className,
-            '', // plus besoin de propriétés séparées
+            '', // pas de bloc propriété séparé
             $constructor,
-            implode("\n\n", $methods)
+            implode("\n\n", array_merge($baseMethods, $extraMethods))
         );
     }
 }

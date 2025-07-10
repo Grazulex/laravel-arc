@@ -10,6 +10,10 @@ final class TimestampsOptionGenerator implements OptionGenerator
 {
     public function generate(mixed $value): ?string
     {
-        return $value ? 'public bool $timestamps = true;' : null;
+        if (filter_var($value, FILTER_VALIDATE_BOOLEAN)) {
+            return 'public bool $timestamps = true;';
+        }
+
+        return null;
     }
 }

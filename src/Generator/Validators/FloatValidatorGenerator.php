@@ -20,9 +20,8 @@ final class FloatValidatorGenerator extends BaseValidatorGenerator implements Va
             return [];
         }
 
-        // Laravel doesn't have a `float` rule, so we use `numeric`
-        $rules = ValidatorRuleBuilder::build(['numeric'], $config);
-
-        return [$name => $rules];
+        return [
+            $name => ValidatorRuleBuilder::build(['numeric'], $config),
+        ];
     }
 }

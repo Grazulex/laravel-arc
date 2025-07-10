@@ -1,0 +1,40 @@
+header:
+  namespace: App\DTO
+  class: ProductDetailDto
+  model: App\Models\Product
+
+fields:
+  id:
+    type: uuid
+  name:
+    type: string
+  description:
+    type: string
+    nullable: true
+    rules: [max:500]
+  price:
+    type: float
+    rules: [min:0]
+  tags:
+    type: array
+    rules: [distinct]
+    nullable: true
+  status:
+    type: enum
+    values: [draft, published, archived]
+  available:
+    type: boolean
+  created_at:
+    type: datetime
+  published_at:
+    type: datetime
+    nullable: true
+
+relations:
+  category:
+    type: belongsTo
+    target: App\Models\Category
+
+options:
+  timestamps: true
+  soft_deletes: true

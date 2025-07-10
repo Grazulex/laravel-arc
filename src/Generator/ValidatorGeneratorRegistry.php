@@ -28,8 +28,14 @@ final class ValidatorGeneratorRegistry
     /**
      * @return array<string, array<string>> Laravel-style rules (e.g. ['email' => ['required', 'email']])
      */
-    public function generate(string $name, string $type, array $config): array
+    public function generate(string $name, array $config): array
     {
+        $type = $config['type'] ?? null;
+
+        if (! is_string($type)) {
+            return [];
+        }
+
         foreach ($this->generators as $generator) {
             if ($generator->supports($type)) {
                 return $generator->generate($name, $config);

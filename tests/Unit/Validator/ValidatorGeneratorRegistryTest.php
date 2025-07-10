@@ -24,7 +24,7 @@ describe('ValidatorGeneratorRegistry', function () {
 
         $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
 
-        $result = $registry->generate('field', 'unknown', []);
+        $result = $registry->generate('field', ['type' => 'unknown']);
         expect($result)->toBe([]);
     });
 
@@ -37,7 +37,7 @@ describe('ValidatorGeneratorRegistry', function () {
 
         $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
 
-        $result = $registry->generate('status', 'enum', ['type' => 'enum', 'values' => ['active', 'inactive']]);
+        $result = $registry->generate('status', ['type' => 'enum', 'values' => ['active', 'inactive']]);
         expect($result)->toBe([
             'status' => ['required', 'in:active,inactive'],
         ]);
@@ -55,7 +55,7 @@ describe('ValidatorGeneratorRegistry', function () {
 
         $registry = new ValidatorGeneratorRegistry([$first, $second]);
 
-        $result = $registry->generate('name', 'string', ['type' => 'string', 'max' => 255]);
+        $result = $registry->generate('name', ['type' => 'string', 'max' => 255]);
 
         expect($result)->toBe([
             'name' => ['string', 'max:255'],

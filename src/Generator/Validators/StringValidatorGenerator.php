@@ -20,8 +20,8 @@ final class StringValidatorGenerator extends BaseValidatorGenerator implements V
             return [];
         }
 
-        $rules = ValidatorRuleBuilder::build(['string'], $config);
-
-        return [$name => $rules];
+        return [
+            $name => ValidatorRuleBuilder::build(['string'], $config),
+        ];
     }
 }

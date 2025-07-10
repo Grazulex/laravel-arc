@@ -27,7 +27,14 @@ use Grazulex\LaravelArc\Generator\Relations\BelongsToManyRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\HasManyRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\HasOneRelationGenerator;
+use Grazulex\LaravelArc\Generator\Validators\ArrayValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\BooleanValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\DateTimeValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\EnumValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\FloatValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\IntegerValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\StringValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\UuidValidatorGenerator;
 
 final class DtoGenerationContext
 {
@@ -73,8 +80,14 @@ final class DtoGenerationContext
     public function validators(): ValidatorGeneratorRegistry
     {
         return new ValidatorGeneratorRegistry([
+            new StringValidatorGenerator(),
+            new IntegerValidatorGenerator(),
+            new FloatValidatorGenerator(),
+            new BooleanValidatorGenerator(),
+            new UuidValidatorGenerator(),
             new EnumValidatorGenerator(),
-            // Ajoute ici d’autres validators si disponibles
+            new DateTimeValidatorGenerator(),
+            new ArrayValidatorGenerator(),
         ]);
     }
 

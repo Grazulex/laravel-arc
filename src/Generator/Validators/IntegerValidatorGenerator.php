@@ -20,8 +20,8 @@ final class IntegerValidatorGenerator extends BaseValidatorGenerator implements 
             return [];
         }
 
-        $rules = ValidatorRuleBuilder::build(['integer'], $config);
-
-        return [$name => $rules];
+        return [
+            $name => ValidatorRuleBuilder::build(['integer'], $config),
+        ];
     }
 }

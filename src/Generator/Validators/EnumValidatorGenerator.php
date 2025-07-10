@@ -16,11 +16,17 @@ final class EnumValidatorGenerator extends BaseValidatorGenerator implements Val
 
     public function generate(string $name, array $config): array
     {
-        if (! $this->isMatchingType($config, 'enum') || ! isset($config['values']) || ! is_array($config['values'])) {
+        if (! $this->isMatchingType($config, 'enum')) {
             return [];
         }
 
-        $enumRule = 'in:'.implode(',', $config['values']);
+        $values = $config['values'] ?? null;
+
+        if (! is_array($values) || $values === []) {
+            return [];
+        }
+
+        $enumRule = 'in:'.implode(',', $values);
 
         $rules = ValidatorRuleBuilder::build([$enumRule], $config);
 

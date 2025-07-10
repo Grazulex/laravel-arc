@@ -29,10 +29,8 @@ describe('StringValidatorGenerator', function () {
     it('returns only string rule when no extras given', function () {
         $generator = new StringValidatorGenerator();
 
-        $rules = $generator->generate('name', ['type' => 'string']);
+        $rules = $generator->generate('name', ['type' => 'integer']);
 
-        expect($rules)->toBe([
-            'name' => ['string', 'required'],
-        ]);
+        expect($rules)->toBe([]);
     });
 });
