@@ -1,0 +1,29 @@
+# Simple user DTO example
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  
+  email:
+    type: string
+    required: true
+    rules: [email, unique:users]
+  
+  email_verified_at:
+    type: datetime
+    nullable: true
+
+options:
+  timestamps: true
+  soft_deletes: false
+  namespace: App\DTOs
