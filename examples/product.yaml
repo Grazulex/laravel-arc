@@ -1,0 +1,65 @@
+# Product DTO with all features
+header:
+  dto: ProductDTO
+  table: products
+  model: App\Models\Product
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:255]
+  
+  description:
+    type: text
+    nullable: true
+    rules: [max:1000]
+  
+  price:
+    type: decimal
+    rules: [numeric, min:0]
+  
+  stock_quantity:
+    type: integer
+    default: 0
+    rules: [integer, min:0]
+  
+  is_active:
+    type: boolean
+    default: true
+  
+  status:
+    type: enum
+    values: [draft, published, archived]
+    default: draft
+  
+  tags:
+    type: array
+    nullable: true
+    rules: [array, distinct]
+  
+  specifications:
+    type: json
+    nullable: true
+  
+  published_at:
+    type: datetime
+    nullable: true
+
+relations:
+  category:
+    type: belongsTo
+    target: App\Models\Category
+  
+  reviews:
+    type: hasMany
+    target: App\Models\Review
+
+options:
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs
