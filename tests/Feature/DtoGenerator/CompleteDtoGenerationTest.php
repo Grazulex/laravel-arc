@@ -13,7 +13,7 @@ describe('DtoGenerator - full YAML coverage', function () {
         $code = DtoGenerator::make()->generateFromDefinition($definition);
 
         expect($code)
-            ->toContain('final class ProductData')
+            ->toContain('final class ProductDTO')
             ->toContain('public readonly ?float $price')
             ->toContain('public static function fromModel')
             ->toContain("'status' => ['in:draft,published,archived', 'required']")
@@ -28,7 +28,7 @@ describe('DtoGenerator - full YAML coverage', function () {
         $code = DtoGenerator::make()->generateFromDefinition($definition);
 
         expect($code)
-            ->toContain('final class ProductDetailDto')
+            ->toContain('final class ProductDTO')
             ->toContain('public readonly string $name')
             ->toContain('public readonly ?string $description')
             ->toContain('public readonly float $price')

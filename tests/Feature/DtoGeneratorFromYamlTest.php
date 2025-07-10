@@ -8,8 +8,8 @@ use Symfony\Component\Yaml\Yaml;
 it('can generate full DTO class from YAML definition', function () {
     $yaml = <<<'YML'
 header:
-  class: ProductDto
-  namespace: App\DTO
+  dto: ProductDTO
+  table: products
   model: App\Models\Product
 
 fields:
@@ -31,7 +31,7 @@ YML;
 
     expect($code)
         ->toContain('namespace App\\DTO')
-        ->toContain('final class ProductDto')
+        ->toContain('final class ProductDTO')
         ->toContain('public readonly int $id')
         ->toContain('public readonly string $name')
         ->toContain('public readonly ?float $price')

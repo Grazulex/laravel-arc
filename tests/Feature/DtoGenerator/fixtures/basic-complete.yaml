@@ -1,6 +1,6 @@
 header:
-  namespace: App\DTO
-  class: ProductData
+  dto: ProductDTO
+  table: products
   model: App\Models\Product
 
 fields:
@@ -28,3 +28,6 @@ relations:
 
 options:
   timestamps: true
+  soft_deletes: false
+  expose_hidden_by_default: false
+  namespace: App\DTOs

@@ -1,0 +1,28 @@
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
+
+fields:
+  id:
+    type: uuid
+    required: true
+
+  name:
+    type: string
+    required: true
+
+  email:
+    type: string
+    required: true
+
+  profile:
+    type: dto
+    dto: profile
+    nullable: true
+
+options:
+  timestamps: true
+  soft_deletes: false
+  expose_hidden_by_default: false
+  namespace: App\DTOs

@@ -30,7 +30,7 @@ final class DtoGenerator
         $header = $yaml['header'] ?? [];
 
         $namespace = $header['namespace'] ?? 'App\\DTO';
-        $className = $header['class'] ?? 'UnnamedDto';
+        $className = $header['dto'] ?? 'UnnamedDto';
         $modelFQCN = '\\'.mb_ltrim($header['model'] ?? 'App\\Models\\Model', '\\');
 
         $fields = $yaml['fields'] ?? [];

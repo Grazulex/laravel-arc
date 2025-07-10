@@ -1,0 +1,22 @@
+header:
+  dto: ProfileDTO
+  table: profiles
+  model: App\Models\Profile
+
+fields:
+  age:
+    type: integer
+    nullable: true
+
+  bio:
+    type: string
+    nullable: true
+
+  website:
+    type: string
+    nullable: true
+
+  timestamps: false
+  soft_deletes: false
+  expose_hidden_by_default: false
+  namespace: App\DTOs
