@@ -6,9 +6,9 @@ namespace Grazulex\LaravelArc\Support;
 
 final class FieldTypeResolver
 {
-    public static function resolvePhpType(string $baseType, bool $nullable = false): string
+    public static function resolvePhpType(string $baseType, bool $required = true): string
     {
-        return ($nullable ? '?' : '').match ($baseType) {
+        return (! $required ? '?' : '').match ($baseType) {
             // chaînes
             'string', 'text', 'uuid', 'enum', 'id' => 'string',
 

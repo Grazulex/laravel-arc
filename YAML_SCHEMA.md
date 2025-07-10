@@ -394,7 +394,7 @@ options:
 ### Validation
 - Always add appropriate validation rules
 - Use Laravel's built-in rules when possible
-- Consider nullable fields carefully
+- Consider required=false fields carefully
 
 ### Organization
 - Group related DTOs in subdirectories
