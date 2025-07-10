@@ -40,4 +40,11 @@ final class OptionGeneratorRegistry
 
         return $this->generators[$type]->generate($value);
     }
+
+    public function get(string $type): ?OptionGenerator
+    {
+        $type = Str::camel($type);
+
+        return $this->generators[$type] ?? null;
+    }
 }

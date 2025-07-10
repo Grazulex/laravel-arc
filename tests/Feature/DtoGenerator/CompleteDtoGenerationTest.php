@@ -45,7 +45,7 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain("'description' => ['string', 'max:500']")
             ->toContain('public static function validate')
             ->toContain('category') // relation
-            ->toContain('timestamps') // via option stub
-            ->toContain('softDeletes'); // via option stub
+            ->toContain('public readonly \\Carbon\\Carbon $updated_at') // timestamps
+            ->toContain('public readonly ?\\Carbon\\Carbon $deleted_at'); // soft deletes
     });
 });

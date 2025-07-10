@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Generator;
 
+use Grazulex\LaravelArc\Contracts\FieldExpandingOptionGenerator;
+
 final class DtoGenerator
 {
     public function __construct(
@@ -53,8 +55,18 @@ final class DtoGenerator
         }
 
         // Options (methods or traits)
-        foreach ($yaml['options'] ?? [] as $name => $def) {
-            $optionCode = $this->options->generate($name, $def);
+        foreach ($yaml['options'] ?? [] as $name => $value) {
+            $generator = $this->options->get($name);
+
+            if ($generator instanceof FieldExpandingOptionGenerator) {
+                $extraFields = $generator->expandFields($value);
+
+                foreach ($extraFields as $key => $fieldDef) {
+                    $fields[$key] = $fieldDef;
+                }
+            }
+
+            $optionCode = $generator?->generate($value);
             if ($optionCode !== null && $optionCode !== '' && $optionCode !== '0') {
                 $methods[] = $optionCode;
             }
