@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Validators\ArrayValidatorGenerator;
 
 describe('ArrayValidatorGenerator', function () {
@@ -14,12 +15,13 @@ describe('ArrayValidatorGenerator', function () {
 
     it('generates array rule with required and custom rules', function () {
         $generator = new ArrayValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('tags', [
             'type' => 'array',
             'required' => true,
             'rules' => ['min:1', 'max:5'],
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'tags' => ['array', 'required', 'min:1', 'max:5'],
@@ -28,10 +30,11 @@ describe('ArrayValidatorGenerator', function () {
 
     it('generates array rule without required if not specified', function () {
         $generator = new ArrayValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('tags', [
             'type' => 'array',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'tags' => ['array', 'required'],
@@ -40,10 +43,11 @@ describe('ArrayValidatorGenerator', function () {
 
     it('returns empty array if type does not match', function () {
         $generator = new ArrayValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('tags', [
             'type' => 'string',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([]);
     });

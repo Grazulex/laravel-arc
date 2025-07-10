@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Validators\StringValidatorGenerator;
 
 describe('StringValidatorGenerator', function () {
@@ -14,12 +15,13 @@ describe('StringValidatorGenerator', function () {
 
     it('generates a string rule with required and custom rules', function () {
         $generator = new StringValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('name', [
             'type' => 'string',
             'required' => true,
             'rules' => ['max:255'],
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'name' => ['string', 'required', 'max:255'],
@@ -28,8 +30,9 @@ describe('StringValidatorGenerator', function () {
 
     it('returns only string rule when no extras given', function () {
         $generator = new StringValidatorGenerator();
+        $context = new DtoGenerationContext();
 
-        $rules = $generator->generate('name', ['type' => 'integer']);
+        $rules = $generator->generate('name', ['type' => 'integer'], $context);
 
         expect($rules)->toBe([]);
     });

@@ -4,12 +4,11 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Contracts;
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
+
 interface ValidatorGenerator
 {
     public function supports(string $type): bool;
 
-    /**
-     * @return array<string, array<string>> Laravel-style validation rules
-     */
-    public function generate(string $name, array $config): array;
+    public function generate(string $name, array $definition, DtoGenerationContext $context): array;
 }

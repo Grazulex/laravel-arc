@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Fields;
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Support\FieldBuilder;
 
 final class FloatFieldGenerator implements FieldGenerator
@@ -14,7 +15,7 @@ final class FloatFieldGenerator implements FieldGenerator
         return $type === 'float' || $type === 'double';
     }
 
-    public function generate(string $name, array $definition): string
+    public function generate(string $name, array $definition, DtoGenerationContext $context): string
     {
         return FieldBuilder::generate($name, 'float', $definition);
     }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Headers;
 
 use Grazulex\LaravelArc\Contracts\HeaderGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 
 final class ModelHeaderGenerator implements HeaderGenerator
 {
@@ -13,14 +14,14 @@ final class ModelHeaderGenerator implements HeaderGenerator
         return $key === 'model';
     }
 
-    public function generate(array $yaml, string $dtoName): ?string
+    public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
-        if (! isset($yaml['model']) || ! is_string($yaml['model'])) {
-            return null;
+        $model = $header[$key] ?? 'App\\Models\\Model';
+
+        if (! is_string($model)) {
+            return '\\App\\Models\\Model';
         }
 
-        $modelClass = mb_trim($yaml['model'], '\\');
-
-        return "use {$modelClass};";
+        return '\\'.mb_ltrim($model, '\\');
     }
 }

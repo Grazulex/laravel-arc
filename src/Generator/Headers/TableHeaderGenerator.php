@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Headers;
 
 use Grazulex\LaravelArc\Contracts\HeaderGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 
 final class TableHeaderGenerator implements HeaderGenerator
 {
@@ -13,14 +14,8 @@ final class TableHeaderGenerator implements HeaderGenerator
         return $key === 'table';
     }
 
-    public function generate(array $yaml, string $dtoName): ?string
+    public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
-        if (! isset($yaml['table']) || ! is_string($yaml['table'])) {
-            return null;
-        }
-
-        $table = mb_trim($yaml['table']);
-
-        return "/**\n * Data Transfer Object for table `{$table}`.\n */";
+        return $header[$key] ?? 'undefined_table';
     }
 }

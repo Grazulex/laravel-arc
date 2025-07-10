@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Relations\HasOneRelationGenerator;
 use Grazulex\LaravelArc\Support\DtoNamespaceResolver;
 
@@ -11,7 +12,7 @@ describe('HasOneRelationGenerator', function () {
         $generator = new HasOneRelationGenerator();
 
         $definition = ['type' => 'hasOne', 'dto' => 'UserDTO'];
-        $result = $generator->generate('user', $definition);
+        $result = $generator->generate('user', $definition, new DtoGenerationContext());
 
         $expected = DtoNamespaceResolver::resolveDtoClass('UserDTO');
         expect($result)->toContain("public {$expected} \$user");
@@ -21,7 +22,7 @@ describe('HasOneRelationGenerator', function () {
         $generator = new HasOneRelationGenerator();
 
         $definition = ['type' => 'hasOne', 'dto' => 'Custom\\Namespace\\ProfileDTO'];
-        $result = $generator->generate('profile', $definition);
+        $result = $generator->generate('profile', $definition, new DtoGenerationContext());
 
         expect($result)->toContain('public Custom\\Namespace\\ProfileDTO $profile');
     });

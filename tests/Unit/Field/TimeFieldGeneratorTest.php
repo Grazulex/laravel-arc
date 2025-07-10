@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Fields\TimeFieldGenerator;
 
 describe('TimeFieldGenerator', function () {
@@ -14,10 +15,11 @@ describe('TimeFieldGenerator', function () {
 
     it('generates nullable time field with null default', function () {
         $generator = new TimeFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('alarm', [
             'nullable' => true,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $alarm = null;');
     });

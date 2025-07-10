@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Validators\DateTimeValidatorGenerator;
 
 describe('DateTimeValidatorGenerator', function () {
@@ -16,12 +17,13 @@ describe('DateTimeValidatorGenerator', function () {
 
     it('generates datetime rule with required and custom rules', function () {
         $generator = new DateTimeValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('published_at', [
             'type' => 'datetime',
             'required' => true,
             'rules' => ['date_format:Y-m-d H:i:s'],
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'published_at' => ['datetime', 'required', 'date_format:Y-m-d H:i:s'],
@@ -30,10 +32,11 @@ describe('DateTimeValidatorGenerator', function () {
 
     it('returns rule without required if not specified', function () {
         $generator = new DateTimeValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('created_at', [
             'type' => 'date',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'created_at' => ['date', 'required'],
@@ -42,10 +45,11 @@ describe('DateTimeValidatorGenerator', function () {
 
     it('returns empty array for unsupported type', function () {
         $generator = new DateTimeValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('custom_field', [
             'type' => 'array',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([]);
     });

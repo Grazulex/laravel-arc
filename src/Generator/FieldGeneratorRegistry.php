@@ -9,30 +9,49 @@ use InvalidArgumentException;
 
 final class FieldGeneratorRegistry
 {
-    /** @var FieldGenerator[] */
-    private array $generators;
+    /**
+     * @var array<string, FieldGenerator>
+     */
+    private array $generators = [];
 
-    public function __construct(array $generators)
+    public function __construct(array $generators, private DtoGenerationContext $context)
     {
         foreach ($generators as $generator) {
             if (! $generator instanceof FieldGenerator) {
                 throw new InvalidArgumentException('Each generator must implement FieldGenerator.');
             }
-        }
 
-        $this->generators = $generators;
+            foreach ($this->getSupportedTypes($generator) as $type) {
+                $this->generators[$type] = $generator;
+            }
+        }
     }
 
     public function generate(string $name, array $definition): string
     {
-        $type = $definition['type'] ?? throw new InvalidArgumentException("Missing 'type' for field '$name'");
+        $type = $definition['type'] ?? 'string';
 
-        foreach ($this->generators as $generator) {
-            if ($generator->supports($type)) {
-                return $generator->generate($name, $definition);
-            }
+        if (! isset($this->generators[$type])) {
+            throw new InvalidArgumentException("No generator found for field type '{$type}'");
         }
 
-        throw new InvalidArgumentException("No generator found for field type '$type'");
+        return $this->generators[$type]->generate($name, $definition, $this->context);
+    }
+
+    /**
+     * Get all supported types for a generator by testing known types.
+     *
+     * @return string[]
+     */
+    private function getSupportedTypes(FieldGenerator $generator): array
+    {
+        $knownTypes = [
+            'string', 'text', 'integer', 'int', 'float', 'double',
+            'enum',
+            'decimal', 'boolean', 'bool', 'array', 'json',
+            'datetime', 'date', 'time', 'uuid',
+        ];
+
+        return array_filter($knownTypes, fn (string $type): bool => $generator->supports($type));
     }
 }

@@ -3,17 +3,20 @@
 declare(strict_types=1);
 
 use Grazulex\LaravelArc\Contracts\ValidatorGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\ValidatorGeneratorRegistry;
 
 describe('ValidatorGeneratorRegistry', function () {
     it('throws exception when invalid generator is provided', function () {
-        expect(fn () => new ValidatorGeneratorRegistry(['invalid']))
+        $context = new DtoGenerationContext();
+        expect(fn () => new ValidatorGeneratorRegistry(['invalid'], $context))
             ->toThrow(InvalidArgumentException::class, 'Each generator must implement ValidatorGenerator.');
     });
 
     it('accepts valid generators', function () {
         $mockGenerator = mock(ValidatorGenerator::class);
-        $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
+        $context = new DtoGenerationContext();
+        $registry = new ValidatorGeneratorRegistry([$mockGenerator], $context);
 
         expect($registry)->toBeInstanceOf(ValidatorGeneratorRegistry::class);
     });
@@ -22,9 +25,10 @@ describe('ValidatorGeneratorRegistry', function () {
         $mockGenerator = mock(ValidatorGenerator::class);
         $mockGenerator->shouldReceive('supports')->with('unknown')->andReturn(false);
 
-        $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
+        $context = new DtoGenerationContext();
+        $registry = new ValidatorGeneratorRegistry([$mockGenerator], $context);
 
-        $result = $registry->generate('field', ['type' => 'unknown']);
+        $result = $registry->generate('field', ['type' => 'unknown'], $context);
         expect($result)->toBe([]);
     });
 
@@ -32,12 +36,13 @@ describe('ValidatorGeneratorRegistry', function () {
         $mockGenerator = mock(ValidatorGenerator::class);
         $mockGenerator->shouldReceive('supports')->with('enum')->andReturn(true);
         $mockGenerator->shouldReceive('generate')
-            ->with('status', ['type' => 'enum', 'values' => ['active', 'inactive']])
+            ->with('status', ['type' => 'enum', 'values' => ['active', 'inactive']], Mockery::type(DtoGenerationContext::class))
             ->andReturn(['status' => ['required', 'in:active,inactive']]);
 
-        $registry = new ValidatorGeneratorRegistry([$mockGenerator]);
+        $context = new DtoGenerationContext();
+        $registry = new ValidatorGeneratorRegistry([$mockGenerator], $context);
 
-        $result = $registry->generate('status', ['type' => 'enum', 'values' => ['active', 'inactive']]);
+        $result = $registry->generate('status', ['type' => 'enum', 'values' => ['active', 'inactive']], $context);
         expect($result)->toBe([
             'status' => ['required', 'in:active,inactive'],
         ]);
@@ -46,16 +51,16 @@ describe('ValidatorGeneratorRegistry', function () {
     it('uses the first matching generator when multiple support the type', function () {
         $first = mock(ValidatorGenerator::class);
         $first->shouldReceive('supports')->with('string')->andReturn(true);
-        $first->shouldReceive('generate')->with('name', ['type' => 'string', 'max' => 255])
+        $first->shouldReceive('generate')->with('name', ['type' => 'string', 'max' => 255], Mockery::type(DtoGenerationContext::class))
             ->andReturn(['name' => ['string', 'max:255']]);
 
         $second = mock(ValidatorGenerator::class);
         $second->shouldReceive('supports')->with('string')->andReturn(true);
-        // second->generate() should not be called
 
-        $registry = new ValidatorGeneratorRegistry([$first, $second]);
+        $context = new DtoGenerationContext();
+        $registry = new ValidatorGeneratorRegistry([$first, $second], $context);
 
-        $result = $registry->generate('name', ['type' => 'string', 'max' => 255]);
+        $result = $registry->generate('name', ['type' => 'string', 'max' => 255], $context);
 
         expect($result)->toBe([
             'name' => ['string', 'max:255'],

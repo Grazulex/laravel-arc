@@ -11,7 +11,7 @@ final class DtoTemplateRenderer
     public function renderFromModel(string $modelFQCN, array $fields): string
     {
         $assignments = collect($fields)
-            ->map(fn ($_def, $field): string => str_repeat(' ', 12)."{$field}: \$model->{$field},")
+            ->map(fn ($_def, string $field): string => str_repeat(' ', 12)."{$field}: \$model->{$field},")
             ->implode("\n");
 
         $stub = file_get_contents(__DIR__.'/../Console/Commands/stubs/dto.from-model.stub');
@@ -26,7 +26,7 @@ final class DtoTemplateRenderer
     public function renderToArray(array $fields): string
     {
         $exports = collect($fields)
-            ->map(fn ($_def, $field): string => str_repeat(' ', 12)."'{$field}' => \$this->{$field},")
+            ->map(fn ($_def, string $field): string => str_repeat(' ', 12)."'{$field}' => \$this->{$field},")
             ->implode("\n");
 
         $stub = file_get_contents(__DIR__.'/../Console/Commands/stubs/dto.to-array.stub');
@@ -57,14 +57,20 @@ final class DtoTemplateRenderer
         string $modelFQCN,
         array $extraMethods = []
     ): string {
-        $constructor = collect($fields)->map(function ($definition, $name): string {
-            $type = FieldTypeResolver::resolvePhpType(
-                $definition['type'] ?? 'mixed',
-                $definition['nullable'] ?? false
-            );
+        $constructor = collect($fields)->map(
+            function (array $definition, string $name): string {
+                $type = FieldTypeResolver::resolvePhpType(
+                    $definition['type'] ?? 'mixed',
+                    $definition['nullable'] ?? false
+                );
 
-            return str_repeat(' ', 8)."public readonly {$type} \${$name},";
-        })->implode("\n");
+                $default = array_key_exists('default', $definition) && $definition['default'] === null
+                    ? ' = null'
+                    : '';
+
+                return str_repeat(' ', 8)."public readonly {$type} \${$name}{$default},";
+            }
+        )->implode("\n");
 
         $baseMethods = [
             $this->renderFromModel($modelFQCN, $fields),
@@ -74,7 +80,7 @@ final class DtoTemplateRenderer
         return $this->renderClass(
             $namespace,
             $className,
-            '', // pas de bloc propriété séparé
+            '', // properties block not used
             $constructor,
             implode("\n\n", array_merge($baseMethods, $extraMethods))
         );

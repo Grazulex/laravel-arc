@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Contracts;
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
+
 interface OptionGenerator
 {
-    public function generate(mixed $value): ?string;
+    public function generate(string $name, mixed $value, DtoGenerationContext $context): string;
 }

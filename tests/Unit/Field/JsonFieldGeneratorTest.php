@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Fields\JsonFieldGenerator;
 
 describe('JsonFieldGenerator', function () {
@@ -14,20 +15,22 @@ describe('JsonFieldGenerator', function () {
 
     it('generates nullable json field with null default', function () {
         $generator = new JsonFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('metadata', [
             'nullable' => true,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public ?array $metadata = null;');
     });
 
     it('generates json field with default value', function () {
         $generator = new JsonFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('metadata', [
             'default' => ['key' => 'value'],
-        ]);
+        ], $context);
 
         expect($code)->toContain('public');
         expect($code)->toContain('$metadata =');

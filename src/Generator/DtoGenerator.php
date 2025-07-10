@@ -9,6 +9,8 @@ use Grazulex\LaravelArc\Contracts\FieldExpandingOptionGenerator;
 final class DtoGenerator
 {
     public function __construct(
+        private HeaderGeneratorRegistry $headers,
+        private FieldGeneratorRegistry $fields,
         private RelationGeneratorRegistry $relations,
         private ValidatorGeneratorRegistry $validators,
         private OptionGeneratorRegistry $options,
@@ -19,6 +21,8 @@ final class DtoGenerator
         $context = new DtoGenerationContext();
 
         return new self(
+            $context->headers(),
+            $context->fields(),
             $context->relations(),
             $context->validators(),
             $context->options(),
@@ -27,94 +31,97 @@ final class DtoGenerator
 
     public function generateFromDefinition(array $yaml): string
     {
+        $context = new DtoGenerationContext();
+
         $header = $yaml['header'] ?? [];
+        $fieldDefinitions = $yaml['fields'] ?? [];
+        $relationDefinitions = $yaml['relations'] ?? [];
+        $optionDefinitions = $yaml['options'] ?? [];
 
         $namespace = $header['namespace'] ?? 'App\\DTO';
-        $className = $header['dto'] ?? 'UnnamedDto';
-        $modelFQCN = '\\'.mb_ltrim($header['model'] ?? 'App\\Models\\Model', '\\');
 
-        $fields = $yaml['fields'] ?? [];
+        $className = $this->headers->generate('dto', $header, $context);
+        $modelFQCN = $this->headers->generate('model', $header, $context);
+        $this->headers->generate('table', $header, $context);
 
-        $methods = [];
-        $rules = [];
-
-        // Validation rules for fields
-        foreach ($fields as $name => $def) {
-            $fieldRules = $this->validators->generate($name, $def);
-            if ($fieldRules !== []) {
-                $rules = array_merge($rules, $fieldRules);
-            }
-        }
-
-        // Relations (methods or properties)
-        foreach ($yaml['relations'] ?? [] as $name => $def) {
-            $relationCode = $this->relations->generate($name, $def);
-            if ($relationCode !== null && $relationCode !== '' && $relationCode !== '0') {
-                $methods[] = $relationCode;
-            }
-        }
-
-        // Options (methods or traits)
-        foreach ($yaml['options'] ?? [] as $name => $value) {
+        // --- Inject extra fields from options ---
+        foreach ($optionDefinitions as $name => $value) {
             $generator = $this->options->get($name);
+
+            if (! $generator instanceof \Grazulex\LaravelArc\Contracts\OptionGenerator) {
+                continue; // skip unsupported option
+            }
 
             if ($generator instanceof FieldExpandingOptionGenerator) {
                 $extraFields = $generator->expandFields($value);
-
                 foreach ($extraFields as $key => $fieldDef) {
-                    $fields[$key] = $fieldDef;
+                    $fieldDefinitions[$key] = $fieldDef; // safe override
                 }
-            }
-
-            $optionCode = $generator?->generate($value);
-            if ($optionCode !== null && $optionCode !== '' && $optionCode !== '0') {
-                $methods[] = $optionCode;
             }
         }
 
-        // Generate rules() and validate() methods
-        $allRules = [];
+        // --- Generate rendered properties ---
+        $renderedProperties = [];
+        foreach ($fieldDefinitions as $name => $def) {
+            $renderedProperties[$name] = $this->fields->generate($name, $def);
+        }
 
-        foreach ($fields as $name => $def) {
-            $fieldRules = $this->validators->generate($name, $def);
-            foreach ($fieldRules as $field => $ruleSet) {
-                $allRules[$field] = $ruleSet;
+        // --- Generate relation methods ---
+        $methods = [];
+        foreach ($relationDefinitions as $name => $def) {
+            $code = $this->relations->generate($name, $def);
+            if ($code !== null && $code !== '' && $code !== '0') {
+                $methods[] = $code;
+            }
+        }
+
+        // --- Generate option methods (non-field-expanding) ---
+        foreach ($optionDefinitions as $name => $value) {
+            $generator = $this->options->get($name);
+            $code = $generator?->generate($name, $value, $context);
+
+            if ($code !== null && $code !== '' && $code !== '0') {
+                $methods[] = $code;
+            }
+        }
+
+        // --- Generate validation rules ---
+        $allRules = [];
+        foreach ($fieldDefinitions as $name => $def) {
+            foreach ($this->validators->generate($name, $def) as $field => $rules) {
+                $allRules[$field] = $rules;
             }
         }
 
         if ($allRules !== []) {
-            $lines = [];
-            foreach ($allRules as $field => $ruleSet) {
-                $joined = implode("', '", $ruleSet);
-                $lines[] = "        '{$field}' => ['{$joined}'],";
-            }
-
-            $rulesCode = implode("\n", $lines);
+            $rulesBody = implode("\n", array_map(
+                fn ($field, $rules): string => "        '{$field}' => ['".implode("', '", $rules)."'],",
+                array_keys($allRules),
+                $allRules
+            ));
 
             $methods[] = <<<PHP
             public static function rules(): array
             {
                 return [
-                    $rulesCode
+                    $rulesBody
                 ];
             }
 
-            public static function validate(array \$data): \Illuminate\Contracts\Validation\Validator
+            public static function validate(array \$data): \\Illuminate\\Contracts\\Validation\\Validator
             {
-                return \Illuminate\Support\Facades\Validator::make(\$data, static::rules());
+                return \\Illuminate\\Support\\Facades\\Validator::make(\$data, static::rules());
             }
             PHP;
         }
 
-        // Generate class using template system
-        $renderer = new DtoTemplateRenderer();
-
-        return $renderer->renderFullDto(
+        // --- Render DTO class ---
+        return (new DtoTemplateRenderer())->renderFullDto(
             $namespace,
             $className,
-            $fields,
+            $fieldDefinitions, // important: includes both base and expanded
             $modelFQCN,
-            $methods // ✅ FIX: now injected properly into the template
+            $methods
         );
     }
 }

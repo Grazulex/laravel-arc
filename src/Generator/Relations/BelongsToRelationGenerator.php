@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Relations;
 
 use Grazulex\LaravelArc\Contracts\RelationGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Support\DtoNamespaceResolver;
 
 final class BelongsToRelationGenerator implements RelationGenerator
@@ -14,7 +15,7 @@ final class BelongsToRelationGenerator implements RelationGenerator
         return $type === 'belongsTo';
     }
 
-    public function generate(string $name, array $definition): string
+    public function generate(string $name, array $definition, DtoGenerationContext $context): string
     {
         $dto = $definition['dto'] ?? null;
         $dto = $dto ?: 'UNKNOWN';

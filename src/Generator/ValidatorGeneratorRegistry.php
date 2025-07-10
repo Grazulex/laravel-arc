@@ -9,36 +9,27 @@ use InvalidArgumentException;
 
 final class ValidatorGeneratorRegistry
 {
-    /**
-     * @var array<ValidatorGenerator>
-     */
+    /** @var ValidatorGenerator[] */
     private array $generators;
 
-    public function __construct(array $generators)
+    public function __construct(array $generators, private DtoGenerationContext $context)
     {
         foreach ($generators as $generator) {
             if (! $generator instanceof ValidatorGenerator) {
                 throw new InvalidArgumentException('Each generator must implement ValidatorGenerator.');
             }
-
-            $this->generators[] = $generator;
         }
+
+        $this->generators = $generators;
     }
 
-    /**
-     * @return array<string, array<string>> Laravel-style rules (e.g. ['email' => ['required', 'email']])
-     */
-    public function generate(string $name, array $config): array
+    public function generate(string $name, array $definition): array
     {
-        $type = $config['type'] ?? null;
-
-        if (! is_string($type)) {
-            return [];
-        }
+        $type = $definition['type'] ?? null;
 
         foreach ($this->generators as $generator) {
-            if ($generator->supports($type)) {
-                return $generator->generate($name, $config);
+            if ($type && $generator->supports($type)) {
+                return $generator->generate($name, $definition, $this->context);
             }
         }
 

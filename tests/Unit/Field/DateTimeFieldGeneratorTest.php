@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Fields\DateTimeFieldGenerator;
 
 describe('DateTimeFieldGenerator', function () {
@@ -14,42 +15,46 @@ describe('DateTimeFieldGenerator', function () {
 
     it('generates nullable datetime field with null default', function () {
         $generator = new DateTimeFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('published_at', [
             'nullable' => true,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $published_at = null;');
     });
 
     it('generates non-nullable datetime field without default', function () {
         $generator = new DateTimeFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('updated_at', [
             'nullable' => false,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $updated_at;');
     });
 
     it('ignores string default value for datetime', function () {
         $generator = new DateTimeFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('scheduled_at', [
             'default' => '2024-07-09 13:00:00',
             'nullable' => false,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public \\Carbon\\Carbon $scheduled_at;');
     });
 
     it('handles explicit null default for datetime', function () {
         $generator = new DateTimeFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('deleted_at', [
             'default' => null,
             'nullable' => true,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public ?\\Carbon\\Carbon $deleted_at = null;');
     });

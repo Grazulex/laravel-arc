@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Validators\FloatValidatorGenerator;
 
 describe('FloatValidatorGenerator', function () {
@@ -14,12 +15,13 @@ describe('FloatValidatorGenerator', function () {
 
     it('generates float rule with required and custom rules', function () {
         $generator = new FloatValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('price', [
             'type' => 'float',
             'required' => true,
             'rules' => ['min:0', 'max:999.99'],
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'price' => ['numeric', 'required', 'min:0', 'max:999.99'],
@@ -28,10 +30,11 @@ describe('FloatValidatorGenerator', function () {
 
     it('generates float rule without required if not specified', function () {
         $generator = new FloatValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('price', [
             'type' => 'float',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'price' => ['numeric', 'required'],
@@ -40,8 +43,9 @@ describe('FloatValidatorGenerator', function () {
 
     it('returns empty array if type does not match', function () {
         $generator = new FloatValidatorGenerator();
+        $context = new DtoGenerationContext();
 
-        $rules = $generator->generate('price', ['type' => 'string']);
+        $rules = $generator->generate('price', ['type' => 'string'], $context);
 
         expect($rules)->toBe([]);
     });

@@ -12,7 +12,7 @@ final class RelationGeneratorRegistry
     /** @var RelationGenerator[] */
     private array $generators;
 
-    public function __construct(array $generators)
+    public function __construct(array $generators, private DtoGenerationContext $context)
     {
         foreach ($generators as $generator) {
             if (! $generator instanceof RelationGenerator) {
@@ -29,7 +29,7 @@ final class RelationGeneratorRegistry
 
         foreach ($this->generators as $generator) {
             if ($type && $generator->supports($type)) {
-                return $generator->generate($name, $definition);
+                return $generator->generate($name, $definition, $this->context);
             }
         }
 

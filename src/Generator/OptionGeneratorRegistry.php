@@ -19,32 +19,21 @@ final class OptionGeneratorRegistry
     {
         foreach ($generators as $generator) {
             if (! $generator instanceof OptionGenerator) {
-                throw new InvalidArgumentException('Each generator must implement OptionGenerator');
+                throw new InvalidArgumentException('Each generator must implement OptionGenerator.');
             }
 
             $key = (string) Str::of(class_basename($generator))
                 ->before('OptionGenerator')
-                ->camel(); // ex: SoftDeletesOptionGenerator => "softDeletes"
+                ->camel();
 
             $this->generators[$key] = $generator;
         }
-
     }
 
-    public function generate(string $type, mixed $value): ?string
+    public function get(string $name): ?OptionGenerator
     {
-        $type = Str::camel($type);
-        if (! isset($this->generators[$type])) {
-            return null;
-        }
+        $normalized = (string) Str::of($name)->camel();
 
-        return $this->generators[$type]->generate($value);
-    }
-
-    public function get(string $type): ?OptionGenerator
-    {
-        $type = Str::camel($type);
-
-        return $this->generators[$type] ?? null;
+        return $this->generators[$normalized] ?? null;
     }
 }

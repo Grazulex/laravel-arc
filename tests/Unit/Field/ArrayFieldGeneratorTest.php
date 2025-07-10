@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Fields\ArrayFieldGenerator;
 
 describe('ArrayFieldGenerator', function () {
@@ -14,20 +15,22 @@ describe('ArrayFieldGenerator', function () {
 
     it('generates nullable array field with null default', function () {
         $generator = new ArrayFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('items', [
             'nullable' => true,
-        ]);
+        ], $context);
 
         expect($code)->toBe('public ?array $items = null;');
     });
 
     it('generates array field with default value', function () {
         $generator = new ArrayFieldGenerator();
+        $context = new DtoGenerationContext();
 
         $code = $generator->generate('items', [
             'default' => ['a', 'b', 'c'],
-        ]);
+        ], $context);
 
         expect($code)->toContain('public');
         expect($code)->toContain('$items =');

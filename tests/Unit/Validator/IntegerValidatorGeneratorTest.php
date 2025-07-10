@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\Validators\IntegerValidatorGenerator;
 
 describe('IntegerValidatorGenerator', function () {
@@ -14,12 +15,13 @@ describe('IntegerValidatorGenerator', function () {
 
     it('generates integer rule with required and extras', function () {
         $generator = new IntegerValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('quantity', [
             'type' => 'integer',
             'required' => true,
             'rules' => ['min:1', 'max:100'],
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'quantity' => ['integer', 'required', 'min:1', 'max:100'],
@@ -28,10 +30,11 @@ describe('IntegerValidatorGenerator', function () {
 
     it('generates integer rule without required if not specified', function () {
         $generator = new IntegerValidatorGenerator();
+        $context = new DtoGenerationContext();
 
         $rules = $generator->generate('quantity', [
             'type' => 'integer',
-        ]);
+        ], $context);
 
         expect($rules)->toBe([
             'quantity' => ['integer', 'required'],
@@ -40,8 +43,9 @@ describe('IntegerValidatorGenerator', function () {
 
     it('returns empty array if type does not match', function () {
         $generator = new IntegerValidatorGenerator();
+        $context = new DtoGenerationContext();
 
-        $rules = $generator->generate('quantity', ['type' => 'string']);
+        $rules = $generator->generate('quantity', ['type' => 'string'], $context);
 
         expect($rules)->toBe([]);
     });

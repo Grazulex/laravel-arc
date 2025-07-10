@@ -64,7 +64,7 @@ final class DtoGenerationContext
             new TextFieldGenerator(),
             new TimeFieldGenerator(),
             new UuidFieldGenerator(),
-        ]);
+        ], $this);
     }
 
     public function relations(): RelationGeneratorRegistry
@@ -74,7 +74,7 @@ final class DtoGenerationContext
             new HasManyRelationGenerator(),
             new BelongsToRelationGenerator(),
             new BelongsToManyRelationGenerator(),
-        ]);
+        ], $this);
     }
 
     public function validators(): ValidatorGeneratorRegistry
@@ -88,7 +88,7 @@ final class DtoGenerationContext
             new EnumValidatorGenerator(),
             new DateTimeValidatorGenerator(),
             new ArrayValidatorGenerator(),
-        ]);
+        ], $this);
     }
 
     public function options(): OptionGeneratorRegistry

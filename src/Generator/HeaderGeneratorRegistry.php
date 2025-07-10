@@ -10,38 +10,46 @@ use InvalidArgumentException;
 final class HeaderGeneratorRegistry
 {
     /**
-     * @var array<string, HeaderGenerator>
+     * @var HeaderGenerator[]
      */
-    private array $generators = [];
+    private array $generators;
 
     public function __construct(array $generators)
     {
-        foreach ($generators as $key => $generator) {
+        foreach ($generators as $generator) {
             if (! $generator instanceof HeaderGenerator) {
                 throw new InvalidArgumentException('Each generator must implement HeaderGenerator.');
             }
-
-            $this->generators[$key] = $generator;
-        }
-    }
-
-    public function generate(string $type, array $data): string
-    {
-        if (! isset($this->generators[$type])) {
-            throw new InvalidArgumentException("Unknown header generator type: {$type}");
         }
 
-        return $this->generators[$type]->generate($data, $type);
+        $this->generators = $generators;
     }
 
-    public function generateAll(array $yaml, string $dtoName): array
+    public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
+        foreach ($this->generators as $generator) {
+            if ($generator->supports($key)) {
+                return $generator->generate($key, $header, $context);
+            }
+        }
+
+        return '';
+    }
+
+    public function generateAll(array $yaml, DtoGenerationContext $context): array
+    {
+        $header = $yaml['header'] ?? [];
         $result = [];
 
-        foreach (array_keys($yaml) as $key) {
+        foreach ($header as $key => $_) {
+            // Défensive : ignorer les clés non-string
+            if (! is_string($key)) {
+                continue;
+            }
+
             foreach ($this->generators as $generator) {
                 if ($generator->supports($key)) {
-                    $result[$key] = $generator->generate($yaml, $dtoName);
+                    $result[$key] = $generator->generate($key, $header, $context);
                 }
             }
         }

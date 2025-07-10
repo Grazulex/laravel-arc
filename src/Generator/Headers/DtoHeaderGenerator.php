@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator\Headers;
 
 use Grazulex\LaravelArc\Contracts\HeaderGenerator;
+use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 
 final class DtoHeaderGenerator implements HeaderGenerator
 {
@@ -13,10 +14,8 @@ final class DtoHeaderGenerator implements HeaderGenerator
         return $key === 'dto';
     }
 
-    public function generate(array $yaml, string $dtoName): string
+    public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
-        $className = $yaml['dto'] ?? $dtoName;
-
-        return "final readonly class {$className}\n{\n";
+        return $header[$key] ?? 'UnnamedDto';
     }
 }
