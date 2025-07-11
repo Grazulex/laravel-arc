@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 /**
  * Example PHP enum classes for Laravel Arc
- * 
+ *
  * These enums demonstrate the different types of enum classes
  * that can be used with Laravel Arc's enum field generation.
  */

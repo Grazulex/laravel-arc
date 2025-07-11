@@ -1,0 +1,41 @@
+dto:
+  name: ComplexEnumDto
+  namespace: App\Dto
+
+fields:
+  # Enum avec toutes les règles possibles
+  status:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    default: draft
+    required: true
+    rules:
+      - in_enum
+      - enum_exists
+      - sometimes
+
+  # Enum nullable avec règles personnalisées
+  priority:
+    type: enum
+    class: Tests\Fixtures\Enums\Priority
+    nullable: true
+    rules:
+      - enum_exists
+
+  # Enum traditionnel avec des règles standard
+  category:
+    type: enum
+    values: [tech, business, personal]
+    required: true
+    rules:
+      - in_enum    # Cette règle sera ignorée
+      - sometimes
+
+  # Enum avec valeur par défaut mais non requis
+  type:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    default: published
+    required: false
+    rules:
+      - in_enum

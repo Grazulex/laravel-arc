@@ -1,0 +1,33 @@
+dto:
+  name: EnumValidationDto
+  namespace: App\Dto
+
+fields:
+  status:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    required: true
+    rules:
+      - in_enum
+      
+  priority:
+    type: enum
+    class: Tests\Fixtures\Enums\Priority
+    nullable: true
+    rules:
+      - enum_exists
+      
+  category:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    rules:
+      - in_enum
+      - enum_exists
+      
+  legacy_status:
+    type: enum
+    values: [pending, active, completed]
+    rules:
+      - in_enum
+      - enum_exists
+      - required

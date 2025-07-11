@@ -1,0 +1,18 @@
+dto:
+  name: EnumDefaultValuesDto
+  namespace: App\Dto
+
+fields:
+  status:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    default: draft
+    rules:
+      - in_enum
+      
+  priority:
+    type: enum
+    class: Tests\Fixtures\Enums\Priority
+    default: LOW
+    rules:
+      - enum_exists
