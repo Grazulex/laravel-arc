@@ -1009,7 +1009,7 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE).
 - 🐛 [Report Issues](https://github.com/Grazulex/laravel-arc/issues)
 - 💬 [Discussions](https://github.com/Grazulex/laravel-arc/discussions)
 - 📖 [Wiki](https://github.com/Grazulex/laravel-arc/wiki)
-- 📝 [Nested DTO Guide](NESTED_DTO_GUIDE.md)
+- 📝 [Nested DTO Guide](docs/NESTED_DTO_GUIDE.md)
 
 ---
 
