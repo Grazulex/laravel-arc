@@ -49,7 +49,7 @@ final class FieldGeneratorRegistry
             'string', 'text', 'integer', 'int', 'float', 'double',
             'enum',
             'decimal', 'boolean', 'bool', 'array', 'json',
-            'datetime', 'date', 'time', 'uuid',
+            'datetime', 'date', 'time', 'uuid', 'dto',
         ];
 
         return array_filter($knownTypes, fn (string $type): bool => $generator->supports($type));

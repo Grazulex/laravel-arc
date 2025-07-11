@@ -1,0 +1,23 @@
+header:
+  dto: PostDTO
+  model: App\Models\Post
+  table: posts
+
+fields:
+  id:
+    type: uuid
+  title:
+    type: string
+  content:
+    type: text
+  author:
+    type: dto
+    dto: UserDTO
+    required: true
+  category:
+    type: dto
+    dto: CategoryDTO
+    required: false
+
+options:
+  namespace: App\DTO

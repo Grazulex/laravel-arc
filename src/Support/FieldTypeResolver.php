@@ -26,6 +26,9 @@ final class FieldTypeResolver
             // objets date
             'datetime', 'date', 'time' => '\Carbon\Carbon',
 
+            // DTOs imbriqués - traité spécialement dans le générateur
+            'dto' => 'mixed',
+
             default => 'mixed',
         };
     }

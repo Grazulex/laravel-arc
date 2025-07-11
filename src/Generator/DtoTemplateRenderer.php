@@ -91,4 +91,53 @@ final class DtoTemplateRenderer
             $extendsClause
         );
     }
+
+    public function renderFullDtoWithRenderedProperties(
+        string $namespace,
+        string $className,
+        array $renderedProperties,
+        array $fieldDefinitions,
+        string $modelFQCN,
+        array $extraMethods = [],
+        string $headerExtra = '',
+        string $extendsClause = ''
+    ): string {
+        // Utiliser les propriétés pré-rendues au lieu de régénérer
+        $constructor = collect($renderedProperties)->map(function (string $property, string $name): string {
+            // Transformer les propriétés de classe en paramètres de constructeur
+            $property = mb_trim($property);
+
+            // Si c'est un champ DTO (déjà avec readonly et virgule), ne pas changer
+            if (str_contains($property, 'readonly') && str_ends_with($property, ',')) {
+                return str_repeat(' ', 8).$property;
+            }
+
+            // Sinon, transformer le format standard en format readonly avec virgule
+            if (str_ends_with($property, ';')) {
+                $property = mb_substr($property, 0, -1).',';
+            }
+
+            // Ajouter readonly si pas déjà présent
+            if (! str_contains($property, 'readonly')) {
+                $property = str_replace('public ', 'public readonly ', $property);
+            }
+
+            return str_repeat(' ', 8).$property;
+        })->implode("\n");
+
+        $baseMethods = [
+            $this->renderFromModel($modelFQCN, $fieldDefinitions),
+            $this->renderToArray($fieldDefinitions),
+        ];
+
+        return $this->renderClass(
+            $namespace,
+            $className,
+            '', // properties block not used
+            $constructor,
+            implode("\n\n", array_merge($baseMethods, $extraMethods)),
+            $headerExtra,
+            $extendsClause
+        );
+    }
 }

@@ -130,10 +130,11 @@ PHP;
         }
 
         // --- Render DTO class ---
-        return (new DtoTemplateRenderer())->renderFullDto(
+        return (new DtoTemplateRenderer())->renderFullDtoWithRenderedProperties(
             $namespace,
             $className,
-            $fieldDefinitions, // important: includes both base and expanded
+            $renderedProperties, // utiliser les propriétés pré-rendues
+            $fieldDefinitions, // garder les définitions pour fromModel/toArray
             $modelFQCN,
             $methods,
             $headerExtra,

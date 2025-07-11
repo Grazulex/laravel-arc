@@ -1,0 +1,37 @@
+header:
+  dto: PostDTO
+  table: posts
+  model: App\Models\Post
+
+fields:
+  id:
+    type: uuid
+    required: true
+
+  title:
+    type: string
+    required: true
+    rules: [min:5, max:255]
+
+  content:
+    type: text
+    required: true
+
+  author:
+    type: dto
+    dto: UserDTO
+    required: true
+
+  category:
+    type: dto
+    dto: CategoryDTO
+    required: false
+
+  tags:
+    type: array
+    required: false
+
+options:
+  timestamps: true
+  soft_deletes: false
+  namespace: App\DTO

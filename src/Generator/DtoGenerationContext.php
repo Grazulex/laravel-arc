@@ -9,6 +9,7 @@ use Grazulex\LaravelArc\Generator\Fields\BooleanFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\DateFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\DateTimeFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\DecimalFieldGenerator;
+use Grazulex\LaravelArc\Generator\Fields\DtoFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\EnumFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\FloatFieldGenerator;
 use Grazulex\LaravelArc\Generator\Fields\IdFieldGenerator;
@@ -32,6 +33,7 @@ use Grazulex\LaravelArc\Generator\Relations\HasOneRelationGenerator;
 use Grazulex\LaravelArc\Generator\Validators\ArrayValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\BooleanValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\DateTimeValidatorGenerator;
+use Grazulex\LaravelArc\Generator\Validators\DtoValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\EnumValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\FloatValidatorGenerator;
 use Grazulex\LaravelArc\Generator\Validators\IntegerValidatorGenerator;
@@ -40,6 +42,41 @@ use Grazulex\LaravelArc\Generator\Validators\UuidValidatorGenerator;
 
 final class DtoGenerationContext
 {
+    private int $maxDepth = 3;
+
+    private array $currentPath = [];
+
+    public function __construct(int $maxDepth = 3)
+    {
+        $this->maxDepth = $maxDepth;
+    }
+
+    public function canNestDto(string $dtoName): bool
+    {
+        // Vérifier la profondeur
+        if (count($this->currentPath) >= $this->maxDepth) {
+            return false;
+        }
+
+        // Vérifier les cycles
+        return ! in_array($dtoName, $this->currentPath);
+    }
+
+    public function enterDto(string $dtoName): void
+    {
+        $this->currentPath[] = $dtoName;
+    }
+
+    public function exitDto(): void
+    {
+        array_pop($this->currentPath);
+    }
+
+    public function getCurrentDepth(): int
+    {
+        return count($this->currentPath);
+    }
+
     public function headers(): HeaderGeneratorRegistry
     {
         return new HeaderGeneratorRegistry([
@@ -60,6 +97,7 @@ final class DtoGenerationContext
             new DateFieldGenerator(),
             new DateTimeFieldGenerator(),
             new DecimalFieldGenerator(),
+            new DtoFieldGenerator(),
             new EnumFieldGenerator(),
             new FloatFieldGenerator(),
             new IdFieldGenerator(),
@@ -92,6 +130,7 @@ final class DtoGenerationContext
             new EnumValidatorGenerator(),
             new DateTimeValidatorGenerator(),
             new ArrayValidatorGenerator(),
+            new DtoValidatorGenerator(),
         ], $this);
     }
 

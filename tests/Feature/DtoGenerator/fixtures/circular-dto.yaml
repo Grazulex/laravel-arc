@@ -1,0 +1,29 @@
+header:
+  dto: CircularTestDTO
+  table: circular_tests
+  model: App\Models\CircularTest
+
+fields:
+  id:
+    type: uuid
+    required: true
+
+  name:
+    type: string
+    required: true
+
+  # Référence circulaire - devrait être protégée
+  parent:
+    type: dto
+    dto: CircularTestDTO
+    required: false
+
+  # Référence à un autre type
+  related:
+    type: dto
+    dto: RelatedDTO
+    required: false
+
+options:
+  timestamps: true
+  namespace: App\DTO
