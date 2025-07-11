@@ -18,6 +18,7 @@
 - [YAML Schema Documentation](#yaml-schema-documentation)
 - [Field Types](#field-types)
 - [Relationships](#relationships)
+- [Nested DTOs](#nested-dto-relationships)
 - [Validation Rules](#validation-rules)
 - [CLI Commands](#cli-commands)
 - [Examples](#examples)
@@ -901,6 +902,7 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE).
 - 🐛 [Report Issues](https://github.com/Grazulex/laravel-arc/issues)
 - 💬 [Discussions](https://github.com/Grazulex/laravel-arc/discussions)
 - 📖 [Wiki](https://github.com/Grazulex/laravel-arc/wiki)
+- 📝 [Nested DTO Guide](NESTED_DTO_GUIDE.md)
 
 ---
 
