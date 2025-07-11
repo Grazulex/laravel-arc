@@ -1,0 +1,113 @@
+# Address DTO for nested relationships
+header:
+  dto: AddressDTO
+  table: addresses
+  model: App\Models\Address
+  use:
+    - App\Traits\HasUuid
+  extends: BaseDTO
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  type:
+    type: enum
+    values: [billing, shipping, both]
+    default: both
+  
+  first_name:
+    type: string
+    required: true
+    rules: [min:2, max:50]
+  
+  last_name:
+    type: string
+    required: true
+    rules: [min:2, max:50]
+  
+  company:
+    type: string
+    required: false
+    rules: [max:100]
+  
+  address_line_1:
+    type: string
+    required: true
+    rules: [min:5, max:255]
+  
+  address_line_2:
+    type: string
+    required: false
+    rules: [max:255]
+  
+  city:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  
+  state:
+    type: string
+    required: false
+    rules: [max:100]
+  
+  postal_code:
+    type: string
+    required: true
+    rules: [min:3, max:20]
+  
+  country_code:
+    type: string
+    required: true
+    rules: [size:2]
+  
+  # Country as nested DTO (example of deeper nesting)
+  country:
+    type: dto
+    dto: CountryDTO
+    required: false
+  
+  phone:
+    type: string
+    required: false
+    rules: [min:10, max:20]
+  
+  # Delivery instructions
+  delivery_instructions:
+    type: text
+    required: false
+    rules: [max:500]
+  
+  # Geocoding information
+  latitude:
+    type: decimal
+    required: false
+  
+  longitude:
+    type: decimal
+    required: false
+  
+  # Address validation
+  is_validated:
+    type: boolean
+    default: false
+  
+  # Default address flags
+  is_default_billing:
+    type: boolean
+    default: false
+  
+  is_default_shipping:
+    type: boolean
+    default: false
+
+relations:
+  country:
+    type: belongsTo
+    target: App\Models\Country
+
+options:
+  timestamps: true
+  soft_deletes: false
+  namespace: App\DTOs\Common

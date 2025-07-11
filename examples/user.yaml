@@ -24,6 +24,21 @@ fields:
   
   email_verified_at:
     type: datetime
+  
+  # Profile as nested DTO
+  profile:
+    type: dto
+    dto: ProfileDTO
+    required: false
+
+relations:
+  posts:
+    type: hasMany
+    target: App\Models\Post
+  
+  roles:
+    type: belongsToMany
+    target: App\Models\Role
 
 options:
   timestamps: true

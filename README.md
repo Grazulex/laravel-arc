@@ -223,8 +223,11 @@ tags:
 ```yaml
 profile:
   type: dto
-  dto: profile  # References another DTO definition
+  dto: ProfileDTO  # References another DTO class name
+  required: true   # Whether the nested DTO is required
 ```
+
+**Note:** Nested DTOs support circular reference protection and depth limiting to prevent infinite loops.
 
 ### Relations Section
 
@@ -394,14 +397,17 @@ Laravel Arc provides CLI commands for DTO definition management:
 # Generate a single DTO from YAML definition
 php artisan dto:generate user.yaml
 
+# Generate a nested DTO with complex relationships
+php artisan dto:generate nested-order.yaml
+
 # Generate all YAML files in the definitions directory
 php artisan dto:generate --all
 
 # Generate with custom output path
 php artisan dto:generate user.yaml --output=/custom/path/UserDTO.php
 
-# Preview generated code without saving
-php artisan dto:generate user.yaml --dry-run
+# Preview generated code without saving (useful for nested DTOs)
+php artisan dto:generate nested-order.yaml --dry-run
 
 # Force overwrite existing DTO file
 php artisan dto:generate user.yaml --force
@@ -536,7 +542,8 @@ fields:
     type: datetime
   profile:
     type: dto
-    dto: profile
+    dto: ProfileDTO
+    required: false
 
 relations:
   posts:
@@ -631,12 +638,17 @@ options:
 
 ### More Examples
 
-For more comprehensive examples including advanced header features with custom `use` statements and `extends` clauses, check out the [examples directory](examples/) which includes:
+For more comprehensive examples including advanced nested DTOs, circular reference protection, and depth limiting, check out the [examples directory](examples/) which includes:
 
 - [Basic User DTO with header features](examples/user.yaml)
 - [Advanced User DTO with multiple traits and base class](examples/advanced-user.yaml)
 - [Product DTO with comprehensive features](examples/product.yaml)
 - [Profile DTO for nested relationships](examples/profile.yaml)
+- [Complex E-commerce Order DTO with nested relationships](examples/nested-order.yaml)
+- [Customer DTO with multiple nested DTOs](examples/nested-customer.yaml)
+- [Address DTO demonstrating deeper nesting levels](examples/nested-address.yaml)
+- [Country DTO showing depth limiting in practice](examples/nested-country.yaml)
+- [Category DTO with circular reference protection](examples/circular-category.yaml)
 
 ## Advanced Usage
 
@@ -743,20 +755,117 @@ options:
 
 ### Nested DTO Relationships
 
-Create complex data structures with nested DTOs:
+Laravel Arc supports nested DTOs with advanced protection against circular references and infinite loops. This feature allows you to compose complex data structures while maintaining safety and performance.
+
+#### Nested DTO Configuration
 
 ```yaml
 # user.yaml
 fields:
   profile:
     type: dto
-    dto: profile
+    dto: ProfileDTO
+    required: true
   billing_address:
     type: dto
-    dto: address
+    dto: AddressDTO
+    required: false
   shipping_address:
     type: dto
-    dto: address
+    dto: AddressDTO
+    required: false
+```
+
+#### Circular Reference Protection
+
+Laravel Arc automatically detects and prevents circular references:
+
+```yaml
+# parent.yaml
+header:
+  dto: ParentDTO
+  
+fields:
+  name:
+    type: string
+    required: true
+  children:
+    type: array
+    required: false
+  # This would create a circular reference but is handled safely
+  parent:
+    type: dto
+    dto: ParentDTO
+    required: false
+```
+
+#### Depth Limiting
+
+To prevent infinite nesting, Laravel Arc limits the depth of nested DTOs (default: 3 levels). When the limit is reached, the field falls back to an array type:
+
+- **Level 1**: `UserDTO` → `ProfileDTO` (✓ Full DTO nesting)
+- **Level 2**: `ProfileDTO` → `AddressDTO` (✓ Full DTO nesting) 
+- **Level 3**: `AddressDTO` → `CountryDTO` (✓ Full DTO nesting)
+- **Level 4**: `CountryDTO` → `RegionDTO` (✗ Falls back to array)
+
+This ensures your DTOs remain performant and prevent stack overflow errors.
+
+#### Validation for Nested DTOs
+
+Nested DTOs are validated as arrays at the top level:
+
+```yaml
+fields:
+  profile:
+    type: dto
+    dto: ProfileDTO
+    required: true
+    rules: [array]  # Additional validation rules can be added
+```
+
+#### Advanced Nested Example
+
+```yaml
+# order.yaml
+header:
+  dto: OrderDTO
+  table: orders
+  model: App\Models\Order
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  customer:
+    type: dto
+    dto: CustomerDTO
+    required: true
+  
+  billing_address:
+    type: dto
+    dto: AddressDTO
+    required: true
+  
+  shipping_address:
+    type: dto
+    dto: AddressDTO
+    required: false
+  
+  items:
+    type: array
+    required: true
+    rules: [array, min:1]
+  
+  # Each item could also be a nested DTO
+  payment_method:
+    type: dto
+    dto: PaymentMethodDTO
+    required: false
+
+options:
+  timestamps: true
+  namespace: App\DTOs\Ecommerce
 ```
 
 ### Environment-Specific Configuration

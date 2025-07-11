@@ -1,0 +1,90 @@
+# Country DTO demonstrating deeper nesting levels
+header:
+  dto: CountryDTO
+  table: countries
+  model: App\Models\Country
+  use:
+    - App\Traits\HasUuid
+  extends: BaseDTO
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  
+  code:
+    type: string
+    required: true
+    rules: [size:2, unique:countries]
+  
+  iso3:
+    type: string
+    required: true
+    rules: [size:3, unique:countries]
+  
+  currency_code:
+    type: string
+    required: true
+    rules: [size:3]
+  
+  phone_code:
+    type: string
+    required: false
+    rules: [max:5]
+  
+  # Region as nested DTO (this would be level 4 in OrderDTO → AddressDTO → CountryDTO → RegionDTO)
+  # Due to depth limiting, this would fall back to array type when generated from OrderDTO
+  region:
+    type: dto
+    dto: RegionDTO
+    required: false
+  
+  # Localization data
+  locale:
+    type: string
+    required: false
+    rules: [size:5]
+  
+  timezone:
+    type: string
+    required: false
+    rules: [max:50]
+  
+  # Geographic data
+  continent:
+    type: string
+    required: false
+    rules: [max:50]
+  
+  # Status
+  is_active:
+    type: boolean
+    default: true
+  
+  # Additional metadata
+  flag_emoji:
+    type: string
+    required: false
+  
+  metadata:
+    type: json
+    required: false
+
+relations:
+  states:
+    type: hasMany
+    target: App\Models\State
+  
+  cities:
+    type: hasMany
+    target: App\Models\City
+
+options:
+  timestamps: true
+  soft_deletes: false
+  namespace: App\DTOs\Common
