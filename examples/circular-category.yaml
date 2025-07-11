@@ -1,0 +1,107 @@
+# Circular reference example demonstrating safety features
+header:
+  dto: CategoryDTO
+  table: categories
+  model: App\Models\Category
+  use:
+    - App\Traits\HasUuid
+    - App\Traits\Sluggable
+  extends: BaseDTO
+
+fields:
+  id:
+    type: uuid
+    required: true
+  
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  
+  slug:
+    type: string
+    required: true
+    rules: [unique:categories]
+  
+  description:
+    type: text
+    required: false
+    rules: [max:500]
+  
+  # Parent category - this creates a potential circular reference
+  # Laravel Arc will handle this safely by detecting the circular reference
+  parent:
+    type: dto
+    dto: CategoryDTO
+    required: false
+  
+  # Children categories would be handled through relations, not direct nesting
+  # But we could have a summary field that references child categories
+  featured_child:
+    type: dto
+    dto: CategoryDTO
+    required: false
+  
+  # Category image
+  image_url:
+    type: string
+    required: false
+    rules: [url]
+  
+  # Category icon
+  icon:
+    type: string
+    required: false
+    rules: [max:50]
+  
+  # Display order
+  sort_order:
+    type: integer
+    default: 0
+    rules: [min:0]
+  
+  # Visibility
+  is_visible:
+    type: boolean
+    default: true
+  
+  # SEO fields
+  meta_title:
+    type: string
+    required: false
+    rules: [max:255]
+  
+  meta_description:
+    type: string
+    required: false
+    rules: [max:500]
+  
+  # Category level (for breadcrumbs)
+  level:
+    type: integer
+    default: 1
+    rules: [min:1, max:10]
+  
+  # Path for nested categories (e.g., "electronics/computers/laptops")
+  path:
+    type: string
+    required: false
+    rules: [max:500]
+
+relations:
+  parent:
+    type: belongsTo
+    target: App\Models\Category
+  
+  children:
+    type: hasMany
+    target: App\Models\Category
+  
+  products:
+    type: hasMany
+    target: App\Models\Product
+
+options:
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs\Catalog

@@ -2,14 +2,27 @@ header:
   dto: PostDTO
   model: App\Models\Post
   table: posts
+  use:
+    - App\Traits\HasUuid
+    - App\Services\ContentService
+  extends: BaseDTO
 
 fields:
   id:
     type: uuid
+    required: true
   title:
     type: string
+    required: true
+    rules: [min:5, max:255]
   content:
     type: text
+    required: true
+    rules: [min:10]
+  slug:
+    type: string
+    required: true
+    rules: [unique:posts]
   author:
     type: dto
     dto: UserDTO
@@ -18,6 +31,27 @@ fields:
     type: dto
     dto: CategoryDTO
     required: false
+  tags:
+    type: array
+    required: false
+    rules: [array]
+  meta_data:
+    type: json
+    required: false
+  status:
+    type: enum
+    values: [draft, published, archived]
+    default: draft
+  published_at:
+    type: datetime
+    required: false
 
+relations:
+  comments:
+    type: hasMany
+    target: App\Models\Comment
+  
 options:
-  namespace: App\DTO
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs
