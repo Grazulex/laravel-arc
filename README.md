@@ -457,6 +457,29 @@ fields:
     # Laravel automatically adds enum:App\Enums\Priority rule
 ```
 
+### Enum Custom Validation Rules
+
+Laravel Arc provides specialized validation rules for PHP enums:
+
+```yaml
+fields:
+  status:
+    type: enum
+    class: App\Enums\Status
+    rules:
+      - in_enum        # Alternative to enum: rule with additional checks
+      - required
+      
+  priority:
+    type: enum
+    class: App\Enums\Priority
+    rules:
+      - enum_exists    # Validates enum class existence and value
+      - in_enum        # Combines both validations
+```
+
+For detailed documentation on enum validation rules, see [`docs/ENUM_CUSTOM_RULES.md`](docs/ENUM_CUSTOM_RULES.md).
+
 ### Custom Validation Rules
 
 You can use any Laravel validation rule, including custom rules:
@@ -732,6 +755,8 @@ For more comprehensive examples including advanced nested DTOs, circular referen
 - [Address DTO demonstrating deeper nesting levels](examples/nested-address.yaml)
 - [Country DTO showing depth limiting in practice](examples/nested-country.yaml)
 - [Category DTO with circular reference protection](examples/circular-category.yaml)
+- [Enum examples with custom validation rules](examples/enum-examples.yaml)
+- [PHP enum class examples](examples/php-enum-classes.php)
 
 ## Advanced Usage
 

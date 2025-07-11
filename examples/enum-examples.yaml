@@ -2,6 +2,14 @@
 
 This file demonstrates all the enum features available in Laravel Arc.
 
+## Custom Validation Rules
+
+Laravel Arc provides two custom validation rules for enums:
+- `in_enum`: Alternative to Laravel's `enum:` rule with additional checks
+- `enum_exists`: Validates enum class existence and value
+
+For detailed documentation, see docs/ENUM_CUSTOM_RULES.md
+
 header:
   dto: EnumExampleDTO
   model: App\Models\Product
@@ -57,6 +65,34 @@ fields:
     class: App\Enums\Badge
     required: false
 
+  # Enum with custom validation rules
+  order_status:
+    type: enum
+    class: App\Enums\OrderStatus
+    required: true
+    rules:
+      - in_enum        # Alternative to enum: rule with additional checks
+      - required       # Standard Laravel validation rule
+
+  # Enum with multiple custom validation rules
+  priority_level:
+    type: enum
+    class: App\Enums\Priority
+    nullable: true
+    rules:
+      - enum_exists    # Validates enum class existence and value
+      - in_enum        # Combines enum validation with additional checks
+
+  # Enum with mixed validation rules
+  product_status:
+    type: enum
+    class: App\Enums\ProductStatus
+    required: true
+    rules:
+      - in_enum        # Custom enum validation
+      - enum_exists    # Enum class existence validation
+      - required       # Standard Laravel validation
+
 options:
   timestamps: true
   namespace: App\DTOs\Examples
@@ -97,4 +133,20 @@ options:
 #     case GOLD = 'gold';
 #     case SILVER = 'silver';
 #     case BRONZE = 'bronze';
+# }
+#
+# enum OrderStatus: string
+# {
+#     case PENDING = 'pending';
+#     case PROCESSING = 'processing';
+#     case SHIPPED = 'shipped';
+#     case DELIVERED = 'delivered';
+#     case CANCELLED = 'cancelled';
+# }
+#
+# enum ProductStatus: string
+# {
+#     case DRAFT = 'draft';
+#     case PUBLISHED = 'published';
+#     case ARCHIVED = 'archived';
 # }
