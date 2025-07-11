@@ -6,10 +6,10 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 it('can generate a DTO from the full-featured YAML fixture', function () {
-    // 1. Dossier temporaire simulant config('dto.base_path')
+    // 1. Dossier temporaire simulant config('dto.definitions_path')
     $definitionPath = __DIR__.'/temp_definitions';
     File::ensureDirectoryExists($definitionPath);
-    config()->set('dto.base_path', $definitionPath);
+    config()->set('dto.definitions_path', $definitionPath);
 
     // 2. Copie de la fixture YAML dans ce dossier
     $yamlName = 'full-featured.yaml';
@@ -17,11 +17,15 @@ it('can generate a DTO from the full-featured YAML fixture', function () {
     $yamlTarget = $definitionPath.'/'.$yamlName;
     File::copy($yamlSource, $yamlTarget);
 
-    // 3. Cible du DTO généré (namespace App\DTOs => App/DTOs/)
-    $dtoPath = app_path('App/DTOs/ProductDTO.php'); // ✅ Correction ici
+    // 3. Configurer le chemin de sortie pour les tests
+    $outputPath = __DIR__.'/temp_output';
+    config()->set('dto.output_path', $outputPath);
+
+    // 4. Cible du DTO généré - le fichier sera créé dans le chemin configuré
+    $dtoPath = $outputPath.'/ProductDTO.php';
     File::delete($dtoPath); // Nettoyage préalable
 
-    // 4. Exécution de la commande
+    // 5. Exécution de la commande
     $exitCode = Artisan::call('dto:generate', [
         'filename' => $yamlName,
         '--force' => true,
@@ -34,12 +38,17 @@ it('can generate a DTO from the full-featured YAML fixture', function () {
 
     // 7. Nettoyage
     File::deleteDirectory($definitionPath);
+    File::deleteDirectory($outputPath);
 });
 
 it('can preview a DTO class using --dry-run', function () {
     $definitionPath = __DIR__.'/temp_definitions';
     File::ensureDirectoryExists($definitionPath);
-    config()->set('dto.base_path', $definitionPath);
+    config()->set('dto.definitions_path', $definitionPath);
+
+    // Configurer le chemin de sortie pour les tests
+    $outputPath = __DIR__.'/temp_output';
+    config()->set('dto.output_path', $outputPath);
 
     $yamlName = 'full-featured.yaml';
     $yamlSource = __DIR__.'/DtoGenerator/fixtures/full-featured.yaml';
@@ -47,7 +56,7 @@ it('can preview a DTO class using --dry-run', function () {
     File::copy($yamlSource, $yamlTarget);
 
     // Chemin vers le fichier qui NE DOIT PAS être créé
-    $dtoPath = app_path('App/DTOs/ProductDTO.php');
+    $dtoPath = $outputPath.'/ProductDTO.php';
     File::delete($dtoPath);
 
     // ➕ Test du mode dry-run
@@ -66,4 +75,5 @@ it('can preview a DTO class using --dry-run', function () {
     expect(File::exists($dtoPath))->toBeFalse();
 
     File::deleteDirectory($definitionPath);
+    File::deleteDirectory($outputPath);
 });

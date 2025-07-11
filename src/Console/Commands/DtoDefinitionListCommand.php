@@ -44,8 +44,10 @@ final class DtoDefinitionListCommand extends Command
 
         foreach ($files as $file) {
             $basename = $file->getFilenameWithoutExtension();
-            $dtoName = ucfirst($basename).'DTO';
             $yamlData = Yaml::parseFile($file->getRealPath());
+
+            // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
+            $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
             $fieldCount = count($yamlData['fields'] ?? []);
             $relationCount = count($yamlData['relations'] ?? []);
@@ -63,5 +65,17 @@ final class DtoDefinitionListCommand extends Command
         }
 
         return Command::SUCCESS;
+    }
+
+    /**
+     * Generate a DTO name from a filename (e.g. "advanced-user" => "AdvancedUserDTO")
+     */
+    private function generateDtoNameFromFilename(string $filename): string
+    {
+        // Convertir en PascalCase et ajouter "DTO"
+        $normalized = str_replace(['-', '_'], ' ', $filename);
+        $pascalCase = str_replace(' ', '', ucwords($normalized));
+
+        return $pascalCase.'DTO';
     }
 }

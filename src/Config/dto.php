@@ -28,6 +28,6 @@ return [
     |
     */
 
-    'output_path' => base_path('app/DTOs'),
+    'output_path' => base_path('app/DTO'),
 
 ];

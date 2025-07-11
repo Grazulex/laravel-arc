@@ -109,24 +109,24 @@ final class DtoGenerator
 
         if ($allRules !== []) {
             $rulesBody = implode("\n", array_map(
-                fn ($field, $rules): string => "        '{$field}' => ['".implode("', '", $rules)."'],",
+                fn ($field, $rules): string => "            '{$field}' => ['".implode("', '", $rules)."'],",
                 array_keys($allRules),
                 $allRules
             ));
 
             $methods[] = <<<PHP
-            public static function rules(): array
-            {
-                return [
-                    $rulesBody
-                ];
-            }
+    public static function rules(): array
+    {
+        return [
+$rulesBody
+        ];
+    }
 
-            public static function validate(array \$data): \\Illuminate\\Contracts\\Validation\\Validator
-            {
-                return \\Illuminate\\Support\\Facades\\Validator::make(\$data, static::rules());
-            }
-            PHP;
+    public static function validate(array \$data): \\Illuminate\\Contracts\\Validation\\Validator
+    {
+        return \\Illuminate\\Support\\Facades\\Validator::make(\$data, static::rules());
+    }
+PHP;
         }
 
         // --- Render DTO class ---

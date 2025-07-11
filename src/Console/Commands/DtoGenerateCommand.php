@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Console\Commands;
 
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Grazulex\LaravelArc\Support\DtoPaths;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 
 final class DtoGenerateCommand extends Command
@@ -23,12 +23,7 @@ final class DtoGenerateCommand extends Command
 
     public function handle(): int
     {
-        $basePath = config('dto.base_path');
-
-        // ✅ Respecter les chemins absolus dans les tests
-        if (! Str::startsWith($basePath, ['/']) && ! Str::startsWith($basePath, [DIRECTORY_SEPARATOR])) {
-            $basePath = base_path($basePath);
-        }
+        $basePath = DtoPaths::definitionDir();
 
         if ($this->option('all')) {
             $files = File::glob($basePath.'/*.yaml');
@@ -86,7 +81,7 @@ final class DtoGenerateCommand extends Command
         }
 
         $outputPath = $this->option('output')
-            ?? app_path(str_replace('App\\', '', str_replace('\\', '/', $namespace)))."/$dtoName.php";
+            ?? $this->resolveOutputPath($dtoName, $namespace);
 
         if (File::exists($outputPath) && ! $this->option('force')) {
             $this->warn("File already exists: $outputPath (use --force to overwrite)");
@@ -100,5 +95,22 @@ final class DtoGenerateCommand extends Command
         $this->info("✅ DTO class written to: $outputPath");
 
         return self::SUCCESS;
+    }
+
+    private function resolveOutputPath(string $dtoName, string $namespace): string
+    {
+        // Utilise le chemin de sortie configuré comme base
+        $outputDir = DtoPaths::dtoOutputDir();
+
+        // Pour les namespaces qui correspondent au schéma App\DTOs,
+        // utilise le chemin configuré directement
+        if (str_starts_with($namespace, 'App\\DTOs') || str_starts_with($namespace, 'App\\DTO')) {
+            return $outputDir.'/'.$dtoName.'.php';
+        }
+
+        // Pour les autres namespaces, crée un sous-dossier basé sur le namespace
+        $subPath = str_replace(['App\\', '\\'], ['', '/'], $namespace);
+
+        return $outputDir.'/'.$subPath.'/'.$dtoName.'.php';
     }
 }

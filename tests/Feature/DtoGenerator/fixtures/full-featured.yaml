@@ -34,4 +34,4 @@ options:
   timestamps: true
   soft_deletes: true
   expose_hidden_by_default: false
-  namespace: App\DTOs
+  namespace: App\DTO

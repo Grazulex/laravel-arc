@@ -1,0 +1,13 @@
+header:
+  dto: AdvancedUserDTO
+  model: App\Models\User
+  table: users
+
+fields:
+  id:
+    type: uuid
+  name:
+    type: string
+
+options:
+  namespace: App\DTO
