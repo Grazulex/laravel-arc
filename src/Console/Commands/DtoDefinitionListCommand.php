@@ -13,7 +13,8 @@ final class DtoDefinitionListCommand extends Command
 {
     protected $signature = 'dto:definition-list
                             {--path= : Directory containing DTO YAML definitions (overrides config)}
-                            {--compact : Display only DTO names}';
+                            {--compact : Display only DTO names}
+                            {--json : Output as JSON array}';
 
     protected $description = 'List all available DTO YAML definition files';
 
@@ -23,9 +24,14 @@ final class DtoDefinitionListCommand extends Command
         $path = realpath($rawPath) ?: $rawPath;
 
         $compact = $this->option('compact');
+        $json = $this->option('json');
 
         if (! File::isDirectory($path)) {
-            $this->error("Directory not found: $path");
+            if ($json) {
+                $this->line(json_encode(['error' => "Directory not found: $path"]));
+            } else {
+                $this->error("Directory not found: $path");
+            }
 
             return Command::FAILURE;
         }
@@ -35,32 +41,63 @@ final class DtoDefinitionListCommand extends Command
             ->sortBy(fn ($file) => $file->getFilename());
 
         if ($files->isEmpty()) {
-            $this->warn("No DTO definition files found in $path");
+            if ($json) {
+                $this->line(json_encode([]));
+            } else {
+                $this->warn("No DTO definition files found in $path");
+            }
 
             return Command::SUCCESS;
         }
 
-        $this->info("📂 DTO definition files in: $path\n");
+        if ($json) {
+            $jsonData = [];
+            foreach ($files as $file) {
+                $basename = $file->getFilenameWithoutExtension();
+                $yamlData = Yaml::parseFile($file->getRealPath());
 
-        foreach ($files as $file) {
-            $basename = $file->getFilenameWithoutExtension();
-            $yamlData = Yaml::parseFile($file->getRealPath());
+                // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
+                $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
-            // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
-            $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
+                $dtoPath = DtoPaths::dtoFilePath($dtoName);
+                $dtoExists = File::exists($dtoPath);
 
-            $fieldCount = count($yamlData['fields'] ?? []);
-            $relationCount = count($yamlData['relations'] ?? []);
-            $dtoPath = DtoPaths::dtoFilePath($dtoName);
-            $dtoExists = File::exists($dtoPath);
+                $jsonData[] = [
+                    'dto' => $dtoName,
+                    'model' => $yamlData['header']['model'] ?? null,
+                    'table' => $yamlData['header']['table'] ?? null,
+                    'fields' => $yamlData['fields'] ?? [],
+                    'relations' => $yamlData['relations'] ?? [],
+                    'dtoExists' => $dtoExists,
+                    'yamlFile' => $file->getFilename(),
+                    'dtoPath' => $dtoExists ? str_replace(base_path().'/', '', $dtoPath) : null,
+                ];
+            }
 
-            if ($compact) {
-                $this->line("- $dtoName");
-            } else {
-                $this->line("✔ $dtoName  =>  ".$file->getFilename());
-                $this->line("   • {$fieldCount} field(s), {$relationCount} relation(s)");
-                $this->line('   • DTO class exists: '.($dtoExists ? '✅ '.str_replace(base_path().'/', '', $dtoPath) : '❌'));
-                $this->line('');
+            $this->line(json_encode($jsonData));
+        } else {
+            $this->info("📂 DTO definition files in: $path\n");
+
+            foreach ($files as $file) {
+                $basename = $file->getFilenameWithoutExtension();
+                $yamlData = Yaml::parseFile($file->getRealPath());
+
+                // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
+                $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
+
+                $fieldCount = count($yamlData['fields'] ?? []);
+                $relationCount = count($yamlData['relations'] ?? []);
+                $dtoPath = DtoPaths::dtoFilePath($dtoName);
+                $dtoExists = File::exists($dtoPath);
+
+                if ($compact) {
+                    $this->line("- $dtoName");
+                } else {
+                    $this->line("✔ $dtoName  =>  ".$file->getFilename());
+                    $this->line("   • {$fieldCount} field(s), {$relationCount} relation(s)");
+                    $this->line('   • DTO class exists: '.($dtoExists ? '✅ '.str_replace(base_path().'/', '', $dtoPath) : '❌'));
+                    $this->line('');
+                }
             }
         }
 
