@@ -6,6 +6,7 @@ namespace Grazulex\LaravelArc;
 
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionInitCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionListCommand;
+use Grazulex\LaravelArc\Console\Commands\DtoGenerateCommand;
 use Illuminate\Support\ServiceProvider;
 
 final class LaravelArcServiceProvider extends ServiceProvider
@@ -29,6 +30,7 @@ final class LaravelArcServiceProvider extends ServiceProvider
         $this->commands([
             DtoDefinitionInitCommand::class,
             DtoDefinitionListCommand::class,
+            DtoGenerateCommand::class,
         ]);
     }
 }

@@ -1,0 +1,104 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Grazulex\LaravelArc\Console\Commands;
+
+use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Illuminate\Console\Command;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
+use Symfony\Component\Yaml\Yaml;
+
+final class DtoGenerateCommand extends Command
+{
+    protected $signature = 'dto:generate
+        {filename? : The YAML filename to generate (relative to config)}
+        {--force : Overwrite existing DTO file if present}
+        {--output= : Manually specify output path for generated DTO}
+        {--dry-run : Output the result to console instead of saving}
+        {--all : Generate all YAML files in the base path}';
+
+    protected $description = 'Generate a full DTO PHP class from a YAML definition.';
+
+    public function handle(): int
+    {
+        $basePath = config('dto.base_path');
+
+        // ✅ Respecter les chemins absolus dans les tests
+        if (! Str::startsWith($basePath, ['/']) && ! Str::startsWith($basePath, [DIRECTORY_SEPARATOR])) {
+            $basePath = base_path($basePath);
+        }
+
+        if ($this->option('all')) {
+            $files = File::glob($basePath.'/*.yaml');
+            if (empty($files)) {
+                $this->error('No YAML files found in directory: '.$basePath);
+
+                return self::FAILURE;
+            }
+            foreach ($files as $file) {
+                $this->generateFromFile($file);
+            }
+
+            return self::SUCCESS;
+        }
+
+        $filename = $this->argument('filename');
+        if (! $filename) {
+            $this->error('Please provide a YAML filename or use --all');
+
+            return self::FAILURE;
+        }
+
+        $fullPath = $basePath.'/'.$filename;
+        if (! File::exists($fullPath)) {
+            $this->error("YAML file not found: $fullPath");
+
+            return self::FAILURE;
+        }
+
+        return $this->generateFromFile($fullPath);
+    }
+
+    private function generateFromFile(string $filePath): int
+    {
+        $this->info("🛠 Generating DTO from: $filePath");
+
+        $yaml = Yaml::parseFile($filePath);
+        $dtoName = $yaml['header']['dto'] ?? null;
+        $namespace = $yaml['options']['namespace'] ?? 'App\\DTOs';
+
+        if (! $dtoName) {
+            $this->error('Missing "dto" in header section.');
+
+            return self::FAILURE;
+        }
+
+        $code = DtoGenerator::make()->generateFromDefinition($yaml);
+
+        if ($this->option('dry-run')) {
+            $this->line("\n----- Begin DTO: $dtoName -----\n");
+            $this->line($code);
+            $this->line("\n----- End DTO: $dtoName -----\n");
+
+            return self::SUCCESS;
+        }
+
+        $outputPath = $this->option('output')
+            ?? app_path(str_replace('App\\', '', str_replace('\\', '/', $namespace)))."/$dtoName.php";
+
+        if (File::exists($outputPath) && ! $this->option('force')) {
+            $this->warn("File already exists: $outputPath (use --force to overwrite)");
+
+            return self::FAILURE;
+        }
+
+        File::ensureDirectoryExists(dirname($outputPath));
+        File::put($outputPath, $code);
+
+        $this->info("✅ DTO class written to: $outputPath");
+
+        return self::SUCCESS;
+    }
+}
