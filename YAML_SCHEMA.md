@@ -121,12 +121,44 @@ id:
 ```
 
 **Enum**
+
+Traditional enum with values array:
 ```yaml
 status:
   type: enum
   values: [draft, published, archived]
   default: draft
 ```
+
+PHP enum class (recommended):
+```yaml
+# String enum
+status:
+  type: enum
+  class: App\Enums\Status
+  default: draft  # References Status::DRAFT
+
+# Int enum
+priority:
+  type: enum
+  class: App\Enums\Priority
+  default: 2  # References Priority::MEDIUM (if value is 2)
+
+# Explicit enum case reference
+visibility:
+  type: enum
+  class: App\Enums\Visibility
+  default: App\Enums\Visibility::PUBLIC
+```
+
+**Enum Field Attributes:**
+| Attribute | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `values` | array | No | Array of allowed values (traditional enum) |
+| `class` | string | No | PHP enum class name (PHP enum class) |
+| `default` | mixed | No | Default value (case name or full enum reference) |
+
+**Note:** Use either `values` or `class`, not both. PHP enum classes are recommended for better type safety and IDE support.
 
 **ID (Auto-incrementing)**
 ```yaml
@@ -350,10 +382,10 @@ fields:
     type: boolean
     default: true
   
-  # Enum field
+  # Enum field with PHP enum class
   status:
     type: enum
-    values: [draft, published, archived]
+    class: App\Enums\ProductStatus
     default: draft
   
   # Array field

@@ -1,0 +1,100 @@
+# Laravel Arc Enum Examples
+
+This file demonstrates all the enum features available in Laravel Arc.
+
+header:
+  dto: EnumExampleDTO
+  model: App\Models\Product
+  table: products
+
+fields:
+  id:
+    type: uuid
+    required: true
+
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:255]
+
+  # Traditional enum with values array
+  status:
+    type: enum
+    values: [draft, published, archived]
+    required: true
+    default: draft
+
+  # PHP String enum class
+  priority:
+    type: enum
+    class: App\Enums\Priority
+    required: false
+
+  # PHP Int enum class with default value
+  category:
+    type: enum
+    class: App\Enums\Category
+    required: true
+    default: general
+
+  # PHP enum class with explicit case reference
+  visibility:
+    type: enum
+    class: App\Enums\Visibility
+    required: true
+    default: App\Enums\Visibility::PUBLIC
+
+  # PHP enum class with int default value
+  level:
+    type: enum
+    class: App\Enums\Level
+    required: true
+    default: 1  # References Level::BEGINNER (if value is 1)
+
+  # Optional enum with no default
+  badge:
+    type: enum
+    class: App\Enums\Badge
+    required: false
+
+options:
+  timestamps: true
+  namespace: App\DTOs\Examples
+
+# Example PHP enum classes that would work with this configuration:
+#
+# <?php
+# enum Priority: string
+# {
+#     case LOW = 'low';
+#     case MEDIUM = 'medium';
+#     case HIGH = 'high';
+# }
+#
+# enum Category: string
+# {
+#     case GENERAL = 'general';
+#     case TECHNOLOGY = 'technology';
+#     case BUSINESS = 'business';
+# }
+#
+# enum Visibility: string
+# {
+#     case PUBLIC = 'public';
+#     case PRIVATE = 'private';
+#     case PROTECTED = 'protected';
+# }
+#
+# enum Level: int
+# {
+#     case BEGINNER = 1;
+#     case INTERMEDIATE = 2;
+#     case ADVANCED = 3;
+# }
+#
+# enum Badge: string
+# {
+#     case GOLD = 'gold';
+#     case SILVER = 'silver';
+#     case BRONZE = 'bronze';
+# }

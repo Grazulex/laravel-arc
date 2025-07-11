@@ -206,11 +206,21 @@ fields:
 #### Type-Specific Attributes
 
 **Enum Fields:**
+
+Traditional enum with values array:
 ```yaml
 status:
   type: enum
   values: [draft, published, archived]
   default: draft
+```
+
+PHP enum class (recommended):
+```yaml
+status:
+  type: enum
+  class: App\Enums\Status
+  default: draft  # or App\Enums\Status::DRAFT
 ```
 
 **Array Fields:**
@@ -274,6 +284,69 @@ options:
 
 Laravel Arc supports the following field types:
 
+### Enum Fields
+
+Laravel Arc supports both traditional enums with explicit values and modern PHP enum classes:
+
+#### Traditional Enum with Values Array
+```yaml
+status:
+  type: enum
+  values: [draft, published, archived]
+  default: draft
+  required: true
+```
+
+#### PHP Enum Class (Recommended)
+```yaml
+# String enum
+status:
+  type: enum
+  class: App\Enums\Status
+  default: draft  # References Status::DRAFT
+  required: true
+
+# Int enum  
+priority:
+  type: enum
+  class: App\Enums\Priority
+  default: 2  # References Priority::MEDIUM (if value is 2)
+  required: false
+
+# Explicit enum case reference
+visibility:
+  type: enum
+  class: App\Enums\Visibility
+  default: App\Enums\Visibility::PUBLIC
+  required: true
+```
+
+**Benefits of PHP Enum Classes:**
+- Type safety and IDE support
+- Automatic validation using Laravel's `enum:` rule
+- Better code organization and maintainability
+- Support for both backed (string/int) and unbacked enums
+
+**Example PHP Enum Classes:**
+```php
+<?php
+// String enum
+enum Status: string
+{
+    case DRAFT = 'draft';
+    case PUBLISHED = 'published';
+    case ARCHIVED = 'archived';
+}
+
+// Int enum
+enum Priority: int
+{
+    case LOW = 1;
+    case MEDIUM = 2;
+    case HIGH = 3;
+}
+```
+
 ### Primitive Types
 
 | Type | PHP Type | Description | Example |
@@ -290,7 +363,7 @@ Laravel Arc supports the following field types:
 | Type | PHP Type | Description | Example |
 |------|----------|-------------|---------|
 | `uuid` | string | UUID string | `"550e8400-e29b-41d4-a716-446655440000"` |
-| `enum` | string | Enumeration value | `"published"` |
+| `enum` | string/int | Enumeration value (supports both traditional values and PHP enum classes) | `"published"` or `Status::PUBLISHED` |
 | `id` | int | Auto-incrementing ID | `1` |
 | `text` | string | Long text field | `"Long content..."` |
 | `decimal` | string | Decimal number | `"19.99"` |
@@ -371,10 +444,17 @@ fields:
     type: array
     rules: [array, distinct]
     
+  # Traditional enum validation
   status:
     type: enum
     values: [active, inactive, pending]
     rules: [in:active,inactive,pending]
+    
+  # PHP enum class validation (automatic)
+  priority:
+    type: enum
+    class: App\Enums\Priority
+    # Laravel automatically adds enum:App\Enums\Priority rule
 ```
 
 ### Custom Validation Rules
@@ -601,9 +681,10 @@ fields:
     type: string
     required: true
     rules: [unique:orders]
+  # Using PHP enum class
   status:
     type: enum
-    values: [pending, processing, shipped, delivered, cancelled]
+    class: App\Enums\OrderStatus
     default: pending
   subtotal:
     type: decimal
@@ -614,10 +695,11 @@ fields:
   total_amount:
     type: decimal
     rules: [numeric, min:0]
+  # Using enum class with explicit reference
   currency:
-    type: string
-    default: USD
-    rules: [size:3]
+    type: enum
+    class: App\Enums\Currency
+    default: App\Enums\Currency::USD
   shipping_address:
     type: json
   metadata:
