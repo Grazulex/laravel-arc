@@ -50,4 +50,50 @@ describe('EnumValidatorGenerator', function () {
             'status' => ['in:draft,published', 'required'],
         ]);
     });
+
+    it('generates enum rule with PHP enum class', function () {
+        $generator = new EnumValidatorGenerator();
+        $context = new DtoGenerationContext();
+
+        $rules = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'required' => true,
+        ], $context);
+
+        expect($rules)->toBe([
+            'status' => ['enum:\\Tests\\Fixtures\\Enums\\Status', 'required'],
+        ]);
+    });
+
+    it('generates enum rule with PHP enum class without required', function () {
+        $generator = new EnumValidatorGenerator();
+        $context = new DtoGenerationContext();
+
+        $rules = $generator->generate('priority', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Priority',
+            'required' => false,
+        ], $context);
+
+        expect($rules)->toBe([
+            'priority' => ['enum:\\Tests\\Fixtures\\Enums\\Priority'],
+        ]);
+    });
+
+    it('prefers enum class over values array when both are present', function () {
+        $generator = new EnumValidatorGenerator();
+        $context = new DtoGenerationContext();
+
+        $rules = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'values' => ['draft', 'published'], // Should be ignored
+            'required' => true,
+        ], $context);
+
+        expect($rules)->toBe([
+            'status' => ['enum:\\Tests\\Fixtures\\Enums\\Status', 'required'],
+        ]);
+    });
 });

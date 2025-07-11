@@ -1,0 +1,37 @@
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
+
+fields:
+  id:
+    type: uuid
+    required: true
+
+  name:
+    type: string
+    required: true
+
+  # Enum traditionnel avec valeurs
+  status:
+    type: enum
+    values: [active, inactive, suspended]
+    required: true
+    default: active
+
+  # Enum PHP 8.0 avec classe
+  priority:
+    type: enum
+    class: Tests\Fixtures\Enums\Priority
+    required: false
+
+  # Enum PHP 8.0 avec valeur par défaut
+  role:
+    type: enum
+    class: Tests\Fixtures\Enums\Status
+    required: true
+    default: draft
+
+options:
+  timestamps: true
+  namespace: App\DTO

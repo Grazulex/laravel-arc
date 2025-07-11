@@ -21,6 +21,17 @@ final class EnumValidatorGenerator extends BaseValidatorGenerator implements Val
             return [];
         }
 
+        // Si une classe enum est spécifiée, utiliser la validation enum Laravel
+        if (isset($config['class']) && is_string($config['class'])) {
+            $enumClass = $config['class'];
+            $enumRule = "enum:\\{$enumClass}";
+
+            $rules = ValidatorRuleBuilder::build([$enumRule], $config);
+
+            return [$name => $rules];
+        }
+
+        // Comportement par défaut pour les enums avec valeurs array
         $values = $config['values'] ?? null;
 
         if (! is_array($values) || $values === []) {

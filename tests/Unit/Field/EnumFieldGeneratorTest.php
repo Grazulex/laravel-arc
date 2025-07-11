@@ -35,4 +35,58 @@ describe('EnumFieldGenerator', function () {
         expect($code)->toContain('public');
         expect($code)->toContain('$status =');
     });
+
+    it('generates enum field with PHP enum class', function () {
+        $generator = new EnumFieldGenerator();
+        $context = new DtoGenerationContext();
+
+        $code = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'required' => true,
+        ], $context);
+
+        expect($code)->toBe('public \\Tests\\Fixtures\\Enums\\Status $status;');
+    });
+
+    it('generates nullable enum field with PHP enum class', function () {
+        $generator = new EnumFieldGenerator();
+        $context = new DtoGenerationContext();
+
+        $code = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'required' => false,
+        ], $context);
+
+        expect($code)->toBe('public ?\\Tests\\Fixtures\\Enums\\Status $status = null;');
+    });
+
+    it('generates enum field with PHP enum class and default value', function () {
+        $generator = new EnumFieldGenerator();
+        $context = new DtoGenerationContext();
+
+        $code = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'default' => 'draft',
+            'required' => true,
+        ], $context);
+
+        expect($code)->toBe('public \\Tests\\Fixtures\\Enums\\Status $status = \\Tests\\Fixtures\\Enums\\Status::DRAFT;');
+    });
+
+    it('generates enum field with PHP enum class and explicit case reference', function () {
+        $generator = new EnumFieldGenerator();
+        $context = new DtoGenerationContext();
+
+        $code = $generator->generate('status', [
+            'type' => 'enum',
+            'class' => 'Tests\\Fixtures\\Enums\\Status',
+            'default' => 'Tests\\Fixtures\\Enums\\Status::PUBLISHED',
+            'required' => true,
+        ], $context);
+
+        expect($code)->toBe('public \\Tests\\Fixtures\\Enums\\Status $status = Tests\\Fixtures\\Enums\\Status::PUBLISHED;');
+    });
 });
