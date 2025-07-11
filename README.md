@@ -526,8 +526,14 @@ php artisan dto:definition-list
 # Compact view (names only)
 php artisan dto:definition-list --compact
 
+# JSON output (for automation/CI)
+php artisan dto:definition-list --json
+
 # Custom path
 php artisan dto:definition-list --path=/path/to/definitions
+
+# Combine options
+php artisan dto:definition-list --path=/path/to/definitions --json
 ```
 
 ### Initialize DTO Definitions
