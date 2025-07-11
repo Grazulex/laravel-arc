@@ -57,15 +57,15 @@ final class DtoDefinitionListCommand extends Command
                 $yamlData = Yaml::parseFile($file->getRealPath());
 
                 // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
-                $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
+                $dtoName = $yamlData['dto'] ?? $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
                 $dtoPath = DtoPaths::dtoFilePath($dtoName);
                 $dtoExists = File::exists($dtoPath);
 
                 $jsonData[] = [
                     'dto' => $dtoName,
-                    'model' => $yamlData['header']['model'] ?? null,
-                    'table' => $yamlData['header']['table'] ?? null,
+                    'model' => $yamlData['model'] ?? $yamlData['header']['model'] ?? null,
+                    'table' => $yamlData['table'] ?? $yamlData['header']['table'] ?? null,
                     'fields' => $yamlData['fields'] ?? [],
                     'relations' => $yamlData['relations'] ?? [],
                     'dtoExists' => $dtoExists,
@@ -83,7 +83,7 @@ final class DtoDefinitionListCommand extends Command
                 $yamlData = Yaml::parseFile($file->getRealPath());
 
                 // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
-                $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
+                $dtoName = $yamlData['dto'] ?? $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
                 $fieldCount = count($yamlData['fields'] ?? []);
                 $relationCount = count($yamlData['relations'] ?? []);
