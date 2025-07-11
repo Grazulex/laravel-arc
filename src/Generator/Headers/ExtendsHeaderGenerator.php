@@ -17,17 +17,17 @@ final class ExtendsHeaderGenerator implements HeaderGenerator
     public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
         $extends = $header[$key] ?? null;
-        
-        if (empty($extends) || !is_string($extends)) {
+
+        if (empty($extends) || ! is_string($extends)) {
             return '';
         }
-        
-        $extends = trim($extends);
-        if (empty($extends)) {
+
+        $extends = mb_trim($extends);
+        if ($extends === '' || $extends === '0') {
             return '';
         }
-        
+
         // Ensure we have a proper class name
-        return 'extends ' . $extends;
+        return 'extends '.$extends;
     }
 }

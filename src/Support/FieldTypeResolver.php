@@ -8,7 +8,7 @@ final class FieldTypeResolver
 {
     public static function resolvePhpType(string $baseType, bool $required = true): string
     {
-        return (! $required ? '?' : '').match ($baseType) {
+        return ($required ? '' : '?').match ($baseType) {
             // chaînes
             'string', 'text', 'uuid', 'enum', 'id' => 'string',
 

@@ -47,14 +47,14 @@ final class DtoGenerator
         // --- Collect header extras ---
         $headerExtras = [];
         $useStatements = $this->headers->generate('use', $header, $context);
-        if (!empty($useStatements)) {
+        if ($useStatements !== '' && $useStatements !== '0') {
             $headerExtras[] = $useStatements;
         }
-        
+
         $extendsClause = $this->headers->generate('extends', $header, $context);
-        
+
         $headerExtra = implode("\n", $headerExtras);
-        if (!empty($headerExtra)) {
+        if ($headerExtra !== '' && $headerExtra !== '0') {
             $headerExtra .= "\n";
         }
 
