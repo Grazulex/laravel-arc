@@ -36,6 +36,8 @@ The header section contains metadata about the DTO being generated.
 |-----------|------|-------------|---------|
 | `table` | string | Database table name (for reference) | `users` |
 | `model` | string | Associated Eloquent model class | `App\Models\User` |
+| `use` | array/string | Use statements for traits, imports, or other classes | `["App\Traits\HasUuid", "Validator"]` |
+| `extends` | string | Base class that the DTO should extend | `BaseDTO` |
 
 ### Example
 
@@ -44,6 +46,10 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  use:
+    - App\Traits\HasUuid
+    - Illuminate\Support\Facades\Validator
+  extends: BaseDTO
 ```
 
 ## Fields Section
@@ -309,6 +315,10 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  use:
+    - App\Traits\HasUuid
+    - App\Traits\Auditable
+  extends: BaseDTO
 
 fields:
   # Basic fields

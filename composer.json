@@ -13,7 +13,7 @@
     "type": "library",
     "homepage": "https://github.com/grazulex/laravel-arc",
     "require": {
-        "php": "^8.4",
+        "php": "^8.3",
         "illuminate/support": "^12.19",
         "nesbot/carbon": "^3.10"
     },

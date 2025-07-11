@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
-final class {{ class }}
+{{ header_extra }}
+final class {{ class }} {{ extends_clause }}
 {
 {{ properties }}
 

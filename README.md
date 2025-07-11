@@ -87,6 +87,10 @@ return [
      dto: UserDTO
      table: users
      model: App\Models\User
+     use:
+       - App\Traits\HasUuid
+       - Illuminate\Support\Facades\Validator
+     extends: BaseDTO
 
    fields:
      id:
@@ -165,6 +169,8 @@ The `header` section defines basic DTO information:
 | `dto` | string | Yes | Name of the generated DTO class |
 | `table` | string | No | Database table name (for migration generation) |
 | `model` | string | No | Associated Eloquent model class |
+| `use` | array/string | No | Use statements for traits, imports, or other classes |
+| `extends` | string | No | Base class that the DTO should extend |
 
 **Example:**
 ```yaml
@@ -172,6 +178,10 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  use:
+    - App\Traits\HasUuid
+    - Illuminate\Support\Facades\Validator
+  extends: BaseDTO
 ```
 
 ### Fields Section
@@ -433,6 +443,39 @@ file_put_contents('app/DTOs/UserDTO.php', $code);
 
 ## Examples
 
+### Basic User DTO with Header Features
+
+```yaml
+# database/dto_definitions/user.yaml
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
+  use:
+    - App\Traits\HasUuid
+  extends: BaseDTO
+
+fields:
+  id:
+    type: uuid
+    required: true
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  email:
+    type: string
+    required: true
+    rules: [email, unique:users]
+  email_verified_at:
+    type: datetime
+
+options:
+  timestamps: true
+  soft_deletes: false
+  namespace: App\DTOs
+```
+
 ### Basic Product DTO
 
 ```yaml
@@ -441,6 +484,10 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  use:
+    - App\Traits\HasUuid
+    - App\Traits\Sluggable
+  extends: BaseDTO
 
 fields:
   id:
@@ -590,7 +637,89 @@ options:
   namespace: App\DTOs\Ecommerce
 ```
 
+### More Examples
+
+For more comprehensive examples including advanced header features with custom `use` statements and `extends` clauses, check out the [examples directory](examples/) which includes:
+
+- [Basic User DTO with header features](examples/user.yaml)
+- [Advanced User DTO with multiple traits and base class](examples/advanced-user.yaml)
+- [Product DTO with comprehensive features](examples/product.yaml)
+- [Profile DTO for nested relationships](examples/profile.yaml)
+
 ## Advanced Usage
+
+### Custom Header Statements
+
+Laravel Arc supports custom header statements to enhance generated DTOs:
+
+#### Use Statements
+
+Add custom `use` statements for traits, imports, or other classes:
+
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  use:
+    - App\Traits\HasUuid
+    - Illuminate\Support\Facades\Validator
+    - App\Interfaces\AuditableInterface
+```
+
+This generates:
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\DTOs;
+
+use App\Traits\HasUuid;
+use Illuminate\Support\Facades\Validator;
+use App\Interfaces\AuditableInterface;
+
+final class UserDTO
+{
+    // ... DTO content
+}
+```
+
+#### Extends Clause
+
+Extend from a base DTO class:
+
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  extends: BaseDTO
+```
+
+This generates:
+```php
+<?php
+declare(strict_types=1);
+
+namespace App\DTOs;
+
+final class UserDTO extends BaseDTO
+{
+    // ... DTO content
+}
+```
+
+#### Combined Usage
+
+You can combine both `use` and `extends` for maximum flexibility:
+
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  use:
+    - App\Traits\HasUuid
+    - App\Traits\Auditable
+  extends: BaseDTO
+```
 
 ### Custom Namespaces
 

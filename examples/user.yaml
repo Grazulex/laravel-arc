@@ -1,8 +1,11 @@
-# Simple user DTO example
+# Simple user DTO example with custom header features
 header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  use:
+    - App\Traits\HasUuid
+  extends: BaseDTO
 
 fields:
   id:
