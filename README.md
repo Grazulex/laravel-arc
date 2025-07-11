@@ -118,17 +118,9 @@ return [
      namespace: App\DTOs
    ```
 
-3. **Generate the DTO programmatically:**
-   ```php
-   use Grazulex\LaravelArc\Generator\DtoGenerator;
-   use Symfony\Component\Yaml\Yaml;
-   
-   $definition = Yaml::parseFile('database/dto_definitions/user.yaml');
-   $generator = DtoGenerator::make();
-   $code = $generator->generateFromDefinition($definition);
-   
-   // Save to your DTOs directory
-   file_put_contents('app/DTOs/UserDTO.php', $code);
+3. **Generate the DTO using the CLI command:**
+   ```bash
+   php artisan dto:generate user.yaml
    ```
 
 4. **Use your DTO:**
@@ -396,6 +388,25 @@ fields:
 
 Laravel Arc provides CLI commands for DTO definition management:
 
+### Generate DTOs
+
+```bash
+# Generate a single DTO from YAML definition
+php artisan dto:generate user.yaml
+
+# Generate all YAML files in the definitions directory
+php artisan dto:generate --all
+
+# Generate with custom output path
+php artisan dto:generate user.yaml --output=/custom/path/UserDTO.php
+
+# Preview generated code without saving
+php artisan dto:generate user.yaml --dry-run
+
+# Force overwrite existing DTO file
+php artisan dto:generate user.yaml --force
+```
+
 ### List Available DTOs
 
 ```bash
@@ -420,25 +431,6 @@ php artisan dto:definition-init ProductDTO --model=App\Models\Product --table=pr
 
 # Force overwrite existing file
 php artisan dto:definition-init UserDTO --model=App\Models\User --table=users --force
-```
-
-### Programmatic DTO Generation
-
-DTOs are generated programmatically using the `DtoGenerator` class:
-
-```php
-use Grazulex\LaravelArc\Generator\DtoGenerator;
-use Symfony\Component\Yaml\Yaml;
-
-// Load YAML definition
-$definition = Yaml::parseFile('path/to/user.yaml');
-
-// Generate DTO code
-$generator = DtoGenerator::make();
-$code = $generator->generateFromDefinition($definition);
-
-// Save to file
-file_put_contents('app/DTOs/UserDTO.php', $code);
 ```
 
 ## Examples
@@ -647,6 +639,25 @@ For more comprehensive examples including advanced header features with custom `
 - [Profile DTO for nested relationships](examples/profile.yaml)
 
 ## Advanced Usage
+
+### Programmatic DTO Generation
+
+For advanced use cases, you can generate DTOs programmatically using the `DtoGenerator` class:
+
+```php
+use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Symfony\Component\Yaml\Yaml;
+
+// Load YAML definition
+$definition = Yaml::parseFile('path/to/user.yaml');
+
+// Generate DTO code
+$generator = DtoGenerator::make();
+$code = $generator->generateFromDefinition($definition);
+
+// Save to file
+file_put_contents('app/DTOs/UserDTO.php', $code);
+```
 
 ### Custom Header Statements
 
