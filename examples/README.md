@@ -20,6 +20,15 @@ A comprehensive product DTO demonstrating:
 #### profile.yaml
 A profile DTO designed to be used as a nested DTO in other definitions.
 
+#### enum-examples.yaml
+A comprehensive demonstration of all enum features available in Laravel Arc:
+- Traditional enums with values array
+- PHP string enum classes
+- PHP int enum classes  
+- Default values with enum classes
+- Explicit enum case references
+- Optional enum fields
+
 ### Advanced Nested DTO Examples
 
 #### nested-order.yaml
@@ -62,7 +71,39 @@ A category DTO demonstrating:
 - Category hierarchy management
 - Path building for nested categories
 
+#### php-enum-classes.php
+Example PHP enum classes that work with Laravel Arc:
+- String enums (Priority, Category, Visibility)
+- Int enums (Level)
+- Pure enums without backing types (Color)
+- Common e-commerce enums (OrderStatus, Currency)
+- Demonstrates proper enum class structure for Laravel Arc
+
 ## Advanced Features Demonstrated
+
+### Enum Features
+
+The examples showcase Laravel Arc's comprehensive enum support:
+
+#### Traditional Enums
+- **Values Array**: Define allowed values directly in YAML
+- **Default Values**: Set default values for enum fields
+- **Validation**: Automatic `in:` validation rules
+
+#### PHP Enum Classes (Recommended)
+- **String Enums**: Use PHP 8.1+ string-backed enums
+- **Int Enums**: Use PHP 8.1+ int-backed enums  
+- **Pure Enums**: Support for unbacked enums
+- **Type Safety**: Full IDE support and type checking
+- **Automatic Validation**: Uses Laravel's `enum:` validation rule
+- **Default Values**: Support for case names or explicit enum references
+
+#### Enum Best Practices
+1. **Use PHP enum classes**: Better type safety and IDE support
+2. **Consistent naming**: Use UPPER_CASE for enum cases
+3. **Clear values**: Use descriptive string values for backed enums
+4. **Default values**: Always provide sensible defaults
+5. **Validation**: Let Laravel Arc handle validation automatically
 
 ### Nested DTO Relationships
 The examples show how Laravel Arc handles:
