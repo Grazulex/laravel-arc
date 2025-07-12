@@ -20,6 +20,7 @@ it('can generate a DTO from the full-featured YAML fixture', function () {
     // 3. Configurer le chemin de sortie pour les tests
     $outputPath = __DIR__.'/temp_output';
     config()->set('dto.output_path', $outputPath);
+    config()->set('dto.namespace', 'App\\DTO'); // Set the expected namespace
 
     // 4. Cible du DTO généré - le fichier sera créé dans le chemin configuré
     $dtoPath = $outputPath.'/ProductDTO.php';
@@ -49,6 +50,7 @@ it('can preview a DTO class using --dry-run', function () {
     // Configurer le chemin de sortie pour les tests
     $outputPath = __DIR__.'/temp_output';
     config()->set('dto.output_path', $outputPath);
+    config()->set('dto.namespace', 'App\\DTO'); // Set the expected namespace
 
     $yamlName = 'full-featured.yaml';
     $yamlSource = __DIR__.'/DtoGenerator/fixtures/full-featured.yaml';

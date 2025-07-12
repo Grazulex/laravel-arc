@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Console\Commands;
 
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Grazulex\LaravelArc\Support\DtoPathResolver;
 use Grazulex\LaravelArc\Support\DtoPaths;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
@@ -81,7 +82,7 @@ final class DtoGenerateCommand extends Command
         }
 
         $outputPath = $this->option('output')
-            ?? $this->resolveOutputPath($dtoName, $namespace);
+            ?? DtoPathResolver::resolveOutputPath($dtoName, $namespace);
 
         if (File::exists($outputPath) && ! $this->option('force')) {
             $this->warn("File already exists: $outputPath (use --force to overwrite)");
@@ -95,22 +96,5 @@ final class DtoGenerateCommand extends Command
         $this->info("✅ DTO class written to: $outputPath");
 
         return self::SUCCESS;
-    }
-
-    private function resolveOutputPath(string $dtoName, string $namespace): string
-    {
-        // Utilise le chemin de sortie configuré comme base
-        $outputDir = DtoPaths::dtoOutputDir();
-
-        // Pour les namespaces qui correspondent au schéma App\DTOs,
-        // utilise le chemin configuré directement
-        if (str_starts_with($namespace, 'App\\DTOs') || str_starts_with($namespace, 'App\\DTO')) {
-            return $outputDir.'/'.$dtoName.'.php';
-        }
-
-        // Pour les autres namespaces, crée un sous-dossier basé sur le namespace
-        $subPath = str_replace(['App\\', '\\'], ['', '/'], $namespace);
-
-        return $outputDir.'/'.$subPath.'/'.$dtoName.'.php';
     }
 }
