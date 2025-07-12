@@ -66,9 +66,9 @@ Quand vous lancez `./release.sh` :
 1. ✅ **Vérifications** : Format version, état du repo, permissions
 2. 📤 **Push** : Pousse les derniers changements
 3. 🚀 **Déclenchement** : Lance le workflow GitHub Actions
-4. 🧪 **Tests** : Exécute la suite de tests
-5. 🏷️ **Tag** : Crée et pousse le tag Git
-6. 📦 **Release** : Crée la release GitHub
+4. 🧪 **Tests** : Exécute la suite de tests complète (Pest + PHPStan)
+5. 🏷️ **Tag** : Crée et pousse le tag Git (seulement si tests OK)
+6. 📦 **Release** : Crée la release GitHub (seulement si tag OK)
 7. 🌐 **Packagist** : Mise à jour automatique via webhook
 
 ## Versioning
@@ -81,5 +81,6 @@ Utilisez le [Semantic Versioning](https://semver.org/) :
 ## Remarques
 
 - Seul `grazulex` peut déclencher des releases (configuré dans le workflow)
-- Les tests doivent passer avant la création de la release
+- **Les tests doivent passer avant la création de la release** (obligatoire)
+- La release est annulée si les tests échouent
 - Packagist se met à jour automatiquement grâce au webhook GitHub
