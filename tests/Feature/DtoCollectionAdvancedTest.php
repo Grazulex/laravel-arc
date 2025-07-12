@@ -172,12 +172,12 @@ it('can handle complete DTO collection workflow', function () {
     expect($firstDto->getErrors())->toBeEmpty();
 
     // Test 14: Test invalid DTO
-    $invalidDto = new ($dtoClass::class)(
-        id: 999,
-        name: '',
-        email: 'invalid-email',
-        status: 'active'
-    );
+    $invalidDto = $createDtoInstance($dtoClass::class, [
+        'id' => 999,
+        'name' => '',
+        'email' => 'invalid-email',
+        'status' => 'active',
+    ]);
     expect($invalidDto->isValid())->toBe(false);
     expect($invalidDto->getErrors())->not()->toBeEmpty();
     expect($invalidDto->getErrors())->toHaveKey('name');
