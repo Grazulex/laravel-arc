@@ -1,0 +1,65 @@
+# Comprehensive User DTO Example - Advanced Collection Management
+
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
+
+fields:
+  id:
+    type: uuid
+    required: true
+    rules: [required]
+
+  name:
+    type: string
+    required: true
+    rules: [required, string, min:2, max:255]
+
+  email:
+    type: string
+    required: true
+    rules: [required, email, unique:users, max:255]
+
+  status:
+    type: enum
+    class: App\Enums\UserStatus
+    default: active
+
+  role:
+    type: enum
+    class: App\Enums\UserRole
+    default: user
+
+  avatar_url:
+    type: string
+    rules: [url, nullable, max:500]
+
+  phone:
+    type: string
+    rules: [phone, nullable]
+
+  preferences:
+    type: json
+    default: {}
+
+  last_login_at:
+    type: datetime
+
+relations:
+  posts:
+    type: hasMany
+    target: App\Models\Post
+  
+  roles:
+    type: belongsToMany
+    target: App\Models\Role
+  
+  profile:
+    type: hasOne
+    target: App\Models\Profile
+
+options:
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs

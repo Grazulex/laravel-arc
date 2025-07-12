@@ -21,6 +21,14 @@ A simple user DTO demonstrating:
 - Extends clause for base classes
 - Timestamp and soft delete options
 
+#### [`advanced-user.yaml`](advanced-user.yaml)
+An advanced user DTO showcasing:
+- Complex header configuration with multiple traits
+- Advanced field types (enum, json, datetime)
+- Professional validation rules
+- Multiple relationship types
+- Complete soft delete and timestamp configuration
+
 #### [`product.yaml`](product.yaml)
 A comprehensive product DTO showcasing:
 - All common field types (string, integer, decimal, boolean, enum, array, json, datetime)
@@ -194,10 +202,18 @@ $code = $generator->generateFromDefinition($definition);
 file_put_contents('app/DTOs/Ecommerce/OrderDTO.php', $code);
 ```
 
+### API Controller Usage
+See [`api-controller-example.php`](api-controller-example.php) for comprehensive examples of using DTOs in API controllers for:
+- Collection management similar to Laravel Resources
+- Pagination with DTOs
+- Filtering and searching
+- Error handling with validation
+
 ## 🎓 Learning Path
 
 ### 1. Start with Basic Examples
 - [`user.yaml`](user.yaml) - Learn basic field types and validation
+- [`advanced-user.yaml`](advanced-user.yaml) - Advanced header configuration and features
 - [`product.yaml`](product.yaml) - Understand relationships and options
 - [`profile.yaml`](profile.yaml) - See nested DTO preparation
 

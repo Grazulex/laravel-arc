@@ -2,7 +2,7 @@
 
 <div align="center">
   <img src="logo-header.svg" alt="Laravel Arc" width="400">
-  <p><strong>Elegant and modern Data Transfer Objects (DTOs) management with automatic validation and direct property access</strong></p>
+  <p><strong>Elegant and modern Data Transfer Objects (DTOs) for Laravel with automatic validation and collection management</strong></p>
   
   [![Latest Version](https://img.shields.io/packagist/v/grazulex/laravel-arc)](https://packagist.org/packages/grazulex/laravel-arc)
   [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-arc)](https://packagist.org/packages/grazulex/laravel-arc)
@@ -15,7 +15,9 @@
 
 ## Overview
 
-Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (DTO) management through YAML-driven generation. Define your DTOs in simple YAML files and let Laravel Arc generate type-safe, validated PHP classes with automatic property access and comprehensive relationship support.
+Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (DTO) management through YAML-driven generation. Define your DTOs in simple YAML files and let Laravel Arc generate type-safe, validated PHP classes with automatic property access and comprehensive collection support.
+
+**Think of it as Laravel API Resources, but with stronger typing, automatic validation, and generated from YAML definitions.**
 
 ## ✨ Key Features
 
@@ -24,6 +26,7 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - 🏗️ **Rich field types** - 14+ field types including enums, UUIDs, nested DTOs, and JSON
 - 🔗 **Eloquent relationships** - Full support for Laravel relationship types
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
+- 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
 - 🎯 **Powerful trait system** - Built-in traits for validation, data conversion, and utilities
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
@@ -33,215 +36,124 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 
 ## 🚀 Quick Start
 
-Get started with Laravel Arc in minutes:
+### Installation
 
-
-### 1. Install the package
 ```bash
 composer require grazulex/laravel-arc
 ```
 
-### 2a. Create a new DTO definition via a command
+### Basic Usage
+
+**1. Create a DTO definition**
 ```bash
-php artisan dto:definition-init UserDTO --model=App\Models\User
+php artisan dto:definition-init UserDTO --model=App\\Models\\User
 ```
 
-OR
-
-### 2b.1 Create manually your first DTO definition
-```bash
-mkdir database/dto_definitions
-```
-
-### 2b.2 Create database/dto_definitions/user.yaml
+**2. Define your DTO in YAML**
 ```yaml
-header:
-  dto: UserDTO
-  model: App\Models\User
+# dto-definitions/UserDTO.yaml
+name: UserDTO
+namespace: App\DTOs
 
 fields:
   id:
-    type: uuid
-    required: true
+    type: integer
+    validation: [required, integer]
+  
   name:
     type: string
-    required: true
-    rules: [min:2, max:100]
+    validation: [required, string, max:255]
+  
   email:
     type: string
-    required: true
-    rules: [email, unique:users]
-
-options:
-  timestamps: true
-  namespace: App\DTOs
+    validation: [required, email]
+  
+  status:
+    type: string
+    default: "active"
+    validation: [required, in:active,inactive]
 ```
 
-### 3. Generate the DTO
-
+**3. Generate your DTO**
 ```bash
-php artisan dto:generate user.yaml
+php artisan dto:generate UserDTO.yaml
 ```
 
-### 4. Use in your code
+**4. Use your DTO**
 ```php
-$user = new UserDTO();
-$user->name = 'John Doe';
-$user->email = 'john@example.com';
-```
+// Convert a model to DTO
+$user = User::find(1);
+$userDto = UserDTO::fromModel($user);
 
-## 🎯 Powerful Trait System
-
-Laravel Arc DTOs are equipped with powerful traits that provide essential functionality out of the box:
-
-### 🔍 **ValidatesData** - Validation Methods
-```php
-// Validate and get validated data
-$validated = UserDTO::validate($request->all());
-
-// Create a validator instance
-$validator = UserDTO::validator($data);
-
-// Check if validation passes/fails
-if (UserDTO::passes($data)) {
-    // Validation passed
-}
-if (UserDTO::fails($data)) {
-    // Validation failed
-}
-```
-
-### 🔄 **ConvertsData** - Conversion Methods
-```php
-// Convert multiple models to DTOs
+// Convert a collection to DTO collection (like Laravel Resources)
+$users = User::all();
 $userDtos = UserDTO::fromModels($users);
 
-// Convert DTO to different formats
-$json = $userDto->toJson();
-$collection = $userDto->toCollection();
+// API Resource format
+return response()->json($userDtos->toArrayResource());
+// Output: {"data": [{"id": 1, "name": "John", "email": "john@example.com", "status": "active"}]}
 
-// Filter DTO data
-$filtered = $userDto->only(['name', 'email']);
-$excluded = $userDto->except(['password']);
+// Validation
+$userDto = UserDTO::fromArray($request->all());
+if (!$userDto->isValid()) {
+    return response()->json(['errors' => $userDto->getErrors()], 422);
+}
 ```
 
-### 🛠️ **DtoUtilities** - Utility Methods
-```php
-// Introspect DTO properties
-$properties = $userDto->getProperties();
-$hasEmail = $userDto->hasProperty('email');
-$email = $userDto->getProperty('email');
+## 📖 Documentation
 
-// Create modified copies
-$updatedDto = $userDto->with(['name' => 'New Name']);
-
-// Compare DTOs
-$areEqual = $userDto->equals($anotherDto);
-```
-
-### ✅ **Benefits of the Trait System:**
-- **No code duplication** - Standard methods are provided by traits
-- **Extensibility** - DTOs can still extend other classes
-- **Reusability** - All DTOs benefit from the same utility methods
-- **Maintainability** - Single implementation for standard methods
-- **Testability** - Traits are tested independently
-
-## 📚 Documentation
-
-### Getting Started
-- 📖 [Installation & Setup](docs/GETTING_STARTED.md) - Complete setup guide with examples
-- 🔧 [Configuration](docs/GETTING_STARTED.md#configuration) - Customize paths and settings
-
-### 🚀 **Using Your DTOs**
-- 🎯 [**DTO Usage Guide**](docs/DTO_USAGE_GUIDE.md) - **Comprehensive guide with real-world examples**
-  - Use DTOs in controllers, services, actions, and requests
-  - Available methods (`fromModel`, `toArray`, `rules`, plus all trait methods)
-  - Built-in traits: `ValidatesData`, `ConvertsData`, `DtoUtilities`
-  - Best practices and patterns for Laravel applications
-  - Examples with validation, relationships, jobs, and testing
+**Complete documentation and guides:**
+- **[📖 Documentation Index](docs/README.md)** - Complete navigation guide
+- **[🚀 Getting Started](docs/GETTING_STARTED.md)** - Installation and first DTO
+- **[📘 DTO Usage Guide](docs/DTO_USAGE_GUIDE.md)** - How to use DTOs in your Laravel application
+- **[🎯 Examples Collection](examples/README.md)** - Working examples and templates
 
 ### Core Concepts
-- 📝 [YAML Schema Reference](docs/YAML_SCHEMA.md) - Complete YAML structure documentation
-- 🏷️ [Field Types Guide](docs/FIELD_TYPES.md) - All available field types with examples
-- 🔗 [Relationships](docs/RELATIONSHIPS.md) - Working with Eloquent relationships
-- 🎯 [**Traits Guide**](docs/TRAITS_GUIDE.md) - **Complete guide to ValidatesData, ConvertsData, and DtoUtilities traits**
-- ✅ [Validation Rules](docs/FIELD_TYPES.md#validation-rules) - Laravel validation integration
-
-### Tools & Commands
-- 🖥️ [CLI Commands](docs/CLI_COMMANDS.md) - Master the command-line interface
-- 📊 [Examples Collection](examples/README.md) - Real-world examples and patterns
+- **[YAML Schema](docs/YAML_SCHEMA.md)** - Full YAML configuration reference
+- **[Field Types](docs/FIELD_TYPES.md)** - All available field types and options
+- **[Validation Rules](docs/VALIDATION_RULES.md)** - Custom validation and error handling
 
 ### Advanced Features
-- 🚀 [Advanced Usage](docs/ADVANCED_USAGE.md) - Programmatic generation and custom patterns
-- 🔄 [Nested DTOs](docs/NESTED_DTO_GUIDE.md) - Complex nested relationships
-- 📁 [Path Resolution](docs/DTO_PATH_RESOLVER_GUIDE.md) - Custom namespace organization
-- 🚨 [Error Handling](docs/DTO_GENERATION_EXCEPTION_GUIDE.md) - Comprehensive error management
-- 🔢 [Enum Support](docs/ENUM_CUSTOM_RULES.md) - Advanced enum validation
+- **[Collection Management](docs/COLLECTION_MANAGEMENT.md)** - Working with DTO collections and API resources
+- **[Relationships](docs/RELATIONSHIPS.md)** - Eloquent relationships in DTOs
+- **[Nested DTOs](docs/NESTED_DTO_GUIDE.md)** - Building complex nested structures
+- **[CLI Commands](docs/CLI_COMMANDS.md)** - All available Artisan commands
+- **[Advanced Usage](docs/ADVANCED_USAGE.md)** - Advanced patterns and customizations
 
 ## 🎯 Use Cases
 
 Laravel Arc is perfect for:
 
-- **API Development** - Generate consistent DTOs for API responses
-- **Form Validation** - Create validated data structures for form handling
-- **Data Migration** - Transform data between different formats
-- **Clean Architecture** - Separate data concerns from business logic
-- **Microservices** - Standardize data transfer between services
+- **API Development** - Type-safe request/response handling
+- **Data Validation** - Consistent validation across your application
+- **Model Transformation** - Clean data layer separation
+- **Complex Forms** - Nested form validation and processing
+- **API Resources** - Alternative to Laravel Resources with stronger typing
 
-## 🛠️ Common Commands
+## � Configuration
 
-```bash
-# Generate a single DTO
-php artisan dto:generate user.yaml
+Laravel Arc works out of the box, but you can customize it:
 
-# Generate all DTOs
-php artisan dto:generate --all
-
-# List available definitions
-php artisan dto:definition-list
-
-# Create a new definition
-php artisan dto:definition-init ProductDTO --model=App\Models\Product
-
-# Preview generated code
-php artisan dto:generate user.yaml --dry-run
+```php
+// config/dto.php
+return [
+    'namespace' => 'App\\DTOs',
+    'output_path' => app_path('DTOs'),
+    'definitions_path' => base_path('dto-definitions'),
+];
 ```
 
-## 📦 Package Information
+## 📚 Examples
 
-- **Package**: `grazulex/laravel-arc`
-- **Packagist**: https://packagist.org/packages/grazulex/laravel-arc
-- **License**: MIT
-- **PHP Requirements**: ^8.3
-- **Laravel Requirements**: ^12.19
+Check out the [examples directory](examples/) for complete working examples:
+- **[Basic User DTO](examples/user.yaml)** - Simple user DTO with validation
+- **[API Controllers](examples/api-controller-example.php)** - Using DTOs in API controllers
+- **[Nested Structures](examples/nested-order.yaml)** - Complex nested DTOs
+- **[Enum Support](examples/enum-examples.yaml)** - Working with PHP enums
 
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-### Development Setup
-
-```bash
-# Clone the repository
-git clone https://github.com/Grazulex/laravel-arc.git
-cd laravel-arc
-
-# Install dependencies
-composer install
-
-# Run tests
-composer test
-
-# Check code quality
-composer pint && composer phpstan
-```
-
-## 🆘 Support & Community
-
-- 🐛 [Report Issues](https://github.com/Grazulex/laravel-arc/issues)
-- 💬 [Discussions](https://github.com/Grazulex/laravel-arc/discussions)
-- 📖 [Wiki](https://github.com/Grazulex/laravel-arc/wiki)
-- 📧 [Email Support](mailto:jms@grazulex.be)
 
 ## 📄 License
 
@@ -250,16 +162,5 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE.md
 ---
 
 <div align="center">
-  <p>Made with ❤️ by <a href="https://github.com/Grazulex">Jean-Marc Strauven</a></p>
-  <p>
-    <a href="https://packagist.org/packages/grazulex/laravel-arc">
-      <img src="https://img.shields.io/packagist/v/grazulex/laravel-arc" alt="Latest Version">
-    </a>
-    <a href="https://github.com/Grazulex/laravel-arc/stargazers">
-      <img src="https://img.shields.io/github/stars/Grazulex/laravel-arc" alt="Stars">
-    </a>
-    <a href="https://github.com/Grazulex/laravel-arc/network/members">
-      <img src="https://img.shields.io/github/forks/Grazulex/laravel-arc" alt="Forks">
-    </a>
-  </p>
+  Made with ❤️ for the Laravel community
 </div>

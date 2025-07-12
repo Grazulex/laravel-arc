@@ -1,14 +1,6 @@
 # Laravel Arc Enum Examples
-
-This file demonstrates all the enum features available in Laravel Arc.
-
-## Custom Validation Rules
-
-Laravel Arc provides two custom validation rules for enums:
-- `in_enum`: Alternative to Laravel's `enum:` rule with additional checks
-- `enum_exists`: Validates enum class existence and value
-
-For detailed documentation, see docs/ENUM_CUSTOM_RULES.md
+# This file demonstrates all the enum features available in Laravel Arc.
+# For detailed documentation, see docs/ENUM_CUSTOM_RULES.md
 
 header:
   dto: EnumExampleDTO
@@ -78,10 +70,10 @@ fields:
   priority_level:
     type: enum
     class: App\Enums\Priority
-    nullable: true
     rules:
       - enum_exists    # Validates enum class existence and value
       - in_enum        # Combines enum validation with additional checks
+      - nullable
 
   # Enum with mixed validation rules
   product_status:
@@ -96,57 +88,3 @@ fields:
 options:
   timestamps: true
   namespace: App\DTOs\Examples
-
-# Example PHP enum classes that would work with this configuration:
-#
-# <?php
-# enum Priority: string
-# {
-#     case LOW = 'low';
-#     case MEDIUM = 'medium';
-#     case HIGH = 'high';
-# }
-#
-# enum Category: string
-# {
-#     case GENERAL = 'general';
-#     case TECHNOLOGY = 'technology';
-#     case BUSINESS = 'business';
-# }
-#
-# enum Visibility: string
-# {
-#     case PUBLIC = 'public';
-#     case PRIVATE = 'private';
-#     case PROTECTED = 'protected';
-# }
-#
-# enum Level: int
-# {
-#     case BEGINNER = 1;
-#     case INTERMEDIATE = 2;
-#     case ADVANCED = 3;
-# }
-#
-# enum Badge: string
-# {
-#     case GOLD = 'gold';
-#     case SILVER = 'silver';
-#     case BRONZE = 'bronze';
-# }
-#
-# enum OrderStatus: string
-# {
-#     case PENDING = 'pending';
-#     case PROCESSING = 'processing';
-#     case SHIPPED = 'shipped';
-#     case DELIVERED = 'delivered';
-#     case CANCELLED = 'cancelled';
-# }
-#
-# enum ProductStatus: string
-# {
-#     case DRAFT = 'draft';
-#     case PUBLISHED = 'published';
-#     case ARCHIVED = 'archived';
-# }
