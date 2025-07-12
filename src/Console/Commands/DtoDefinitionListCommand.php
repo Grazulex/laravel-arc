@@ -62,12 +62,15 @@ final class DtoDefinitionListCommand extends Command
                 $dtoPath = DtoPaths::dtoFilePath($dtoName);
                 $dtoExists = File::exists($dtoPath);
 
+                $fields = $yamlData['fields'] ?? [];
+                $relations = $yamlData['relations'] ?? [];
+
                 $jsonData[] = [
                     'dto' => $dtoName,
                     'model' => $yamlData['model'] ?? $yamlData['header']['model'] ?? null,
                     'table' => $yamlData['table'] ?? $yamlData['header']['table'] ?? null,
-                    'fields' => $yamlData['fields'] ?? [],
-                    'relations' => $yamlData['relations'] ?? [],
+                    'fields' => $fields,
+                    'relations' => $relations,
                     'dtoExists' => $dtoExists,
                     'yamlFile' => $file->getFilename(),
                     'dtoPath' => $dtoExists ? str_replace(base_path().'/', '', $dtoPath) : null,
@@ -85,8 +88,12 @@ final class DtoDefinitionListCommand extends Command
                 // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
                 $dtoName = $yamlData['dto'] ?? $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
-                $fieldCount = count($yamlData['fields'] ?? []);
-                $relationCount = count($yamlData['relations'] ?? []);
+                $fields = $yamlData['fields'] ?? [];
+                $relations = $yamlData['relations'] ?? [];
+                
+                // Handle both array and object formats for fields and relations
+                $fieldCount = is_array($fields) ? count($fields) : 0;
+                $relationCount = is_array($relations) ? count($relations) : 0;
                 $dtoPath = DtoPaths::dtoFilePath($dtoName);
                 $dtoExists = File::exists($dtoPath);
 
