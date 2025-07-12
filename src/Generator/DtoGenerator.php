@@ -169,11 +169,6 @@ final class DtoGenerator
 $rulesBody
         ];
     }
-
-    public static function validate(array \$data): \\Illuminate\\Contracts\\Validation\\Validator
-    {
-        return \\Illuminate\\Support\\Facades\\Validator::make(\$data, static::rules());
-    }
 PHP;
             }
 

@@ -4,9 +4,17 @@ declare(strict_types=1);
 
 namespace {{ namespace }};
 
+use Grazulex\LaravelArc\Support\Traits\ConvertsData;
+use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
+use Grazulex\LaravelArc\Support\Traits\ValidatesData;
+
 {{ header_extra }}
 final class {{ class }} {{ extends_clause }}
 {
+    use ConvertsData;
+    use DtoUtilities;
+    use ValidatesData;
+
 {{ properties }}
 
     public function __construct(

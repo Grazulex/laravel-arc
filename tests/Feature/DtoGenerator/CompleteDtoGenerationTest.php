@@ -17,7 +17,7 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain('public readonly ?float $price')
             ->toContain('public static function fromModel')
             ->toContain("'status' => ['in:draft,published,archived', 'required']")
-            ->toContain('public static function validate')
+            ->toContain('use ValidatesData')
             ->toContain("'price' => \$this->price");
     });
 
@@ -41,7 +41,7 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain("'price' => ['numeric', 'required', 'min:0']")
             ->toContain("'tags' => ['array', 'distinct']")
             ->toContain("'description' => ['string', 'max:500']")
-            ->toContain('public static function validate')
+            ->toContain('use ValidatesData')
             ->toContain('category') // relation
             ->toContain('public readonly \\Carbon\\Carbon $created_at') // timestamps
             ->toContain('public readonly ?\\Carbon\\Carbon $updated_at') // timestamps

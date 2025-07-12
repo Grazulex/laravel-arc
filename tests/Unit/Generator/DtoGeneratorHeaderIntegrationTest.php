@@ -97,7 +97,9 @@ describe('DtoGenerator Header Integration', function () {
 
         expect($result)
             ->toContain('final class UserDto ')
-            ->not->toContain('use ')
+            ->toContain('use ConvertsData')
+            ->toContain('use DtoUtilities')
+            ->toContain('use ValidatesData')
             ->not->toContain('extends');
     });
 });
