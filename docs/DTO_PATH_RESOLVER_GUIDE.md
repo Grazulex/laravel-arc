@@ -1,105 +1,105 @@
-# DtoPathResolver - Guide d'utilisation
+# DtoPathResolver - Usage Guide
 
-Le `DtoPathResolver` est une classe utilitaire qui centralise la logique de résolution de chemins et de namespaces pour la génération de DTOs. Cette classe offre des méthodes bidirectionnelles pour convertir entre namespaces et chemins de fichiers.
+The `DtoPathResolver` is a utility class that centralizes path and namespace resolution logic for DTO generation. This class provides bidirectional methods for converting between namespaces and file paths.
 
-## Fonctionnalités principales
+## Key Features
 
-### 1. Résolution de chemin de sortie
+### 1. Output Path Resolution
 
 ```php
 use Grazulex\LaravelArc\Support\DtoPathResolver;
 
-// Résoudre le chemin de sortie basé sur le namespace
+// Resolve output path based on namespace
 $path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs\Admin');
-// Résultat: /path/to/app/DTOs/Admin/UserDTO.php
+// Result: /path/to/app/DTOs/Admin/UserDTO.php
 ```
 
-### 2. Dérivation de namespace depuis un chemin
+### 2. Namespace Derivation from Path
 
 ```php
-// Dériver le namespace depuis un chemin de fichier
+// Derive namespace from file path
 $namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/Admin/UserDTO.php');
-// Résultat: App\DTOs\Admin
+// Result: App\DTOs\Admin
 ```
 
-### 3. Validation de namespaces
+### 3. Namespace Validation
 
 ```php
-// Valider un namespace
+// Validate a namespace
 $isValid = DtoPathResolver::isValidNamespace('App\DTOs\Admin');
-// Résultat: true
+// Result: true
 
 $isValid = DtoPathResolver::isValidNamespace('App\\DTOs'); // Double backslash
-// Résultat: false
+// Result: false
 ```
 
-### 4. Normalisation de namespaces
+### 4. Namespace Normalization
 
 ```php
-// Normaliser un namespace
+// Normalize a namespace
 $normalized = DtoPathResolver::normalizeNamespace('\App\DTOs\Admin\\');
-// Résultat: App\DTOs\Admin
+// Result: App\DTOs\Admin
 ```
 
-### 5. Relations de sous-namespaces
+### 5. Sub-namespace Relationships
 
 ```php
-// Vérifier si un namespace est un sous-namespace d'un autre
+// Check if a namespace is a sub-namespace of another
 $isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs\Admin', 'App\DTOs');
-// Résultat: true
+// Result: true
 
 $isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs', 'App\DTOs');
-// Résultat: false (même namespace)
+// Result: false (same namespace)
 ```
 
-## Exemples d'utilisation
+## Usage Examples
 
-### Configuration standard
+### Standard Configuration
 
-Avec la configuration standard (`dto.output_path` = `app/DTOs` et `dto.namespace` = `App\DTOs`):
+With standard configuration (`dto.output_path` = `app/DTOs` and `dto.namespace` = `App\DTOs`):
 
 ```php
-// Namespace de base
+// Base namespace
 DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs');
 // → /path/to/app/DTOs/UserDTO.php
 
-// Sous-namespace
+// Sub-namespace
 DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTOs\Admin');
 // → /path/to/app/DTOs/Admin/AdminUserDTO.php
 
-// Sous-namespace profond
+// Deep sub-namespace
 DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTOs\Admin\Catalog\Products');
 // → /path/to/app/DTOs/Admin/Catalog/Products/ProductDTO.php
 ```
 
-### Namespace externe
+### External Namespace
 
-Pour des namespaces complètement différents de la configuration de base :
+For namespaces completely different from the base configuration:
 
 ```php
 DtoPathResolver::resolveOutputPath('ExternalDTO', 'Library\External\Data');
 // → /path/to/Library/External/Data/ExternalDTO.php
 ```
 
-### Conversion bidirectionnelle
+### Bidirectional Conversion
 
 ```php
 $originalNamespace = 'App\DTOs\Admin\Users';
 $dtoName = 'UserDTO';
 
-// 1. Résoudre le chemin
+// 1. Resolve the path
 $path = DtoPathResolver::resolveOutputPath($dtoName, $originalNamespace);
 
-// 2. Dériver le namespace depuis le chemin
+// 2. Derive namespace from path
 $derivedNamespace = DtoPathResolver::resolveNamespaceFromPath($path);
 
-// 3. Vérifier la cohérence
+// 3. Verify consistency
 assert($derivedNamespace === $originalNamespace); // true
 ```
 
-## Intégration avec la commande artisan
+## Integration with Artisan Command
 
-La classe est automatiquement utilisée par la commande `dto:generate` :
+The class is automatically used by the `dto:generate` command:
 
 ```yaml
 # admin-user.yaml
@@ -122,62 +122,62 @@ fields:
 php artisan dto:generate admin-user.yaml
 ```
 
-Le DTO sera généré dans `app/DTOs/Admin/AdminUserDTO.php` avec le namespace `App\DTOs\Admin`.
+The DTO will be generated in `app/DTOs/Admin/AdminUserDTO.php` with namespace `App\DTOs\Admin`.
 
-## Gestion des cas spéciaux
+## Special Case Handling
 
-### Chemins Windows
+### Windows Paths
 
-La classe gère automatiquement les chemins Windows :
+The class automatically handles Windows paths:
 
 ```php
 $windowsPath = 'C:\path\to\app\DTOs\Admin\UserDTO.php';
 $namespace = DtoPathResolver::resolveNamespaceFromPath($windowsPath);
-// Résultat: App\DTOs\Admin (identique aux chemins Unix)
+// Result: App\DTOs\Admin (identical to Unix paths)
 ```
 
-### Acronymes et abréviations
+### Acronyms and Abbreviations
 
-La classe préserve les acronymes connus :
+The class preserves known acronyms:
 
 ```php
 $namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/APIs/UserDTO.php');
-// Résultat: App\DTOs\APIs (pas App\DTOs\Apis)
+// Result: App\DTOs\APIs (not App\DTOs\Apis)
 ```
 
-## Validation et erreurs
+## Validation and Errors
 
-### Namespaces valides
+### Valid Namespaces
 
 - `App\DTOs`
 - `App\DTOs\Admin`
 - `MyCompany\Project\DTOs`
 - `_Underscore\Name`
 
-### Namespaces invalides
+### Invalid Namespaces
 
-- `""` (vide)
-- `App\\DTOs` (backslashes consécutifs)
-- `App\DTOs\` (backslash final)
-- `\App\DTOs` (backslash initial)
-- `App\123Invalid` (commence par un chiffre)
-- `App\Invalid-Name` (caractère invalide)
+- `""` (empty)
+- `App\\DTOs` (consecutive backslashes)
+- `App\DTOs\` (trailing backslash)
+- `\App\DTOs` (leading backslash)
+- `App\123Invalid` (starts with number)
+- `App\Invalid-Name` (invalid character)
 
-## Bonnes pratiques
+## Best Practices
 
-1. **Utilisez toujours la validation** : Validez vos namespaces avant de les utiliser
-2. **Normalisez les entrées** : Utilisez `normalizeNamespace()` pour nettoyer les entrées utilisateur
-3. **Testez la bidirectionnalité** : Vérifiez que vos conversions sont cohérentes
-4. **Respectez les conventions** : Suivez les conventions de nommage PHP pour les namespaces
+1. **Always use validation**: Validate your namespaces before using them
+2. **Normalize inputs**: Use `normalizeNamespace()` to clean user inputs
+3. **Test bidirectionality**: Verify that your conversions are consistent
+4. **Follow conventions**: Adhere to PHP naming conventions for namespaces
 
-## Tests
+## Testing
 
-La classe est entièrement testée avec des tests unitaires et d'intégration :
+The class is fully tested with unit and integration tests:
 
 ```bash
-# Tests unitaires
+# Unit tests
 php vendor/bin/pest tests/Unit/Support/DtoPathResolverTest.php
 
-# Tests d'intégration
+# Integration tests
 php vendor/bin/pest tests/Feature/DtoPathResolverIntegrationTest.php
 ```
