@@ -60,7 +60,7 @@ final class DtoCollection extends Collection
     public function whereField(string $field, mixed $value): static
     {
         return $this->filter(function ($dto) use ($field, $value): bool {
-            return $dto->hasProperty($field) && $dto->getProperty($field) === $value;
+            return property_exists($dto, $field) && $value === $dto->$field;
         });
     }
 
