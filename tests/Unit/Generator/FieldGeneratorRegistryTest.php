@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\FieldGeneratorRegistry;
 use Grazulex\LaravelArc\Generator\Fields\BooleanFieldGenerator;
@@ -100,5 +101,5 @@ describe('FieldGeneratorRegistry', function () {
         $registry = new FieldGeneratorRegistry([], $context);
 
         $registry->generate('age', ['type' => 'long', 'default' => 3.14]);
-    })->throws(InvalidArgumentException::class, "No generator found for field type 'long'");
+    })->throws(DtoGenerationException::class, "Unsupported field type 'long' for field 'age'");
 });

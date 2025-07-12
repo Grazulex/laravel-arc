@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Generator;
 
+use Exception;
 use Grazulex\LaravelArc\Contracts\FieldGenerator;
+use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use InvalidArgumentException;
 
 final class FieldGeneratorRegistry
@@ -32,10 +34,22 @@ final class FieldGeneratorRegistry
         $type = $definition['type'] ?? 'string';
 
         if (! isset($this->generators[$type])) {
-            throw new InvalidArgumentException("No generator found for field type '{$type}'");
+            throw DtoGenerationException::unsupportedFieldType('', $name, $type);
         }
 
-        return $this->generators[$type]->generate($name, $definition, $this->context);
+        try {
+            return $this->generators[$type]->generate($name, $definition, $this->context);
+        } catch (DtoGenerationException $e) {
+            // Re-throw existing DtoGenerationException
+            throw $e;
+        } catch (Exception $e) {
+            throw DtoGenerationException::invalidField(
+                '',
+                $name,
+                "Field generation failed: {$e->getMessage()}",
+                null
+            );
+        }
     }
 
     /**

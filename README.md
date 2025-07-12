@@ -25,6 +25,7 @@
 - [Advanced Usage](#advanced-usage)
   - [Programmatic DTO Generation](#programmatic-dto-generation)
   - [Path Resolver for Namespace Organization](#path-resolver-for-namespace-organization)
+  - [Enhanced Error Handling](#enhanced-error-handling)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -37,7 +38,8 @@
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.4+ features
 - 🛠️ **CLI commands** - Powerful commands for DTO management and generation
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization support
-- 📦 **Zero configuration** - Works out of the box with sensible defaults
+- � **Enhanced error handling** - Detailed error messages with context and actionable suggestions
+- �📦 **Zero configuration** - Works out of the box with sensible defaults
 - 🧪 **Fully tested** - Comprehensive test suite with 100% coverage
 
 ## Installation
@@ -928,6 +930,108 @@ The resolver handles complex scenarios including:
 
 For comprehensive examples and detailed usage patterns, see the [Path Resolver Guide](docs/DTO_PATH_RESOLVER_GUIDE.md).
 
+### Enhanced Error Handling
+
+Laravel Arc provides comprehensive error handling through the `DtoGenerationException` class, which offers detailed error messages, context information, and actionable suggestions for resolving issues.
+
+#### Error Categories
+
+**YAML Parsing Errors**:
+```bash
+php artisan dto:generate invalid-syntax.yaml
+```
+
+**Output**:
+```
+❌ DTO Generation Error (YAML Parsing)
+
+Error: YAML parsing failed: Syntax error on line 5
+File: /path/to/invalid-syntax.yaml
+
+💡 Suggestions:
+  • Check YAML syntax and indentation
+  • Verify all required sections are present (header, fields)
+  • Ensure proper YAML formatting
+```
+
+**Field Configuration Errors**:
+```bash
+php artisan dto:generate invalid-field.yaml
+```
+
+**Output**:
+```
+❌ DTO Generation Error (Field Type)
+
+Error: Unsupported field type 'unknown_type' for field 'custom_field'
+File: /path/to/invalid-field.yaml
+DTO: UserDTO
+Field: custom_field
+
+💡 Suggestions:
+  • Use a supported field type (string, integer, float, boolean, array, etc.)
+  • Check the field types documentation
+  • Verify spelling of field type
+```
+
+**Namespace Resolution Errors**:
+```bash
+php artisan dto:generate invalid-namespace.yaml
+```
+
+**Output**:
+```
+❌ DTO Generation Error (Namespace Resolution)
+
+Error: Namespace resolution failed for 'Invalid\\Namespace': Contains double backslashes
+File: /path/to/invalid-namespace.yaml
+DTO: UserDTO
+
+💡 Suggestions:
+  • Check namespace format and validity
+  • Verify namespace follows PHP standards
+  • Ensure proper directory structure
+```
+
+#### Error Types
+
+The exception system provides specific error types for different failure scenarios:
+
+- **YAML Parsing Errors** (1001): Invalid YAML syntax or structure
+- **Missing Headers** (1002): Required header fields missing
+- **Invalid Field Configuration** (1003): Field definition errors
+- **Unsupported Field Types** (1004): Unknown or invalid field types
+- **Namespace Resolution Errors** (1005): Invalid namespace format
+- **File Writing Errors** (1006): Filesystem write failures
+- **Validation Rule Errors** (1007): Invalid validation rule configuration
+- **Circular Dependencies** (1008): Circular DTO references
+- **Enum Configuration Errors** (1009): Enum setup problems
+- **Relation Configuration Errors** (1010): Relationship definition issues
+
+#### Programmatic Error Handling
+
+```php
+use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
+use Grazulex\LaravelArc\Generator\DtoGenerator;
+
+try {
+    $generator = DtoGenerator::make();
+    $code = $generator->generateFromDefinition($yamlDefinition);
+} catch (DtoGenerationException $e) {
+    // Access detailed error information
+    $yamlFile = $e->getYamlFile();
+    $dtoName = $e->getDtoName();
+    $fieldName = $e->getFieldName();
+    $context = $e->getContext();
+    $suggestions = $e->getSuggestions();
+    
+    // Display formatted error message
+    echo $e->getFormattedMessage();
+}
+```
+
+For complete error handling documentation, see the [Error Handling Guide](docs/DTO_GENERATION_EXCEPTION_GUIDE.md).
+
 ### Custom Header Statements
 
 Laravel Arc supports custom header statements to enhance generated DTOs:
@@ -1160,6 +1264,7 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE).
 - 📖 [Wiki](https://github.com/Grazulex/laravel-arc/wiki)
 - 📝 [Nested DTO Guide](docs/NESTED_DTO_GUIDE.md)
 - 📁 [Path Resolver Guide](docs/DTO_PATH_RESOLVER_GUIDE.md)
+- 🚨 [Error Handling Guide](docs/DTO_GENERATION_EXCEPTION_GUIDE.md)
 
 ---
 

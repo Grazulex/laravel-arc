@@ -23,7 +23,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | The directory where the generated DTO PHP classes will be written.
-    | This should typically point to app/DTOs or a custom directory
+    | This should typically point to app/DTO or a custom directory
     | depending on how you structure your application.
     |
     */

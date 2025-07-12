@@ -21,7 +21,7 @@ final class DtoPaths
      */
     public static function dtoOutputDir(): string
     {
-        return (string) config('dto.output_path', base_path('app/DTOs'));
+        return (string) config('dto.output_path', base_path('app/DTO'));
     }
 
     /**

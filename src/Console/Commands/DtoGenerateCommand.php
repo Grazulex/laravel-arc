@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Console\Commands;
 
+use Exception;
+use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
 use Grazulex\LaravelArc\Support\DtoPathResolver;
 use Grazulex\LaravelArc\Support\DtoPaths;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Yaml\Exception\ParseException;
 use Symfony\Component\Yaml\Yaml;
 
 final class DtoGenerateCommand extends Command
@@ -59,42 +62,91 @@ final class DtoGenerateCommand extends Command
 
     private function generateFromFile(string $filePath): int
     {
-        $this->info("🛠 Generating DTO from: $filePath");
+        try {
+            $this->info("🛠 Generating DTO from: $filePath");
 
-        $yaml = Yaml::parseFile($filePath);
-        $dtoName = $yaml['header']['dto'] ?? null;
-        $namespace = $yaml['options']['namespace'] ?? 'App\\DTOs';
+            // Parse YAML with error handling
+            try {
+                $yaml = Yaml::parseFile($filePath);
+            } catch (ParseException $e) {
+                throw DtoGenerationException::yamlParsingError($filePath, $e->getMessage(), $e);
+            }
 
-        if (! $dtoName) {
-            $this->error('Missing "dto" in header section.');
+            // Validate required header information
+            $dtoName = $yaml['header']['dto'] ?? null;
+            if (! $dtoName) {
+                throw DtoGenerationException::missingHeader($filePath, 'dto');
+            }
 
-            return self::FAILURE;
-        }
+            $namespace = $yaml['options']['namespace'] ?? 'App\\DTOs';
 
-        $code = DtoGenerator::make()->generateFromDefinition($yaml);
+            // Validate namespace format
+            if (! DtoPathResolver::isValidNamespace($namespace)) {
+                throw DtoGenerationException::namespaceResolutionError(
+                    $filePath,
+                    $namespace,
+                    'Invalid namespace format',
+                    $dtoName
+                );
+            }
 
-        if ($this->option('dry-run')) {
-            $this->line("\n----- Begin DTO: $dtoName -----\n");
-            $this->line($code);
-            $this->line("\n----- End DTO: $dtoName -----\n");
+            // Generate DTO code with error handling
+            try {
+                $code = DtoGenerator::make()->generateFromDefinition($yaml, $filePath);
+            } catch (DtoGenerationException $e) {
+                throw $e;
+            } catch (Exception $e) {
+                throw new DtoGenerationException(
+                    "Failed to generate DTO code: {$e->getMessage()}",
+                    1020,
+                    $e
+                );
+            }
+
+            if ($this->option('dry-run')) {
+                $this->line("\n----- Begin DTO: $dtoName -----\n");
+                $this->line($code);
+                $this->line("\n----- End DTO: $dtoName -----\n");
+
+                return self::SUCCESS;
+            }
+
+            $outputPath = $this->option('output')
+                ?? DtoPathResolver::resolveOutputPath($dtoName, $namespace);
+
+            if (File::exists($outputPath) && ! $this->option('force')) {
+                $this->warn("File already exists: $outputPath (use --force to overwrite)");
+
+                return self::FAILURE;
+            }
+
+            // Write file with error handling
+            try {
+                File::ensureDirectoryExists(dirname($outputPath));
+                File::put($outputPath, $code);
+            } catch (Exception $e) {
+                throw DtoGenerationException::fileWriteError(
+                    $filePath,
+                    $outputPath,
+                    $e->getMessage(),
+                    $dtoName
+                );
+            }
+
+            $this->info("✅ DTO class written to: $outputPath");
 
             return self::SUCCESS;
-        }
+        } catch (DtoGenerationException $e) {
+            $this->error($e->getFormattedMessage());
 
-        $outputPath = $this->option('output')
-            ?? DtoPathResolver::resolveOutputPath($dtoName, $namespace);
-
-        if (File::exists($outputPath) && ! $this->option('force')) {
-            $this->warn("File already exists: $outputPath (use --force to overwrite)");
+            return self::FAILURE;
+        } catch (Exception $e) {
+            $this->error("❌ Unexpected error: {$e->getMessage()}");
+            if ($this->option('verbose')) {
+                $this->error("Stack trace: {$e->getTraceAsString()}");
+            }
 
             return self::FAILURE;
         }
-
-        File::ensureDirectoryExists(dirname($outputPath));
-        File::put($outputPath, $code);
-
-        $this->info("✅ DTO class written to: $outputPath");
-
-        return self::SUCCESS;
     }
 }

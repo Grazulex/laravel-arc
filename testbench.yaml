@@ -2,4 +2,4 @@ workbench:
   discovers:
     - commands: true
 providers:
-  - Grazulex\LaravelArc\Providers\LaravelArcServiceProvider
+  - Grazulex\LaravelArc\LaravelArcServiceProvider
