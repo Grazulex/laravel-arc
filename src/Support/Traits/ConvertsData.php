@@ -42,7 +42,18 @@ trait ConvertsData
      * Convert a paginated collection of models to DTOs with pagination info.
      *
      * @param  LengthAwarePaginator|Paginator  $paginator  The paginated models
-     * @return array Paginated DTOs with meta information
+     * @return array{
+     *     data: array<int, static>, 
+     *     meta: array{
+     *         current_page: int,
+     *         per_page: int,
+     *         has_more_pages: bool,
+     *         total?: int,        // Only for LengthAwarePaginator
+     *         last_page?: int,    // Only for LengthAwarePaginator
+     *         from?: int|null,    // Only for LengthAwarePaginator
+     *         to?: int|null       // Only for LengthAwarePaginator
+     *     }
+     * } Paginated DTOs with meta information
      */
     public static function fromPaginator(LengthAwarePaginator|Paginator $paginator): array
     {
