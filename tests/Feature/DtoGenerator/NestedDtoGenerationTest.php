@@ -31,7 +31,7 @@ it('can generate DTO with nested DTOs', function () {
     // Vérifier que les règles de validation sont générées
     expect($code)->toContain('public static function rules(): array');
     expect($code)->toContain("'author' => ['array', 'required']");
-    expect($code)->toContain("'category' => ['array']");
+    expect($code)->toContain("'category' => ['array', 'nullable']");
 });
 
 it('handles circular references safely', function () {
@@ -48,8 +48,8 @@ it('handles circular references safely', function () {
     expect($code)->toContain('public readonly ?\\CircularTestDTO $parent');
 
     // Les règles de validation devraient traiter les DTOs comme des arrays
-    expect($code)->toContain("'parent' => ['array']");
-    expect($code)->toContain("'related' => ['array']");
+    expect($code)->toContain("'parent' => ['array', 'nullable']");
+    expect($code)->toContain("'related' => ['array', 'nullable']");
 });
 
 it('prevents infinite nesting beyond max depth', function () {

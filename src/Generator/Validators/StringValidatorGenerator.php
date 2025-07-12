@@ -12,12 +12,14 @@ final class StringValidatorGenerator extends BaseValidatorGenerator implements V
 {
     public function supports(string $type): bool
     {
-        return $type === 'string';
+        return in_array($type, ['string', 'text'], true);
     }
 
     public function generate(string $name, array $config, DtoGenerationContext $context): array
     {
-        if (! $this->isMatchingType($config, 'string')) {
+        $type = $config['type'] ?? null;
+
+        if (! in_array($type, ['string', 'text'], true)) {
             return [];
         }
 

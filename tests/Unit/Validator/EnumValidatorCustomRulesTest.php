@@ -34,7 +34,7 @@ describe('EnumValidatorGenerator - Custom Rules', function () {
         ], $context);
 
         expect($rules)->toBe([
-            'priority' => ['enum:\\Tests\\Fixtures\\Enums\\Priority', 'in_enum:\\Tests\\Fixtures\\Enums\\Priority'],
+            'priority' => ['enum:\\Tests\\Fixtures\\Enums\\Priority', 'in_enum:\\Tests\\Fixtures\\Enums\\Priority', 'nullable'],
         ]);
     });
 

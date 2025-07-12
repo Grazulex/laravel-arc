@@ -15,9 +15,13 @@ final class ValidatorRuleBuilder
     {
         $rules = $defaultRules;
 
-        // Add 'required' if needed (but not if already defined manually)
-        if (($definition['required'] ?? true) && ! in_array('required', $rules, true)) {
+        // Handle required/nullable logic
+        $required = $definition['required'] ?? true;
+
+        if ($required && ! in_array('required', $rules, true)) {
             $rules[] = 'required';
+        } elseif (! $required && ! in_array('nullable', $rules, true)) {
+            $rules[] = 'nullable';
         }
 
         // Merge user-defined rules

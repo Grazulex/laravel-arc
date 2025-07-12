@@ -27,7 +27,7 @@ describe('Enum Class Generation', function () {
 
         // Vérifier que les règles de validation sont générées correctement
         expect($code)->toContain("'status' => ['in:active,inactive,suspended', 'required']");
-        expect($code)->toContain("'priority' => ['enum:\\Tests\\Fixtures\\Enums\\Priority']");
+        expect($code)->toContain("'priority' => ['enum:\\Tests\\Fixtures\\Enums\\Priority', 'nullable']");
         expect($code)->toContain("'role' => ['enum:\\Tests\\Fixtures\\Enums\\Status', 'required']");
     });
 });

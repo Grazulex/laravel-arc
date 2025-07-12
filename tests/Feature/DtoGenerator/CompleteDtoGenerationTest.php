@@ -39,8 +39,8 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain('public static function rules')
             ->toContain("'status' => ['in:draft,published,archived', 'required']")
             ->toContain("'price' => ['numeric', 'required', 'min:0']")
-            ->toContain("'tags' => ['array', 'distinct']")
-            ->toContain("'description' => ['string', 'max:500']")
+            ->toContain("'tags' => ['array', 'nullable', 'distinct']")
+            ->toContain("'description' => ['string', 'nullable', 'max:500']")
             ->toContain('use ValidatesData')
             ->toContain('category') // relation
             ->toContain('public readonly \\Carbon\\Carbon $created_at') // timestamps

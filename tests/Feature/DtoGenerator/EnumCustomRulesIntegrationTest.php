@@ -13,10 +13,10 @@ describe('Enum Custom Rules Integration', function () {
         $result = $generator->generateFromDefinition($yaml);
 
         // Vérifier que le DTO est généré avec les bons types
-        expect($result)->toContain('class UnnamedDto');
-        expect($result)->toContain('public readonly \Tests\Fixtures\Enums\Status $status,');
-        expect($result)->toContain('public readonly \Tests\Fixtures\Enums\Priority $priority,');
-        expect($result)->toContain('public readonly \Tests\Fixtures\Enums\Status $category,');
+        expect($result)->toContain('class EnumCustomRulesDto');
+        expect($result)->toContain('public readonly \\Tests\\Fixtures\\Enums\\Status $status,');
+        expect($result)->toContain('public readonly ?\\Tests\\Fixtures\\Enums\\Priority $priority,');
+        expect($result)->toContain('public readonly \\Tests\\Fixtures\\Enums\\Status $category,');
         expect($result)->toContain('public readonly string $legacy_status,');
     });
 
@@ -69,17 +69,17 @@ describe('Enum Custom Rules Integration', function () {
         $result = $generator->generateFromDefinition($yaml);
 
         // Vérifier les types générés
-        expect($result)->toContain('class UnnamedDto');
-        expect($result)->toContain('public readonly \Tests\Fixtures\Enums\Status $status = \Tests\Fixtures\Enums\Status::DRAFT,');
-        expect($result)->toContain('public readonly \Tests\Fixtures\Enums\Priority $priority,');
+        expect($result)->toContain('class ComplexEnumDto');
+        expect($result)->toContain('public readonly \\Tests\\Fixtures\\Enums\\Status $status = \\Tests\\Fixtures\\Enums\\Status::DRAFT,');
+        expect($result)->toContain('public readonly ?\\Tests\\Fixtures\\Enums\\Priority $priority,');
         expect($result)->toContain('public readonly string $category,');
-        expect($result)->toContain('public readonly ?\Tests\Fixtures\Enums\Status $type = \Tests\Fixtures\Enums\Status::PUBLISHED,');
+        expect($result)->toContain('public readonly ?\\Tests\\Fixtures\\Enums\\Status $type = \\Tests\\Fixtures\\Enums\\Status::PUBLISHED,');
 
         // Vérifier les règles de validation
         expect($result)->toContain("'status' => ['enum:\Tests\Fixtures\Enums\Status', 'in_enum:\Tests\Fixtures\Enums\Status', 'enum_exists:\Tests\Fixtures\Enums\Status', 'required', 'sometimes']");
         expect($result)->toContain("'priority' => ['enum:\Tests\Fixtures\Enums\Priority', 'enum_exists:\Tests\Fixtures\Enums\Priority', 'required']");
         expect($result)->toContain("'category' => ['in:tech,business,personal', 'required', 'sometimes']");
-        expect($result)->toContain("'type' => ['enum:\Tests\Fixtures\Enums\Status', 'in_enum:\Tests\Fixtures\Enums\Status']");
+        expect($result)->toContain("'type' => ['enum:\Tests\Fixtures\Enums\Status', 'in_enum:\Tests\Fixtures\Enums\Status', 'nullable']");
 
         // Vérifier que les règles personnalisées sont ignorées pour les enums traditionnels
         expect($result)->not->toContain("'in_enum:tech'");
