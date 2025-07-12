@@ -1,20 +1,20 @@
-# Laravel Arc - Gestion de Collections DTO
+# Laravel Arc - DTO Collection Management
 
-## Vue d'ensemble
+## Overview
 
-Laravel Arc fournit une fonctionnalité complète de gestion de collections pour les DTOs, similaire aux Laravel API Resources mais avec des avantages supplémentaires :
+Laravel Arc provides comprehensive collection management functionality for DTOs, similar to Laravel API Resources but with additional benefits:
 
-- **Conversion automatique** : Transformez facilement des modèles Eloquent en DTOs
-- **Collections spécialisées** : Utilisez `DtoCollection` pour des fonctionnalités avancées
-- **Format API** : Sortie automatique au format JSON API standard
-- **Validation intégrée** : Validation des données avec gestion d'erreurs
-- **Méthodes de collection** : Filtrage, groupement, pagination, etc.
+- **Automatic conversion**: Easily transform Eloquent models into DTOs
+- **Specialized collections**: Use `DtoCollection` for advanced features
+- **API format**: Automatic output in standard JSON API format
+- **Built-in validation**: Data validation with error handling
+- **Collection methods**: Filtering, grouping, pagination, etc.
 
-## Comparaison avec Laravel Resources
+## Comparison with Laravel Resources
 
-### Laravel Resources (Traditionnel)
+### Laravel Resources (Traditional)
 ```php
-// Contrôleur
+// Controller
 return UserResource::collection($users);
 return new UserResource($user);
 
@@ -32,13 +32,13 @@ class UserResource extends JsonResource
 }
 ```
 
-### Laravel Arc DTOs (Nouveau)
+### Laravel Arc DTOs (New)
 ```php
-// Contrôleur
+// Controller
 return UserDto::fromModels($users)->toArrayResource();
 return UserDto::fromModel($user)->toArray();
 
-// UserDto (généré automatiquement)
+// UserDto (automatically generated)
 class UserDto
 {
     use ConvertsData, ValidatesData, DtoUtilities;
@@ -49,62 +49,62 @@ class UserDto
         public readonly string $email,
     ) {}
     
-    // Méthodes générées automatiquement
+    // Automatically generated methods
     public static function fromModel($model): self { ... }
     public function toArray(): array { ... }
     public function isValid(): bool { ... }
 }
 ```
 
-## Utilisation de base
+## Basic Usage
 
-### 1. Convertir des modèles en DTOs
+### 1. Converting Models to DTOs
 
 ```php
-// Un seul modèle
+// Single model
 $user = User::find(1);
 $userDto = UserDto::fromModel($user);
 
-// Collection de modèles
+// Collection of models
 $users = User::all();
-$userDtos = UserDto::fromModels($users); // Retourne DtoCollection
+$userDtos = UserDto::fromModels($users); // Returns DtoCollection
 
-// Collection standard Laravel
+// Standard Laravel collection
 $standardCollection = UserDto::fromModelsAsCollection($users);
 ```
 
-### 2. Format API Resource
+### 2. API Resource Format
 
 ```php
-// Obtenir le format API standard
+// Get standard API format
 $users = User::all();
 $userDtos = UserDto::fromModels($users);
 
-// Format tableau
+// Array format
 $apiArray = $userDtos->toArrayResource();
-// Résultat : ['data' => [...]]
+// Result: ['data' => [...]]
 
-// Format JSON
+// JSON format
 $apiJson = $userDtos->toJsonResource();
-// Résultat : '{"data": [...]}'
+// Result: '{"data": [...]}'
 
-// Avec méta-données
+// With metadata
 $apiWithMeta = $userDtos->toArrayResource([
     'total' => 100,
     'page' => 1
 ]);
-// Résultat : ['data' => [...], 'meta' => [...]]
+// Result: ['data' => [...], 'meta' => [...]]
 ```
 
-### 3. Gestion de la pagination
+### 3. Pagination Management
 
 ```php
-// Pagination automatique
+// Automatic pagination
 $users = User::paginate(15);
 $result = UserDto::fromPaginator($users);
 
 return response()->json($result);
-// Résultat :
+// Result:
 // {
 //   "data": [...],
 //   "meta": {
@@ -117,43 +117,43 @@ return response()->json($result);
 // }
 ```
 
-## Fonctionnalités avancées
+## Advanced Features
 
-### 1. Filtrage et groupement
+### 1. Filtering and Grouping
 
 ```php
 $users = User::all();
 $userDtos = UserDto::fromModels($users);
 
-// Filtrage
+// Filtering
 $activeUsers = $userDtos->where('status', 'active');
 $adminUsers = $userDtos->filter(fn($dto) => $dto->role === 'admin');
 
-// Groupement
+// Grouping
 $groupedByStatus = $userDtos->groupBy('status');
 $groupedByRole = $userDtos->groupBy('role');
 
-// Tri
+// Sorting
 $sortedByName = $userDtos->sortBy('name');
 $sortedByIdDesc = $userDtos->sortByDesc('id');
 ```
 
-### 2. Sélection de champs
+### 2. Field Selection
 
 ```php
 $userDto = UserDto::fromModel($user);
 
-// Sélectionner seulement certains champs
+// Select only certain fields
 $minimal = $userDto->only(['id', 'name', 'email']);
 
-// Exclure certains champs
+// Exclude certain fields
 $withoutSensitive = $userDto->except(['password', 'remember_token']);
 ```
 
-### 3. Validation intégrée
+### 3. Built-in Validation
 
 ```php
-// Validation lors de la création
+// Validation during creation
 $userDto = UserDto::fromArray($request->all());
 
 if (!$userDto->isValid()) {
@@ -163,21 +163,21 @@ if (!$userDto->isValid()) {
     ], 422);
 }
 
-// Validation d'une collection
+// Validation of a collection
 $userDtos = UserDto::fromModels($users);
 $invalid = $userDtos->reject(fn($dto) => $dto->isValid());
 ```
 
-### 4. Statistiques et agrégations
+### 4. Statistics and Aggregations
 
 ```php
 $userDtos = UserDto::fromModels($users);
 
-// Comptage
+// Counting
 $total = $userDtos->count();
 $activeCount = $userDtos->where('status', 'active')->count();
 
-// Statistiques
+// Statistics
 $stats = [
     'total' => $userDtos->count(),
     'by_status' => $userDtos->groupBy('status')->map->count(),
@@ -185,9 +185,9 @@ $stats = [
 ];
 ```
 
-## Exemples d'utilisation en contrôleur
+## Controller Usage Examples
 
-### Contrôleur API complet
+### Complete API Controller
 
 ```php
 class UserController extends Controller
@@ -239,78 +239,82 @@ class UserController extends Controller
 }
 ```
 
-## Génération automatique
+## Automatic Generation
 
-### Fichier YAML
+### YAML File
 
 ```yaml
 # user.yaml
-name: User
-namespace: App\DTOs
+header:
+  dto: UserDTO
+  table: users
+  model: App\Models\User
 
 fields:
   id:
     type: integer
-    validation: [required, integer, min:1]
+    required: true
+    rules: [integer, min:1]
   
   name:
     type: string
-    validation: [required, string, max:255]
+    required: true
+    rules: [string, max:255]
   
   email:
     type: string
-    validation: [required, email, max:255]
+    required: true
+    rules: [email, max:255]
   
   status:
     type: string
     default: "active"
-    validation: [required, in:active,inactive,pending]
+    required: true
+    rules: [in:active,inactive,pending]
 
 options:
-  use_traits:
-    - "Grazulex\\LaravelArc\\Support\\Traits\\ConvertsData"
-    - "Grazulex\\LaravelArc\\Support\\Traits\\ValidatesData"
-    - "Grazulex\\LaravelArc\\Support\\Traits\\DtoUtilities"
+  timestamps: true
+  namespace: App\DTOs
 ```
 
-### Génération
+### Generation
 
 ```bash
-php artisan arc:generate user.yaml
+php artisan dto:generate user.yaml
 ```
 
-## Méthodes disponibles
+## Available Methods
 
 ### ConvertsData Trait
 
-- `fromModels(iterable $models): DtoCollection` - Convertit une collection de modèles
-- `fromModelsAsCollection(iterable $models): Collection` - Convertit vers une collection standard
-- `fromPaginator(Paginator $paginator): array` - Gère la pagination
-- `collectionToJson(iterable $models): string` - Convertit directement en JSON API
-- `toJson(int $options = 0): string` - Convertit un DTO en JSON
-- `toCollection(): Collection` - Convertit un DTO en collection
-- `only(array $keys): array` - Sélectionne certains champs
-- `except(array $keys): array` - Exclut certains champs
+- `fromModels(iterable $models): DtoCollection` - Converts a collection of models
+- `fromModelsAsCollection(iterable $models): Collection` - Converts to a standard collection
+- `fromPaginator(Paginator $paginator): array` - Handles pagination
+- `collectionToJson(iterable $models): string` - Converts directly to JSON API
+- `toJson(int $options = 0): string` - Converts a DTO to JSON
+- `toCollection(): Collection` - Converts a DTO to collection
+- `only(array $keys): array` - Selects certain fields
+- `except(array $keys): array` - Excludes certain fields
 
 ### DtoCollection Class
 
-- `toArrayResource(array $meta = []): array` - Format API Resource
-- `toJsonResource(array $meta = []): string` - Format JSON API Resource
-- Plus toutes les méthodes de Collection Laravel (filter, map, groupBy, etc.)
+- `toArrayResource(array $meta = []): array` - API Resource format
+- `toJsonResource(array $meta = []): string` - JSON API Resource format
+- Plus all Laravel Collection methods (filter, map, groupBy, etc.)
 
-## Avantages
+## Benefits
 
-1. **Typage fort** : Propriétés readonly avec types PHP
-2. **Validation intégrée** : Règles de validation automatiques
-3. **Performance** : Pas de overhead des Resources Laravel
-4. **Flexibilité** : Méthodes de collection avancées
-5. **Génération automatique** : Moins de code à écrire
-6. **Compatibilité** : Fonctionne avec tous les systèmes Laravel existants
+1. **Strong typing**: Readonly properties with PHP types
+2. **Built-in validation**: Automatic validation rules
+3. **Performance**: No overhead from Laravel Resources
+4. **Flexibility**: Advanced collection methods
+5. **Automatic generation**: Less code to write
+6. **Compatibility**: Works with all existing Laravel systems
 
-## Migration depuis Laravel Resources
+## Migration from Laravel Resources
 
 ```php
-// Avant (Laravel Resources)
+// Before (Laravel Resources)
 class UserResource extends JsonResource
 {
     public function toArray($request)
@@ -323,20 +327,20 @@ class UserResource extends JsonResource
     }
 }
 
-// Utilisation
+// Usage
 return UserResource::collection($users);
 
-// Après (Laravel Arc DTOs)
-// Génération automatique du DTO depuis YAML
-php artisan arc:generate user.yaml
+// After (Laravel Arc DTOs)
+// Automatic DTO generation from YAML
+php artisan dto:generate user.yaml
 
-// Utilisation
+// Usage
 return UserDto::fromModels($users)->toArrayResource();
 ```
 
-Cette approche offre tous les avantages des Laravel Resources avec en plus :
-- Typage fort
-- Validation automatique
-- Méthodes de collection avancées
-- Génération automatique
-- Performance améliorée
+This approach provides all the benefits of Laravel Resources plus:
+- Strong typing
+- Automatic validation
+- Advanced collection methods
+- Automatic generation
+- Improved performance

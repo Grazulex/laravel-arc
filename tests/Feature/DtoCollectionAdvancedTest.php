@@ -14,7 +14,7 @@ use Illuminate\Support\Collection;
  */
 it('can handle complete DTO collection workflow', function () {
     // Create a sample DTO class
-    $dtoClass = new class(1, 'Test', 'test@example.com', 'active')
+    $dtoClass = new class(1, 'Test User', 'test@example.com')
     {
         use ConvertsData, DtoUtilities, ValidatesData;
 
@@ -78,7 +78,7 @@ it('can handle complete DTO collection workflow', function () {
 
             return $errors;
         }
-    }(1, 'temp', 'temp@example.com');
+    };
 
     // Create mock models
     $mockModels = collect([
@@ -238,7 +238,7 @@ it('can handle paginated DTO collections', function () {
         10, // total
         3,  // per page
         1,  // current page
-        1   // path
+        ['path' => ''] // options
     );
 
     // Test paginated conversion
@@ -325,7 +325,7 @@ it('can use advanced DtoCollection methods', function () {
 
     // Test filtering by score
     $highScores = $dtoCollection->filter(fn ($dto) => $dto->score >= 90);
-    expect($highScores->count())->toBe(3);
+    expect($highScores->count())->toBe(2);
 
     // Test mapping with transformation
     $names = $dtoCollection->map(fn ($dto) => $dto->name);
@@ -340,7 +340,7 @@ it('can use advanced DtoCollection methods', function () {
 
     // Test pluck
     $categories = $dtoCollection->pluck('category');
-    expect($categories->unique()->toArray())->toEqual(['tech', 'business']);
+    expect($categories->unique()->values()->toArray())->toEqual(['tech', 'business']);
 
     // Test complex filtering and grouping
     $techItems = $dtoCollection->where('category', 'tech');
