@@ -17,11 +17,14 @@ This comprehensive guide demonstrates how to use Laravel Arc generated DTOs in y
 - [Best Practices and Patterns](#best-practices-and-patterns)
 - [Future Features](#future-features)
 
+> **💡 New!** All DTOs now include powerful traits for validation, conversion, and utilities. 
+> For complete trait documentation, see our [**Traits Guide**](TRAITS_GUIDE.md).
+
 ## Generated DTO Methods Overview
 
-When you generate a DTO using Laravel Arc, you get several powerful methods automatically created:
+When you generate a DTO using Laravel Arc, you get several powerful methods automatically created, plus additional methods provided by built-in traits:
 
-### Core Methods
+### Core Methods (Generated)
 
 Every generated DTO includes these essential methods:
 
@@ -42,9 +45,61 @@ public function toArray(): array
 
 // Validation rules (if validation is enabled)
 public static function rules(): array
+```
 
-// Validate data against DTO rules
+### Built-in Trait Methods
+
+Every DTO automatically includes these three powerful traits:
+
+#### 🔍 **ValidatesData Trait**
+```php
+// Validate data and return validated array
 public static function validate(array $data): array
+
+// Create validator instance
+public static function validator(array $data): Validator
+
+// Check if validation passes
+public static function passes(array $data): bool
+
+// Check if validation fails
+public static function fails(array $data): bool
+```
+
+#### 🔄 **ConvertsData Trait**
+```php
+// Convert multiple models to DTOs
+public static function fromModels(iterable $models): Collection
+
+// Convert DTO to JSON
+public function toJson(int $options = 0): string
+
+// Convert DTO to Collection
+public function toCollection(): Collection
+
+// Get only specified keys
+public function only(array $keys): array
+
+// Get all keys except specified ones
+public function except(array $keys): array
+```
+
+#### 🛠️ **DtoUtilities Trait**
+```php
+// Get all property names
+public function getProperties(): array
+
+// Check if property exists
+public function hasProperty(string $property): bool
+
+// Get property value by name
+public function getProperty(string $property): mixed
+
+// Create new instance with modified properties
+public function with(array $properties): static
+
+// Compare two DTOs for equality
+public function equals(self $other): bool
 ```
 
 ### Example Generated UserDTO
@@ -89,9 +144,16 @@ namespace App\DTOs;
 
 use App\Models\User;
 use Carbon\Carbon;
+use Grazulex\LaravelArc\Support\Traits\ConvertsData;
+use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
+use Grazulex\LaravelArc\Support\Traits\ValidatesData;
 
 final class UserDTO
 {
+    use ConvertsData;
+    use DtoUtilities;
+    use ValidatesData;
+
     public function __construct(
         public readonly string $id,
         public readonly string $name,
@@ -132,10 +194,9 @@ final class UserDTO
         ];
     }
 
-    public static function validate(array $data): array
-    {
-        return validator($data, self::rules())->validate();
-    }
+    // The validate(), validator(), passes(), fails() methods are provided by ValidatesData trait
+    // The fromModels(), toJson(), toCollection(), only(), except() methods are provided by ConvertsData trait
+    // The getProperties(), hasProperty(), getProperty(), with(), equals() methods are provided by DtoUtilities trait
 }
 ```
 
@@ -155,6 +216,16 @@ use Illuminate\Http\JsonResponse;
 
 class UserController extends Controller
 {
+    public function index(): JsonResponse
+    {
+        $users = User::all();
+        
+        // Convert multiple models to DTOs using ConvertsData trait
+        $userDtos = UserDTO::fromModels($users);
+        
+        return response()->json($userDtos->map(fn($dto) => $dto->toArray()));
+    }
+
     public function show(User $user): JsonResponse
     {
         // Convert model to DTO
@@ -165,7 +236,7 @@ class UserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        // Validate using DTO rules
+        // Validate using ValidatesData trait
         $validated = UserDTO::validate($request->all());
         
         // Create user
@@ -179,17 +250,31 @@ class UserController extends Controller
 
     public function update(Request $request, User $user): JsonResponse
     {
-        // Validate partial updates
-        $rules = UserDTO::rules();
-        $rules['email'] = ['sometimes', 'email', 'unique:users,email,' . $user->id];
+        // Use ValidatesData trait to check if validation passes
+        if (!UserDTO::passes($request->all())) {
+            return response()->json(['error' => 'Validation failed'], 422);
+        }
         
-        $validated = $request->validate($rules);
-        
+        $validated = UserDTO::validate($request->all());
         $user->update($validated);
         
         return response()->json(
             UserDTO::fromModel($user->refresh())->toArray()
         );
+    }
+
+    public function profile(User $user): JsonResponse
+    {
+        $userDto = UserDTO::fromModel($user);
+        
+        // Use DtoUtilities trait to filter data
+        $publicData = $userDto->only(['name', 'email']);
+        $privateData = $userDto->except(['password', 'remember_token']);
+        
+        return response()->json([
+            'public' => $publicData,
+            'private' => $privateData,
+        ]);
     }
 }
 ```
@@ -219,8 +304,8 @@ class UserController extends Controller
             limit: $request->input('limit', 15)
         );
 
-        // Convert collection to DTO array
-        $userDtos = $users->map(fn(User $user) => UserDTO::fromModel($user));
+        // Convert collection to DTOs using ConvertsData trait
+        $userDtos = UserDTO::fromModels($users);
 
         return response()->json([
             'data' => $userDtos->map(fn(UserDTO $dto) => $dto->toArray()),
@@ -235,6 +320,14 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         try {
+            // Use ValidatesData trait for validation
+            if (UserDTO::fails($request->all())) {
+                return response()->json([
+                    'message' => 'Validation failed',
+                    'errors' => UserDTO::validator($request->all())->errors()
+                ], 422);
+            }
+
             $userDto = $this->userService->createUser($request->all());
             
             return response()->json($userDto->toArray(), 201);
@@ -244,6 +337,25 @@ class UserController extends Controller
                 'errors' => $e->errors()
             ], 422);
         }
+    }
+
+    public function compare(Request $request): JsonResponse
+    {
+        $user1 = User::find($request->input('user1_id'));
+        $user2 = User::find($request->input('user2_id'));
+
+        $dto1 = UserDTO::fromModel($user1);
+        $dto2 = UserDTO::fromModel($user2);
+
+        // Use DtoUtilities trait to compare DTOs
+        $areEqual = $dto1->equals($dto2);
+
+        return response()->json([
+            'user1' => $dto1->toArray(),
+            'user2' => $dto2->toArray(),
+            'are_equal' => $areEqual,
+            'properties' => $dto1->getProperties(),
+        ]);
     }
 }
 ```
@@ -351,6 +463,7 @@ class UserService
 
     public function createUser(array $data): UserDTO
     {
+        // Use ValidatesData trait for validation
         $validated = UserDTO::validate($data);
         
         $user = User::create($validated);
@@ -362,9 +475,13 @@ class UserService
     {
         $user = User::findOrFail($userId);
         
-        // Validate with DTO rules
-        $validated = UserDTO::validate($data);
+        // Use ValidatesData trait to check validation
+        if (UserDTO::fails($data)) {
+            $validator = UserDTO::validator($data);
+            throw new ValidationException($validator);
+        }
         
+        $validated = UserDTO::validate($data);
         $user->update($validated);
         
         return UserDTO::fromModel($user->refresh());
@@ -372,9 +489,10 @@ class UserService
 
     public function findUsersByEmail(string $email): Collection
     {
-        return User::where('email', 'like', "%{$email}%")
-            ->get()
-            ->map(fn(User $user) => UserDTO::fromModel($user));
+        $users = User::where('email', 'like', "%{$email}%")->get();
+        
+        // Use ConvertsData trait to convert multiple models
+        return UserDTO::fromModels($users);
     }
 
     public function getUserProfile(int $userId): UserDTO
@@ -383,6 +501,40 @@ class UserService
             ->findOrFail($userId);
         
         return UserDTO::fromModel($user);
+    }
+
+    public function getUsersAsJson(array $userIds): string
+    {
+        $users = User::whereIn('id', $userIds)->get();
+        $userDtos = UserDTO::fromModels($users);
+        
+        // Use ConvertsData trait to convert to JSON
+        return $userDtos->map(fn($dto) => $dto->toJson())->implode(',');
+    }
+
+    public function compareUsers(int $userId1, int $userId2): array
+    {
+        $user1 = User::findOrFail($userId1);
+        $user2 = User::findOrFail($userId2);
+        
+        $dto1 = UserDTO::fromModel($user1);
+        $dto2 = UserDTO::fromModel($user2);
+        
+        // Use DtoUtilities trait to compare and inspect
+        return [
+            'are_equal' => $dto1->equals($dto2),
+            'properties' => $dto1->getProperties(),
+            'user1_has_email' => $dto1->hasProperty('email'),
+            'user1_email' => $dto1->getProperty('email'),
+            'user1_name_only' => $dto1->only(['name']),
+            'user2_without_email' => $dto2->except(['email']),
+        ];
+    }
+
+    public function createUserVariant(UserDTO $originalDto, array $changes): UserDTO
+    {
+        // Use DtoUtilities trait to create modified copy
+        return $originalDto->with($changes);
     }
 }
 ```
@@ -582,7 +734,7 @@ class ProductCollection extends ResourceCollection
 
 ## Using DTOs in Jobs and Queues
 
-### Job with DTO
+### Job with DTO and Trait Usage
 
 ```php
 <?php
@@ -607,11 +759,81 @@ class SendWelcomeEmailJob implements ShouldQueue
 
     public function handle(EmailService $emailService): void
     {
+        // Use DtoUtilities trait to get only needed properties
+        $emailData = $this->userDto->only(['name', 'email']);
+        
+        // Use ConvertsData trait to convert to JSON for logging
+        $userJson = $this->userDto->toJson();
+        
+        \Log::info('Sending welcome email', ['user' => $userJson]);
+        
         $emailService->sendWelcomeEmail([
-            'name' => $this->userDto->name,
-            'email' => $this->userDto->email,
+            'name' => $emailData['name'],
+            'email' => $emailData['email'],
             'created_at' => $this->userDto->created_at,
         ]);
+    }
+}
+```
+
+### Advanced Job with DTO Processing
+
+```php
+<?php
+
+namespace App\Jobs;
+
+use App\DTOs\UserDTO;
+use App\Models\User;
+use Illuminate\Bus\Queueable;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+
+class ProcessUserBatchJob implements ShouldQueue
+{
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
+    public function __construct(
+        private readonly array $userIds
+    ) {}
+
+    public function handle(): void
+    {
+        $users = User::whereIn('id', $this->userIds)->get();
+        
+        // Use ConvertsData trait to convert multiple models
+        $userDtos = UserDTO::fromModels($users);
+        
+        foreach ($userDtos as $userDto) {
+            // Use DtoUtilities trait to inspect and modify data
+            $properties = $userDto->getProperties();
+            
+            if ($userDto->hasProperty('email')) {
+                $email = $userDto->getProperty('email');
+                
+                // Process each user
+                $this->processUser($userDto);
+                
+                // Create modified version for audit
+                $auditDto = $userDto->with(['processed_at' => now()]);
+                $this->auditUser($auditDto);
+            }
+        }
+    }
+
+    private function processUser(UserDTO $userDto): void
+    {
+        // Process individual user
+        \Log::info('Processing user', $userDto->except(['password']));
+    }
+
+    private function auditUser(UserDTO $userDto): void
+    {
+        // Use ConvertsData trait to create audit log
+        $auditData = $userDto->toCollection();
+        // Store audit data...
     }
 }
 ```
@@ -648,6 +870,8 @@ class UserRegistrationService
 
 ### Advanced Validation Scenarios
 
+Laravel Arc DTOs provide powerful validation capabilities through the `ValidatesData` trait:
+
 ```php
 <?php
 
@@ -661,7 +885,13 @@ class OrderValidationService
 {
     public function validateOrder(array $orderData): OrderDTO
     {
-        // Basic DTO validation
+        // Use ValidatesData trait for quick validation check
+        if (OrderDTO::fails($orderData)) {
+            $validator = OrderDTO::validator($orderData);
+            throw new ValidationException($validator);
+        }
+
+        // Get validated data using trait method
         $validated = OrderDTO::validate($orderData);
         
         // Custom business logic validation
@@ -674,6 +904,19 @@ class OrderValidationService
             status: $validated['status'],
             created_at: now(),
         );
+    }
+
+    public function validateOrderWithFeedback(array $orderData): array
+    {
+        // Use ValidatesData trait to get detailed validation info
+        $validator = OrderDTO::validator($orderData);
+        
+        return [
+            'passes' => OrderDTO::passes($orderData),
+            'fails' => OrderDTO::fails($orderData),
+            'errors' => $validator->errors()->toArray(),
+            'validated' => $validator->validated(),
+        ];
     }
 
     private function validateBusinessRules(array $data): void
@@ -802,7 +1045,7 @@ class OrderService
 
 ## Using DTOs in Tests
 
-### Feature Tests with DTOs
+### Feature Tests with DTOs and Traits
 
 ```php
 <?php
@@ -832,22 +1075,80 @@ class UserControllerTest extends TestCase
         $response->assertJson($userDto->toArray());
     }
 
-    public function test_can_validate_user_data_with_dto(): void
+    public function test_can_validate_user_data_with_dto_traits(): void
     {
+        $validData = [
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+        ];
+        
         $invalidData = [
             'name' => 'A', // Too short
             'email' => 'invalid-email',
         ];
 
+        // Test ValidatesData trait methods
+        $this->assertTrue(UserDTO::passes($validData));
+        $this->assertFalse(UserDTO::fails($validData));
+        
+        $this->assertFalse(UserDTO::passes($invalidData));
+        $this->assertTrue(UserDTO::fails($invalidData));
+        
+        // Test validation with HTTP requests
         $response = $this->postJson('/api/users', $invalidData);
-
         $response->assertStatus(422);
         $response->assertJsonValidationErrors(['name', 'email']);
+    }
+
+    public function test_can_use_dto_conversion_traits(): void
+    {
+        $users = User::factory()->count(3)->create();
+        
+        // Test ConvertsData trait
+        $userDtos = UserDTO::fromModels($users);
+        
+        $this->assertCount(3, $userDtos);
+        $this->assertInstanceOf(UserDTO::class, $userDtos->first());
+        
+        // Test individual DTO conversion methods
+        $userDto = $userDtos->first();
+        $json = $userDto->toJson();
+        $collection = $userDto->toCollection();
+        
+        $this->assertJson($json);
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $collection);
+        $this->assertEquals($userDto->toArray(), $collection->toArray());
+    }
+
+    public function test_can_use_dto_utility_traits(): void
+    {
+        $user = User::factory()->create();
+        $userDto = UserDTO::fromModel($user);
+        
+        // Test DtoUtilities trait
+        $properties = $userDto->getProperties();
+        $this->assertIsArray($properties);
+        $this->assertContains('name', $properties);
+        $this->assertContains('email', $properties);
+        
+        $this->assertTrue($userDto->hasProperty('name'));
+        $this->assertFalse($userDto->hasProperty('nonexistent'));
+        
+        $this->assertEquals($user->name, $userDto->getProperty('name'));
+        
+        // Test filtering
+        $nameOnly = $userDto->only(['name']);
+        $this->assertArrayHasKey('name', $nameOnly);
+        $this->assertArrayNotHasKey('email', $nameOnly);
+        
+        $withoutEmail = $userDto->except(['email']);
+        $this->assertArrayNotHasKey('email', $withoutEmail);
+        $this->assertArrayHasKey('name', $withoutEmail);
     }
 }
 ```
 
-### Unit Tests with DTOs
+### Unit Tests with DTOs and Traits
 
 ```php
 <?php
@@ -897,6 +1198,103 @@ class UserDTOTest extends TestCase
         $this->assertContains('required', $rules['name']);
         $this->assertContains('email', $rules['email']);
     }
+
+    public function test_validates_data_trait_methods(): void
+    {
+        $validData = [
+            'id' => fake()->uuid(),
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+            'created_at' => now(),
+        ];
+
+        $invalidData = [
+            'name' => 'A', // Too short
+            'email' => 'invalid-email',
+        ];
+
+        // Test ValidatesData trait methods
+        $this->assertTrue(UserDTO::passes($validData));
+        $this->assertFalse(UserDTO::fails($validData));
+        
+        $this->assertFalse(UserDTO::passes($invalidData));
+        $this->assertTrue(UserDTO::fails($invalidData));
+
+        // Test validator method
+        $validator = UserDTO::validator($validData);
+        $this->assertFalse($validator->fails());
+        
+        $validator = UserDTO::validator($invalidData);
+        $this->assertTrue($validator->fails());
+    }
+
+    public function test_converts_data_trait_methods(): void
+    {
+        $users = User::factory()->count(3)->create();
+        
+        // Test fromModels method
+        $userDtos = UserDTO::fromModels($users);
+        $this->assertCount(3, $userDtos);
+        $this->assertInstanceOf(UserDTO::class, $userDtos->first());
+        
+        // Test individual conversion methods
+        $userDto = UserDTO::fromModel($users->first());
+        
+        $json = $userDto->toJson();
+        $this->assertJson($json);
+        
+        $collection = $userDto->toCollection();
+        $this->assertInstanceOf(\Illuminate\Support\Collection::class, $collection);
+        
+        $nameOnly = $userDto->only(['name']);
+        $this->assertArrayHasKey('name', $nameOnly);
+        $this->assertArrayNotHasKey('email', $nameOnly);
+        
+        $withoutEmail = $userDto->except(['email']);
+        $this->assertArrayNotHasKey('email', $withoutEmail);
+        $this->assertArrayHasKey('name', $withoutEmail);
+    }
+
+    public function test_dto_utilities_trait_methods(): void
+    {
+        $user = User::factory()->create();
+        $userDto = UserDTO::fromModel($user);
+        
+        // Test property inspection
+        $properties = $userDto->getProperties();
+        $this->assertIsArray($properties);
+        $this->assertContains('name', $properties);
+        $this->assertContains('email', $properties);
+        
+        $this->assertTrue($userDto->hasProperty('name'));
+        $this->assertFalse($userDto->hasProperty('nonexistent'));
+        
+        $this->assertEquals($user->name, $userDto->getProperty('name'));
+        
+        // Test with method
+        $modifiedDto = $userDto->with(['name' => 'Modified Name']);
+        $this->assertEquals('Modified Name', $modifiedDto->name);
+        $this->assertEquals($user->email, $modifiedDto->email); // Other properties preserved
+        
+        // Test equals method
+        $sameDto = UserDTO::fromModel($user);
+        $differentUser = User::factory()->create();
+        $differentDto = UserDTO::fromModel($differentUser);
+        
+        $this->assertTrue($userDto->equals($sameDto));
+        $this->assertFalse($userDto->equals($differentDto));
+    }
+
+    public function test_dto_utilities_trait_exceptions(): void
+    {
+        $user = User::factory()->create();
+        $userDto = UserDTO::fromModel($user);
+        
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage("Property 'nonexistent' does not exist");
+        
+        $userDto->getProperty('nonexistent');
+    }
 }
 ```
 
@@ -920,6 +1318,9 @@ class UserService
     public function sendNotification(UserDTO $userDto): void
     {
         // Business logic in service
+        // Use DTO trait methods to access data
+        $emailData = $userDto->only(['name', 'email']);
+        // Send notification with email data
     }
 }
 ```
@@ -935,19 +1336,34 @@ class UserDTO
         public readonly string $email,
     ) {}
 }
+
+// ✅ Use DtoUtilities trait for creating modified copies
+$updatedDto = $originalDto->with(['name' => 'New Name']);
 ```
 
 ### 3. Use DTOs for API Responses
 
 ```php
-// ✅ Consistent API responses
+// ✅ Consistent API responses with trait methods
 class UserController
 {
     public function show(User $user): JsonResponse
     {
+        $userDto = UserDTO::fromModel($user);
+        
         return response()->json(
-            UserDTO::fromModel($user)->toArray()
+            $userDto->except(['password', 'remember_token'])
         );
+    }
+    
+    public function index(): JsonResponse
+    {
+        $users = User::all();
+        $userDtos = UserDTO::fromModels($users);
+        
+        return response()->json([
+            'data' => $userDtos->map(fn($dto) => $dto->toArray())
+        ]);
     }
 }
 ```
@@ -955,11 +1371,18 @@ class UserController
 ### 4. Validate at Boundaries
 
 ```php
-// ✅ Validate at entry points
+// ✅ Use ValidatesData trait for validation
 class UserController
 {
     public function store(Request $request): JsonResponse
     {
+        // Quick validation check
+        if (UserDTO::fails($request->all())) {
+            return response()->json([
+                'errors' => UserDTO::validator($request->all())->errors()
+            ], 422);
+        }
+        
         $validated = UserDTO::validate($request->all());
         
         // Now you can trust the data
@@ -975,7 +1398,7 @@ class UserController
 ### 5. Use DTOs for Queue Jobs
 
 ```php
-// ✅ Serialize DTOs for queue jobs
+// ✅ Serialize DTOs for queue jobs with trait methods
 class ProcessOrderJob implements ShouldQueue
 {
     public function __construct(
@@ -984,8 +1407,14 @@ class ProcessOrderJob implements ShouldQueue
 
     public function handle(): void
     {
-        // DTO data is available and type-safe
-        $this->processOrder($this->orderDto);
+        // Use trait methods to access and convert data
+        $orderJson = $this->orderDto->toJson();
+        $essentialData = $this->orderDto->only(['id', 'total', 'status']);
+        
+        \Log::info('Processing order', ['order' => $orderJson]);
+        
+        // Process with essential data
+        $this->processOrder($essentialData);
     }
 }
 ```
@@ -1011,6 +1440,72 @@ class StoreUserRequest extends FormRequest
             email: $validated['email'],
             created_at: now(),
         );
+    }
+}
+```
+
+### 7. Leverage Trait Methods for Data Processing
+
+```php
+// ✅ Use trait methods for data manipulation
+class UserService
+{
+    public function processUserData(UserDTO $userDto): array
+    {
+        // Get all properties for inspection
+        $properties = $userDto->getProperties();
+        
+        // Check for required properties
+        if (!$userDto->hasProperty('email')) {
+            throw new InvalidArgumentException('Email is required');
+        }
+        
+        // Get specific property
+        $email = $userDto->getProperty('email');
+        
+        // Create variations
+        $publicData = $userDto->only(['name', 'email']);
+        $privateData = $userDto->except(['password']);
+        
+        // Create modified version
+        $processedDto = $userDto->with(['processed_at' => now()]);
+        
+        return [
+            'original' => $userDto->toArray(),
+            'public' => $publicData,
+            'private' => $privateData,
+            'processed' => $processedDto->toArray(),
+            'properties' => $properties,
+        ];
+    }
+}
+```
+
+### 8. Use Trait Methods for Testing
+
+```php
+// ✅ Test DTOs with trait methods
+class UserTest extends TestCase
+{
+    public function test_user_dto_functionality(): void
+    {
+        $user = User::factory()->create();
+        $userDto = UserDTO::fromModel($user);
+        
+        // Test trait methods
+        $this->assertTrue($userDto->hasProperty('name'));
+        $this->assertEquals($user->name, $userDto->getProperty('name'));
+        
+        $modifiedDto = $userDto->with(['name' => 'Modified']);
+        $this->assertEquals('Modified', $modifiedDto->name);
+        $this->assertFalse($userDto->equals($modifiedDto));
+        
+        // Test conversion methods
+        $json = $userDto->toJson();
+        $this->assertJson($json);
+        
+        $collection = $userDto->toCollection();
+        $this->assertInstanceOf(Collection::class, $collection);
     }
 }
 ```
@@ -1108,6 +1603,7 @@ These features would make Laravel Arc DTOs even more powerful for complex Larave
 ## See Also
 
 - [Getting Started Guide](GETTING_STARTED.md)
+- [**Traits Guide**](TRAITS_GUIDE.md) - **Complete guide to ValidatesData, ConvertsData, and DtoUtilities traits**
 - [YAML Schema Documentation](YAML_SCHEMA.md)
 - [Field Types Reference](FIELD_TYPES.md)
 - [Validation Rules](VALIDATION_RULES.md)

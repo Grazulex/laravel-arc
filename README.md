@@ -24,6 +24,7 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - 🏗️ **Rich field types** - 14+ field types including enums, UUIDs, nested DTOs, and JSON
 - 🔗 **Eloquent relationships** - Full support for Laravel relationship types
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
+- 🎯 **Powerful trait system** - Built-in traits for validation, data conversion, and utilities
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
@@ -89,6 +90,62 @@ $user->name = 'John Doe';
 $user->email = 'john@example.com';
 ```
 
+## 🎯 Powerful Trait System
+
+Laravel Arc DTOs are equipped with powerful traits that provide essential functionality out of the box:
+
+### 🔍 **ValidatesData** - Validation Methods
+```php
+// Validate and get validated data
+$validated = UserDTO::validate($request->all());
+
+// Create a validator instance
+$validator = UserDTO::validator($data);
+
+// Check if validation passes/fails
+if (UserDTO::passes($data)) {
+    // Validation passed
+}
+if (UserDTO::fails($data)) {
+    // Validation failed
+}
+```
+
+### 🔄 **ConvertsData** - Conversion Methods
+```php
+// Convert multiple models to DTOs
+$userDtos = UserDTO::fromModels($users);
+
+// Convert DTO to different formats
+$json = $userDto->toJson();
+$collection = $userDto->toCollection();
+
+// Filter DTO data
+$filtered = $userDto->only(['name', 'email']);
+$excluded = $userDto->except(['password']);
+```
+
+### 🛠️ **DtoUtilities** - Utility Methods
+```php
+// Introspect DTO properties
+$properties = $userDto->getProperties();
+$hasEmail = $userDto->hasProperty('email');
+$email = $userDto->getProperty('email');
+
+// Create modified copies
+$updatedDto = $userDto->with(['name' => 'New Name']);
+
+// Compare DTOs
+$areEqual = $userDto->equals($anotherDto);
+```
+
+### ✅ **Benefits of the Trait System:**
+- **No code duplication** - Standard methods are provided by traits
+- **Extensibility** - DTOs can still extend other classes
+- **Reusability** - All DTOs benefit from the same utility methods
+- **Maintainability** - Single implementation for standard methods
+- **Testability** - Traits are tested independently
+
 ## 📚 Documentation
 
 ### Getting Started
@@ -98,7 +155,8 @@ $user->email = 'john@example.com';
 ### 🚀 **Using Your DTOs**
 - 🎯 [**DTO Usage Guide**](docs/DTO_USAGE_GUIDE.md) - **Comprehensive guide with real-world examples**
   - Use DTOs in controllers, services, actions, and requests
-  - Available methods (`fromModel`, `toArray`, `rules`, `validate`)
+  - Available methods (`fromModel`, `toArray`, `rules`, plus all trait methods)
+  - Built-in traits: `ValidatesData`, `ConvertsData`, `DtoUtilities`
   - Best practices and patterns for Laravel applications
   - Examples with validation, relationships, jobs, and testing
 
@@ -106,6 +164,7 @@ $user->email = 'john@example.com';
 - 📝 [YAML Schema Reference](docs/YAML_SCHEMA.md) - Complete YAML structure documentation
 - 🏷️ [Field Types Guide](docs/FIELD_TYPES.md) - All available field types with examples
 - 🔗 [Relationships](docs/RELATIONSHIPS.md) - Working with Eloquent relationships
+- 🎯 [**Traits Guide**](docs/TRAITS_GUIDE.md) - **Complete guide to ValidatesData, ConvertsData, and DtoUtilities traits**
 - ✅ [Validation Rules](docs/FIELD_TYPES.md#validation-rules) - Laravel validation integration
 
 ### Tools & Commands

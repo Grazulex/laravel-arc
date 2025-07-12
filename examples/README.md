@@ -101,6 +101,53 @@ A category DTO demonstrating:
 - **Category hierarchy** with parent/child relationships
 - **Path building** for nested category structures
 
+## 🎯 Built-in Traits
+
+Every generated DTO automatically includes three powerful traits:
+
+### 🔍 **ValidatesData** - Validation Methods
+```php
+// Quick validation checks
+if (UserDTO::passes($data)) {
+    $validated = UserDTO::validate($data);
+}
+
+// Detailed validation
+$validator = UserDTO::validator($data);
+if (UserDTO::fails($data)) {
+    $errors = $validator->errors();
+}
+```
+
+### 🔄 **ConvertsData** - Data Conversion
+```php
+// Convert multiple models
+$userDtos = UserDTO::fromModels($users);
+
+// Convert to different formats
+$json = $userDto->toJson();
+$collection = $userDto->toCollection();
+
+// Filter data
+$publicData = $userDto->only(['name', 'email']);
+$safeData = $userDto->except(['password']);
+```
+
+### 🛠️ **DtoUtilities** - Utility Methods
+```php
+// Introspect properties
+$properties = $userDto->getProperties();
+$hasEmail = $userDto->hasProperty('email');
+$email = $userDto->getProperty('email');
+
+// Create variations
+$updatedDto = $userDto->with(['name' => 'New Name']);
+$areEqual = $userDto->equals($otherDto);
+```
+
+**💡 Want to learn more about these traits?**
+Check out our [**Traits Guide**](../docs/TRAITS_GUIDE.md) for comprehensive documentation and examples!
+
 ## 🚀 Getting Started with Examples
 
 ### Quick Start
@@ -114,13 +161,25 @@ A category DTO demonstrating:
    php artisan dto:generate user.yaml
    ```
 
-3. **Use in your application**:
+3. **Use in your application** with built-in traits:
    ```php
    use App\DTOs\UserDTO;
    
-   $user = new UserDTO();
-   $user->name = 'John Doe';
-   $user->email = 'john@example.com';
+   // Create DTO from model
+   $userDto = UserDTO::fromModel($user);
+   
+   // Use ValidatesData trait
+   if (UserDTO::passes($data)) {
+       $validated = UserDTO::validate($data);
+   }
+   
+   // Use ConvertsData trait
+   $json = $userDto->toJson();
+   $publicData = $userDto->only(['name', 'email']);
+   
+   // Use DtoUtilities trait
+   $properties = $userDto->getProperties();
+   $updatedDto = $userDto->with(['name' => 'New Name']);
    ```
 
 ### Programmatic Usage
@@ -294,6 +353,7 @@ options:
 ## 📚 Additional Resources
 
 - 🎯 [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) - **How to use DTOs in your Laravel application**
+- 🎯 [**Traits Guide**](../docs/TRAITS_GUIDE.md) - **Complete guide to ValidatesData, ConvertsData, and DtoUtilities traits**
 - 📖 [Getting Started Guide](../docs/GETTING_STARTED.md)
 - 🏷️ [Field Types Reference](../docs/FIELD_TYPES.md)
 - 🔗 [Relationships Guide](../docs/RELATIONSHIPS.md)
