@@ -101,7 +101,7 @@ final class DtoCollection extends Collection
     public function groupByField(string $field): Collection
     {
         return $this->groupBy(function ($dto) use ($field) {
-            return $dto->hasProperty($field) ? $dto->getProperty($field) : null;
+            return property_exists($dto, $field) ? $dto->$field : null;
         })->map(fn ($group): DtoCollection => new self($group));
     }
 

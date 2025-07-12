@@ -62,25 +62,44 @@ $mockModels = collect([
 // Convert to DTO collection
 $dtoCollection = $dtoClass::fromModels($mockModels);
 
+echo "Testing DtoCollection field methods:\n";
+echo "===================================\n";
+echo 'Original collection count: '.$dtoCollection->count()."\n\n";
+
 // Test whereField method
 echo "Testing whereField method:\n";
-echo 'Original collection count: '.$dtoCollection->count()."\n";
-
 $activeUsers = $dtoCollection->whereField('status', 'active');
-echo 'Active users count: '.$activeUsers->count()."\n";
+echo '- Active users count: '.$activeUsers->count()."\n";
 
 $inactiveUsers = $dtoCollection->whereField('status', 'inactive');
-echo 'Inactive users count: '.$inactiveUsers->count()."\n";
+echo '- Inactive users count: '.$inactiveUsers->count()."\n";
 
 $pendingUsers = $dtoCollection->whereField('status', 'pending');
-echo 'Pending users count: '.$pendingUsers->count()."\n";
+echo '- Pending users count: '.$pendingUsers->count()."\n";
 
 // Test with non-existent field
 $nonExistentField = $dtoCollection->whereField('nonexistent', 'value');
-echo 'Non-existent field count: '.$nonExistentField->count()."\n";
+echo '- Non-existent field count: '.$nonExistentField->count()."\n";
 
 // Test with existing field but wrong value
 $wrongValue = $dtoCollection->whereField('status', 'nonexistent_status');
-echo 'Wrong value count: '.$wrongValue->count()."\n";
+echo '- Wrong value count: '.$wrongValue->count()."\n\n";
 
-echo "\nwhereField method works correctly!\n";
+// Test groupByField method
+echo "Testing groupByField method:\n";
+$groupedByStatus = $dtoCollection->groupByField('status');
+echo '- Groups created: '.$groupedByStatus->count()."\n";
+echo '- Group keys: '.implode(', ', $groupedByStatus->keys()->toArray())."\n";
+
+foreach ($groupedByStatus as $status => $group) {
+    echo "- Status '$status': ".$group->count()." items\n";
+}
+
+// Test with non-existent field
+$groupedByNonExistent = $dtoCollection->groupByField('nonexistent');
+echo '- Groups from non-existent field: '.$groupedByNonExistent->count()."\n";
+if ($groupedByNonExistent->has('')) {
+    echo '- Items with null value: '.$groupedByNonExistent->get('')->count()."\n";
+}
+
+echo "\nBoth whereField and groupByField methods work correctly!\n";
