@@ -185,9 +185,10 @@ final class ApiController extends Controller
 
             // Validate the new DTO
             if (! $newDto->isValid()) {
-                throw new InvalidArgumentException(
-                    'Invalid data for user: '.json_encode($newDto->getErrors())
-                );
+                return response()->json([
+                    'message' => 'Validation failed for user.',
+                    'errors' => $newDto->getErrors(),
+                ], 422);
             }
 
             return $newDto;
