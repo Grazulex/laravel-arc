@@ -23,7 +23,7 @@ trait DtoUtilities
         $reflection = new ReflectionClass($this);
         $properties = $reflection->getProperties(ReflectionProperty::IS_PUBLIC);
 
-        return array_map(fn ($prop) => $prop->getName(), $properties);
+        return array_map(fn ($prop): string => $prop->getName(), $properties);
     }
 
     /**

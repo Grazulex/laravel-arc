@@ -44,7 +44,7 @@ trait ValidatesData
      */
     public static function passes(array $data): bool
     {
-        return !static::validator($data)->fails();
+        return ! static::validator($data)->fails();
     }
 
     /**
