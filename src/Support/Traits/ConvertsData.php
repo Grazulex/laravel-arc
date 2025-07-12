@@ -43,7 +43,7 @@ trait ConvertsData
      *
      * @param  LengthAwarePaginator|Paginator  $paginator  The paginated models
      * @return array{
-     *     data: array<int, static>, 
+     *     data: array<int, static>,
      *     meta: array{
      *         current_page: int,
      *         per_page: int,
