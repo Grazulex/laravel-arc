@@ -60,11 +60,11 @@ YAML;
     // Get the output to find where the file was actually created
     $output = Artisan::output();
     $outputLines = explode("\n", $output);
-    $pathLine = collect($outputLines)->first(fn($line) => str_contains($line, 'DTO class written to:'));
-    
+    $pathLine = collect($outputLines)->first(fn ($line) => str_contains($line, 'DTO class written to:'));
+
     expect($pathLine)->not->toBeNull();
-    
-    $actualPath = trim(str_replace('✅ DTO class written to:', '', $pathLine));
+
+    $actualPath = mb_trim(str_replace('✅ DTO class written to:', '', $pathLine));
     expect(File::exists($actualPath))->toBeTrue();
 
     // Read generated file content
@@ -87,7 +87,8 @@ YAML;
 
 it('validates trait ValidatesData functionality', function () {
     // Test the ValidatesData trait
-    $trait = new class {
+    $trait = new class
+    {
         use ValidatesData;
 
         public static function rules(): array
@@ -112,7 +113,8 @@ it('validates trait ValidatesData functionality', function () {
 
 it('validates trait ConvertsData functionality', function () {
     // Create a mock DTO class with ConvertsData trait
-    $dto = new class('test', 'test@example.com') {
+    $dto = new class('test', 'test@example.com')
+    {
         use ConvertsData;
 
         public function __construct(
@@ -120,17 +122,17 @@ it('validates trait ConvertsData functionality', function () {
             public readonly string $email,
         ) {}
 
+        public static function fromModel($model): self
+        {
+            return new self($model->name, $model->email);
+        }
+
         public function toArray(): array
         {
             return [
                 'name' => $this->name,
                 'email' => $this->email,
             ];
-        }
-
-        public static function fromModel($model): self
-        {
-            return new self($model->name, $model->email);
         }
     };
 
@@ -152,7 +154,8 @@ it('validates trait ConvertsData functionality', function () {
 
 it('validates trait DtoUtilities functionality', function () {
     // Create a mock DTO class with DtoUtilities trait
-    $dto = new class('test', 'test@example.com') {
+    $dto = new class('test', 'test@example.com')
+    {
         use DtoUtilities;
 
         public function __construct(

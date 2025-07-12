@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Support\Traits;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 
 /**
@@ -15,7 +14,7 @@ trait ConvertsData
     /**
      * Convert a collection of models to a collection of DTOs.
      *
-     * @param iterable $models The models to convert
+     * @param  iterable  $models  The models to convert
      * @return Collection<int, static> Collection of DTOs
      */
     public static function fromModels(iterable $models): Collection
@@ -26,7 +25,7 @@ trait ConvertsData
     /**
      * Convert the DTO to JSON.
      *
-     * @param int $options JSON encoding options
+     * @param  int  $options  JSON encoding options
      * @return string The JSON representation
      */
     public function toJson(int $options = 0): string
@@ -47,7 +46,7 @@ trait ConvertsData
     /**
      * Get only the specified keys from the DTO.
      *
-     * @param array $keys The keys to include
+     * @param  array  $keys  The keys to include
      * @return array The filtered array
      */
     public function only(array $keys): array
@@ -58,7 +57,7 @@ trait ConvertsData
     /**
      * Get all keys except the specified ones from the DTO.
      *
-     * @param array $keys The keys to exclude
+     * @param  array  $keys  The keys to exclude
      * @return array The filtered array
      */
     public function except(array $keys): array
