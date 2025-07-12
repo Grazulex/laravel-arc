@@ -38,7 +38,7 @@ jobs:
         run: composer install --no-dev --optimize-autoloader
 
       - name: Run tests
-        run: composer test
+        run: vendor/bin/pest
 
       - name: Create Git tag
         run: |
