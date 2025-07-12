@@ -14,6 +14,7 @@ Laravel Arc DTOs are powered by three essential traits that provide validation, 
 - [Overview / Vue d'ensemble](#overview)
 - [ValidatesData Trait](#validatesdata-trait)
 - [ConvertsData Trait](#convertsdata-trait)
+- [DTOCollection - Native Collection Support](#dtocollection---native-collection-support)
 - [DtoUtilities Trait](#dtoutilities-trait)
 - [French Documentation / Documentation française](#documentation-française)
 - [Best Practices](#best-practices)
@@ -320,8 +321,8 @@ The `ConvertsData` trait provides methods for converting data between different 
 
 ### Methods
 
-#### `fromModels(iterable $models): \Illuminate\Support\Collection`
-Converts a collection of models to a collection of DTOs.
+#### `fromModels(iterable $models): \Grazulex\LaravelArc\Support\DTOCollection`
+Converts a collection of models to a DTOCollection.
 
 ```php
 use App\DTOs\UserDTO;
@@ -330,10 +331,26 @@ use App\Models\User;
 $users = User::all();
 $userDtos = UserDTO::fromModels($users);
 
-// $userDtos is a Collection of UserDTO instances
+// $userDtos is a DTOCollection of UserDTO instances
 foreach ($userDtos as $userDto) {
     echo $userDto->name;
 }
+```
+
+#### `collection(iterable $models): \Grazulex\LaravelArc\Support\DTOCollection`
+Converts a collection of models to a DTOCollection. Alias for `fromModels()`.
+
+```php
+use App\DTOs\UserDTO;
+use App\Models\User;
+
+$users = User::all();
+$userDtos = UserDTO::collection($users);
+
+// Chain collection methods for powerful data manipulation
+$activeUsers = $userDtos
+    ->where('is_active', true)
+    ->sortBy('name');
 ```
 
 #### `toJson(int $options = 0): string`
@@ -353,8 +370,8 @@ $prettyJson = $userDto->toJson(JSON_PRETTY_PRINT);
 // Returns formatted JSON
 ```
 
-#### `toCollection(): \Illuminate\Support\Collection`
-Converts the DTO to a Laravel Collection.
+#### `toCollection(): \Grazulex\LaravelArc\Support\DTOCollection`
+Converts the DTO to a DTOCollection.
 
 ```php
 use App\DTOs\UserDTO;
@@ -364,7 +381,7 @@ $user = User::first();
 $userDto = UserDTO::fromModel($user);
 
 $collection = $userDto->toCollection();
-// $collection is a Collection instance with DTO data
+// $collection is a DTOCollection instance with DTO data
 
 $filtered = $collection->filter(fn($value) => !is_null($value));
 ```
@@ -479,6 +496,68 @@ class ProcessUsersJob implements ShouldQueue
         // Process...
     }
 }
+```
+
+## DTOCollection - Native Collection Support
+
+The `DTOCollection` class extends Laravel's Collection with DTO-specific functionality, providing powerful methods for filtering, sorting, and manipulating collections of DTOs.
+
+### Key Features
+
+- **Extended Filtering**: Advanced where methods for DTO properties
+- **Property-based Sorting**: Sort by any DTO property
+- **Chainable Methods**: Fluent interface for complex operations
+- **Type Safety**: Designed specifically for DTOs
+
+### Usage
+
+```php
+use App\DTOs\UserDTO;
+use App\Models\User;
+
+// Create a DTOCollection
+$users = User::all();
+$userDtos = UserDTO::collection($users);
+
+// Chain operations for powerful data manipulation
+$result = $userDtos
+    ->where('is_active', true)
+    ->sortBy('name')
+    ->whereNotNull('email');
+```
+
+### Available Methods
+
+#### Filtering Methods
+
+- `where(string $property, mixed $value)` - Filter by property value
+- `whereNot(string $property, mixed $value)` - Filter excluding property value
+- `whereNull(string $property)` - Filter where property is null
+- `whereNotNull(string $property)` - Filter where property is not null
+- `whereIn(string $property, array $values)` - Filter where property is in values
+- `whereNotIn(string $property, array $values)` - Filter where property is not in values
+
+#### Sorting Methods
+
+- `sortBy(string $property)` - Sort by property (ascending)
+- `sortByDesc(string $property)` - Sort by property (descending)
+
+### Examples
+
+```php
+// Filter active users and sort by name
+$activeUsers = UserDTO::collection($users)
+    ->where('is_active', true)
+    ->sortBy('name');
+
+// Get users with verified emails
+$verifiedUsers = UserDTO::collection($users)
+    ->whereNotNull('email_verified_at')
+    ->whereNot('status', 'suspended');
+
+// Get users by role
+$admins = UserDTO::collection($users)
+    ->whereIn('role', ['admin', 'super_admin']);
 ```
 
 ## DtoUtilities Trait

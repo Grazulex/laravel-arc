@@ -141,8 +141,9 @@ it('validates trait ConvertsData functionality', function () {
     expect($json)->toBeJson();
     expect(json_decode($json, true))->toBe(['name' => 'test', 'email' => 'test@example.com']);
 
-    // Test toCollection
+    // Test toCollection - should return DTOCollection
     $collection = $dto->toCollection();
+    expect($collection)->toBeInstanceOf(\Grazulex\LaravelArc\Support\DTOCollection::class);
     expect($collection->toArray())->toBe(['name' => 'test', 'email' => 'test@example.com']);
 
     // Test only

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Support\Traits;
 
+use Grazulex\LaravelArc\Support\DTOCollection;
 use Illuminate\Support\Collection;
 
 /**
@@ -12,14 +13,26 @@ use Illuminate\Support\Collection;
 trait ConvertsData
 {
     /**
-     * Convert a collection of models to a collection of DTOs.
+     * Convert a collection of models to a DTOCollection.
      *
      * @param  iterable  $models  The models to convert
-     * @return Collection<int, static> Collection of DTOs
+     * @return DTOCollection<int, static> DTOCollection of DTOs
      */
-    public static function fromModels(iterable $models): Collection
+    public static function fromModels(iterable $models): DTOCollection
     {
-        return collect($models)->map(fn ($model) => static::fromModel($model));
+        return new DTOCollection(collect($models)->map(fn ($model) => static::fromModel($model)));
+    }
+
+    /**
+     * Convert a collection of models to a DTOCollection.
+     * Alias for fromModels() to provide the collection() method interface.
+     *
+     * @param  iterable  $models  The models to convert
+     * @return DTOCollection<int, static> DTOCollection of DTOs
+     */
+    public static function collection(iterable $models): DTOCollection
+    {
+        return static::fromModels($models);
     }
 
     /**
@@ -36,11 +49,11 @@ trait ConvertsData
     /**
      * Convert the DTO to a collection.
      *
-     * @return Collection<string, mixed> The collection representation
+     * @return DTOCollection<string, mixed> The collection representation
      */
-    public function toCollection(): Collection
+    public function toCollection(): DTOCollection
     {
-        return collect($this->toArray());
+        return new DTOCollection($this->toArray());
     }
 
     /**

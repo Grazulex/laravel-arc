@@ -113,12 +113,17 @@ if (UserDTO::fails($data)) {
 
 ### 🔄 **ConvertsData** - Conversion Methods
 ```php
-// Convert multiple models to DTOs
-$userDtos = UserDTO::fromModels($users);
+// Convert multiple models to DTOs with native collection support
+$userDtos = UserDTO::collection($users); // Returns DTOCollection
+
+// Chain operations on DTOCollection
+$activeUsers = $userDtos
+    ->where('is_active', true)
+    ->sortBy('name');
 
 // Convert DTO to different formats
 $json = $userDto->toJson();
-$collection = $userDto->toCollection();
+$collection = $userDto->toCollection(); // Returns DTOCollection
 
 // Filter DTO data
 $filtered = $userDto->only(['name', 'email']);
