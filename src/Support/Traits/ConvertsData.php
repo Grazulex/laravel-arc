@@ -9,18 +9,37 @@ use Illuminate\Support\Collection;
 
 /**
  * Trait that provides data conversion functionality for DTOs.
+ * 
+ * Classes using this trait must implement a toArray() method.
  */
 trait ConvertsData
 {
     /**
+     * Convert the DTO to an array.
+     * This method must be implemented by the class using this trait.
+     *
+     * @return array
+     */
+    abstract public function toArray(): array;
+
+    /**
+     * Create a DTO instance from a model.
+     * This method must be implemented by the class using this trait.
+     *
+     * @param  mixed  $model  The model to convert
+     * @return static
+     */
+    abstract public static function fromModel($model): static;
+    /**
      * Convert a collection of models to a DTOCollection.
      *
      * @param  iterable  $models  The models to convert
-     * @return DTOCollection<int, static> DTOCollection of DTOs
+     * @return DTOCollection<int, static>
      */
     public static function fromModels(iterable $models): DTOCollection
     {
-        return new DTOCollection(collect($models)->map(fn ($model) => static::fromModel($model)));
+        $collection = new Collection($models);
+        return new DTOCollection($collection->map(fn ($model) => static::fromModel($model)));
     }
 
     /**
@@ -28,7 +47,7 @@ trait ConvertsData
      * Alias for fromModels() to provide the collection() method interface.
      *
      * @param  iterable  $models  The models to convert
-     * @return DTOCollection<int, static> DTOCollection of DTOs
+     * @return DTOCollection<int, static>
      */
     public static function collection(iterable $models): DTOCollection
     {
@@ -40,16 +59,17 @@ trait ConvertsData
      *
      * @param  int  $options  JSON encoding options
      * @return string The JSON representation
+     * @throws \JsonException If JSON encoding fails
      */
     public function toJson(int $options = 0): string
     {
-        return json_encode($this->toArray(), $options);
+        return json_encode($this->toArray(), $options | JSON_THROW_ON_ERROR);
     }
 
     /**
      * Convert the DTO to a collection.
      *
-     * @return DTOCollection<string, mixed> The collection representation
+     * @return DTOCollection<int, mixed>
      */
     public function toCollection(): DTOCollection
     {

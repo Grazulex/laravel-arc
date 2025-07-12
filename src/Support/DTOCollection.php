@@ -9,6 +9,9 @@ use Illuminate\Support\Collection;
 /**
  * Collection class specifically designed for DTOs.
  * Provides enhanced functionality for working with collections of DTOs.
+ * 
+ * @template T
+ * @extends Collection<int, T>
  */
 class DTOCollection extends Collection
 {
@@ -21,9 +24,9 @@ class DTOCollection extends Collection
      */
     public function where(string $property, mixed $value): static
     {
-        return $this->filter(function ($dto) use ($property, $value) {
+        return new static($this->filter(function ($dto) use ($property, $value) {
             return $this->getPropertyValue($dto, $property) === $value;
-        });
+        }));
     }
 
     /**
@@ -35,9 +38,9 @@ class DTOCollection extends Collection
      */
     public function whereNot(string $property, mixed $value): static
     {
-        return $this->filter(function ($dto) use ($property, $value) {
+        return new static($this->filter(function ($dto) use ($property, $value) {
             return $this->getPropertyValue($dto, $property) !== $value;
-        });
+        }));
     }
 
     /**
@@ -48,9 +51,9 @@ class DTOCollection extends Collection
      */
     public function whereNull(string $property): static
     {
-        return $this->filter(function ($dto) use ($property) {
+        return new static($this->filter(function ($dto) use ($property) {
             return $this->getPropertyValue($dto, $property) === null;
-        });
+        }));
     }
 
     /**
@@ -61,9 +64,9 @@ class DTOCollection extends Collection
      */
     public function whereNotNull(string $property): static
     {
-        return $this->filter(function ($dto) use ($property) {
+        return new static($this->filter(function ($dto) use ($property) {
             return $this->getPropertyValue($dto, $property) !== null;
-        });
+        }));
     }
 
     /**
@@ -75,9 +78,9 @@ class DTOCollection extends Collection
      */
     public function whereIn(string $property, array $values): static
     {
-        return $this->filter(function ($dto) use ($property, $values) {
+        return new static($this->filter(function ($dto) use ($property, $values) {
             return in_array($this->getPropertyValue($dto, $property), $values, true);
-        });
+        }));
     }
 
     /**
@@ -89,9 +92,9 @@ class DTOCollection extends Collection
      */
     public function whereNotIn(string $property, array $values): static
     {
-        return $this->filter(function ($dto) use ($property, $values) {
+        return new static($this->filter(function ($dto) use ($property, $values) {
             return ! in_array($this->getPropertyValue($dto, $property), $values, true);
-        });
+        }));
     }
 
     /**
@@ -104,9 +107,11 @@ class DTOCollection extends Collection
      */
     public function sortBy(string $property, int $options = SORT_REGULAR, bool $descending = false): static
     {
-        return parent::sortBy(function ($dto) use ($property) {
+        $sorted = parent::sortBy(function ($dto) use ($property) {
             return $this->getPropertyValue($dto, $property);
         }, $options, $descending);
+        
+        return new static($sorted);
     }
 
     /**
@@ -131,17 +136,17 @@ class DTOCollection extends Collection
     private function getPropertyValue(mixed $dto, string $property): mixed
     {
         // First try to access the property directly
-        if (property_exists($dto, $property)) {
+        if (is_object($dto) && property_exists($dto, $property)) {
             return $dto->{$property};
         }
 
         // If the DTO has a getProperty method (from DtoUtilities trait), use it
-        if (method_exists($dto, 'getProperty')) {
+        if (is_object($dto) && method_exists($dto, 'getProperty')) {
             return $dto->getProperty($property);
         }
 
         // If the DTO has a toArray method, get the value from there
-        if (method_exists($dto, 'toArray')) {
+        if (is_object($dto) && method_exists($dto, 'toArray')) {
             $array = $dto->toArray();
             return $array[$property] ?? null;
         }
