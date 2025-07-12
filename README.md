@@ -23,6 +23,8 @@
 - [CLI Commands](#cli-commands)
 - [Examples](#examples)
 - [Advanced Usage](#advanced-usage)
+  - [Programmatic DTO Generation](#programmatic-dto-generation)
+  - [Path Resolver for Namespace Organization](#path-resolver-for-namespace-organization)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -34,6 +36,7 @@
 - 🔗 **Eloquent relationships** - Full support for Laravel relationship types
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.4+ features
 - 🛠️ **CLI commands** - Powerful commands for DTO management and generation
+- 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization support
 - 📦 **Zero configuration** - Works out of the box with sensible defaults
 - 🧪 **Fully tested** - Comprehensive test suite with 100% coverage
 
@@ -742,6 +745,50 @@ options:
   namespace: App\DTOs\Ecommerce
 ```
 
+### Custom Namespace Organization
+
+The path resolver automatically handles custom namespaces and directory structures:
+
+```yaml
+# database/dto_definitions/admin-user.yaml
+header:
+  dto: AdminUserDTO
+  table: users
+  model: App\Models\User
+
+fields:
+  id:
+    type: uuid
+    required: true
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:100]
+  email:
+    type: string
+    required: true
+    rules: [email, unique:users]
+  role:
+    type: enum
+    class: App\Enums\AdminRole
+    default: moderator
+  permissions:
+    type: array
+    rules: [array]
+
+options:
+  timestamps: true
+  namespace: App\DTOs\Admin\Users
+```
+
+When you generate this DTO:
+
+```bash
+php artisan dto:generate admin-user.yaml
+```
+
+The file will be created at `app/DTOs/Admin/Users/AdminUserDTO.php` with the namespace `App\DTOs\Admin\Users`, automatically creating the necessary directory structure.
+
 ### More Examples
 
 For more comprehensive examples including advanced nested DTOs, circular reference protection, and depth limiting, check out the [examples directory](examples/) which includes:
@@ -778,6 +825,108 @@ $code = $generator->generateFromDefinition($definition);
 // Save to file
 file_put_contents('app/DTOs/UserDTO.php', $code);
 ```
+
+### Path Resolver for Namespace Organization
+
+Laravel Arc includes a powerful `DtoPathResolver` utility class that centralizes namespace-to-path conversion logic. This feature allows you to organize your DTOs in custom directory structures while maintaining consistent namespace resolution.
+
+#### Key Features
+
+- **Bidirectional conversion** between namespaces and file paths
+- **Automatic sub-namespace detection** for organized directory structures
+- **Namespace validation** with PHP standards compliance
+- **Custom namespace support** outside the default configuration
+
+#### Basic Usage
+
+```php
+use Grazulex\LaravelArc\Support\DtoPathResolver;
+
+// Resolve output path from namespace
+$path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs\Admin');
+// Result: /path/to/app/DTOs/Admin/UserDTO.php
+
+// Derive namespace from file path
+$namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/Admin/UserDTO.php');
+// Result: App\DTOs\Admin
+```
+
+#### Namespace Organization Examples
+
+**Base namespace** (matches your configuration):
+```php
+DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs');
+// → /path/to/app/DTOs/UserDTO.php
+```
+
+**Sub-namespaces** (organized in subdirectories):
+```php
+DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTOs\Admin');
+// → /path/to/app/DTOs/Admin/AdminUserDTO.php
+
+DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTOs\Admin\Catalog\Products');
+// → /path/to/app/DTOs/Admin/Catalog/Products/ProductDTO.php
+```
+
+**External namespaces** (completely different from base configuration):
+```php
+DtoPathResolver::resolveOutputPath('CustomDTO', 'Library\External\Data');
+// → /path/to/Library/External/Data/CustomDTO.php
+```
+
+#### Utility Methods
+
+```php
+// Validate namespace compatibility
+$isValid = DtoPathResolver::isValidNamespace('App\DTOs\Admin');
+// Result: true
+
+// Normalize namespace (trim whitespace and backslashes)
+$normalized = DtoPathResolver::normalizeNamespace('\App\DTOs\Admin\\');
+// Result: App\DTOs\Admin
+
+// Check sub-namespace relationships
+$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs\Admin', 'App\DTOs');
+// Result: true
+```
+
+#### Integration with YAML Definitions
+
+The path resolver is automatically used when generating DTOs with custom namespaces:
+
+```yaml
+# admin-user.yaml
+header:
+  dto: AdminUserDTO
+  
+options:
+  namespace: App\DTOs\Admin
+  
+fields:
+  id:
+    type: integer
+    required: true
+  name:
+    type: string
+    required: true
+```
+
+```bash
+php artisan dto:generate admin-user.yaml
+```
+
+The DTO will be generated at `app/DTOs/Admin/AdminUserDTO.php` with the namespace `App\DTOs\Admin`.
+
+#### Advanced Path Resolution
+
+The resolver handles complex scenarios including:
+
+- **Windows path compatibility** - Automatically converts backslashes to forward slashes
+- **Acronym preservation** - Maintains known acronyms like "DTOs", "APIs", "URLs"
+- **Studly case conversion** - Converts directory names to proper PHP namespace format
+- **Bidirectional consistency** - Ensures round-trip conversion accuracy
+
+For comprehensive examples and detailed usage patterns, see the [Path Resolver Guide](docs/DTO_PATH_RESOLVER_GUIDE.md).
 
 ### Custom Header Statements
 
@@ -1010,6 +1159,7 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE).
 - 💬 [Discussions](https://github.com/Grazulex/laravel-arc/discussions)
 - 📖 [Wiki](https://github.com/Grazulex/laravel-arc/wiki)
 - 📝 [Nested DTO Guide](docs/NESTED_DTO_GUIDE.md)
+- 📁 [Path Resolver Guide](docs/DTO_PATH_RESOLVER_GUIDE.md)
 
 ---
 
