@@ -95,6 +95,13 @@ $user->email = 'john@example.com';
 - 📖 [Installation & Setup](docs/GETTING_STARTED.md) - Complete setup guide with examples
 - 🔧 [Configuration](docs/GETTING_STARTED.md#configuration) - Customize paths and settings
 
+### 🚀 **Using Your DTOs**
+- 🎯 [**DTO Usage Guide**](docs/DTO_USAGE_GUIDE.md) - **Comprehensive guide with real-world examples**
+  - Use DTOs in controllers, services, actions, and requests
+  - Available methods (`fromModel`, `toArray`, `rules`, `validate`)
+  - Best practices and patterns for Laravel applications
+  - Examples with validation, relationships, jobs, and testing
+
 ### Core Concepts
 - 📝 [YAML Schema Reference](docs/YAML_SCHEMA.md) - Complete YAML structure documentation
 - 🏷️ [Field Types Guide](docs/FIELD_TYPES.md) - All available field types with examples
