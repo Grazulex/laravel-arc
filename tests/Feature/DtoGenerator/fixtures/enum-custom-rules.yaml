@@ -1,5 +1,5 @@
-dto:
-  name: EnumCustomRulesDto
+header:
+  dto: EnumCustomRulesDto
   namespace: App\Dto
 
 fields:

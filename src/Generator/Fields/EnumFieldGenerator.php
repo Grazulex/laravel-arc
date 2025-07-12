@@ -18,10 +18,13 @@ final class EnumFieldGenerator implements FieldGenerator
     public function generate(string $name, array $config, DtoGenerationContext $context): string
     {
         // Si une classe enum est spécifiée, utiliser le type enum PHP
-        if (isset($config['class']) && is_string($config['class'])) {
-            $enumClass = $config['class'];
+        // Support pour les deux clés: 'class' et 'enum_class'
+        $enumClass = $config['enum_class'] ?? $config['class'] ?? null;
+
+        if ($enumClass && is_string($enumClass)) {
             $required = $config['required'] ?? true;
-            $nullable = $required ? '' : '?';
+            $nullable = $config['nullable'] ?? false;
+            $nullablePrefix = ($nullable || ! $required) ? '?' : '';
 
             // Gérer les valeurs par défaut
             $defaultCode = '';
@@ -37,7 +40,7 @@ final class EnumFieldGenerator implements FieldGenerator
                 $defaultCode = ' = null';
             }
 
-            return "public {$nullable}\\{$enumClass} \${$name}{$defaultCode};";
+            return "public readonly {$nullablePrefix}\\{$enumClass} \${$name}{$defaultCode};";
         }
 
         // Utiliser le comportement par défaut pour les enums avec valeurs array

@@ -17,6 +17,12 @@ describe('ValidatorRuleBuilder', function () {
         expect($rules)->toBe(['string', 'required']);
     });
 
+    it('adds nullable if required is false and not already present', function () {
+        $rules = ValidatorRuleBuilder::build(['string'], ['required' => false]);
+
+        expect($rules)->toBe(['string', 'nullable']);
+    });
+
     it('does not add duplicate required if already present', function () {
         $rules = ValidatorRuleBuilder::build(['string', 'required'], ['required' => true]);
 

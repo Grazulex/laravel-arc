@@ -12,12 +12,14 @@ final class IntegerValidatorGenerator extends BaseValidatorGenerator implements 
 {
     public function supports(string $type): bool
     {
-        return $type === 'integer';
+        return in_array($type, ['integer', 'int', 'id'], true);
     }
 
     public function generate(string $name, array $config, DtoGenerationContext $context): array
     {
-        if (! $this->isMatchingType($config, 'integer')) {
+        $type = $config['type'] ?? null;
+
+        if (! in_array($type, ['integer', 'int', 'id'], true)) {
             return [];
         }
 

@@ -12,12 +12,14 @@ final class BooleanValidatorGenerator extends BaseValidatorGenerator implements 
 {
     public function supports(string $type): bool
     {
-        return $type === 'boolean';
+        return in_array($type, ['boolean', 'bool']);
     }
 
     public function generate(string $name, array $config, DtoGenerationContext $context): array
     {
-        if (! $this->isMatchingType($config, 'boolean')) {
+        $type = $config['type'] ?? null;
+
+        if (! in_array($type, ['boolean', 'bool'], true)) {
             return [];
         }
 

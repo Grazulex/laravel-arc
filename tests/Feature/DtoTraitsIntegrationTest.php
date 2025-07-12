@@ -10,13 +10,17 @@ use Illuminate\Support\Facades\File;
 beforeEach(function () {
     // Clean up any test files
     File::deleteDirectory(base_path('temp_test_traits'));
+    File::deleteDirectory(base_path('temp_test_traits_output'));
     File::deleteDirectory(base_path('vendor/orchestra/testbench-core/laravel/temp_test_traits'));
+    File::deleteDirectory(base_path('vendor/orchestra/testbench-core/laravel/app/DTOs'));
 });
 
 afterEach(function () {
     // Clean up any test files
     File::deleteDirectory(base_path('temp_test_traits'));
+    File::deleteDirectory(base_path('temp_test_traits_output'));
     File::deleteDirectory(base_path('vendor/orchestra/testbench-core/laravel/temp_test_traits'));
+    File::deleteDirectory(base_path('vendor/orchestra/testbench-core/laravel/app/DTOs'));
 });
 
 it('generates DTO with traits included', function () {
@@ -53,6 +57,7 @@ YAML;
     // Generate DTO
     $result = Artisan::call('dto:generate', [
         'filename' => 'trait-test.yaml',
+        '--force' => true,
     ]);
 
     expect($result)->toBe(0);
