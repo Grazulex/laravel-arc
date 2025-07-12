@@ -2,16 +2,20 @@
 
 <div align="center">
   <p><strong>Comprehensive guide to Laravel Arc's built-in traits</strong></p>
+  <p><strong>Guide complet des traits intégrés de Laravel Arc</strong></p>
 </div>
 
 Laravel Arc DTOs are powered by three essential traits that provide validation, data conversion, and utility functionality. This guide covers all the methods available and how to use them effectively.
 
-## 📋 Table of Contents
+*Les DTOs Laravel Arc sont alimentés par trois traits essentiels qui fournissent des fonctionnalités de validation, de conversion de données et d'utilitaires. Ce guide couvre toutes les méthodes disponibles et comment les utiliser efficacement.*
 
-- [Overview](#overview)
+## 📋 Table of Contents / Table des matières
+
+- [Overview / Vue d'ensemble](#overview)
 - [ValidatesData Trait](#validatesdata-trait)
 - [ConvertsData Trait](#convertsdata-trait)
 - [DtoUtilities Trait](#dtoutilities-trait)
+- [French Documentation / Documentation française](#documentation-française)
 - [Best Practices](#best-practices)
 - [Examples](#examples)
 
@@ -44,6 +48,135 @@ final class UserDTO
 - ✅ **Reusability** - All DTOs benefit from the same utility methods
 - ✅ **Maintainability** - Single implementation for standard methods
 - ✅ **Testability** - Traits are tested independently
+
+## Documentation française
+
+### Traits intégrés dans Laravel Arc
+
+Chaque DTO généré inclut automatiquement trois traits puissants :
+
+#### 1. **ValidatesData** - Méthodes de validation
+```php
+// Valide et retourne les données
+$validated = UserDTO::validate($data);
+
+// Crée une instance de validator
+$validator = UserDTO::validator($data);
+
+// Vérifie si la validation passe
+$passes = UserDTO::passes($data);
+
+// Vérifie si la validation échoue
+$fails = UserDTO::fails($data);
+```
+
+#### 2. **ConvertsData** - Méthodes de conversion
+```php
+// Convertit une collection de modèles
+$userDtos = UserDTO::fromModels($models);
+
+// Convertit en JSON
+$json = $userDto->toJson($options);
+
+// Convertit en Collection
+$collection = $userDto->toCollection();
+
+// Filtre les clés spécifiées
+$filtered = $userDto->only($keys);
+
+// Exclut les clés spécifiées
+$excluded = $userDto->except($keys);
+```
+
+#### 3. **DtoUtilities** - Méthodes utilitaires
+```php
+// Récupère les noms des propriétés
+$properties = $userDto->getProperties();
+
+// Vérifie l'existence d'une propriété
+$hasProperty = $userDto->hasProperty($property);
+
+// Récupère la valeur d'une propriété
+$value = $userDto->getProperty($property);
+
+// Crée une nouvelle instance avec des propriétés modifiées
+$modified = $userDto->with($properties);
+
+// Compare deux DTOs
+$equal = $userDto->equals($other);
+```
+
+### Avantages de cette approche
+
+- ✅ **Pas de redondance** - Les méthodes standard sont dans les traits
+- ✅ **Extensibilité** - L'utilisateur peut toujours étendre le DTO avec d'autres classes
+- ✅ **Réutilisabilité** - Tous les DTOs bénéficient des mêmes méthodes utilitaires
+- ✅ **Maintenabilité** - Une seule implémentation à maintenir pour les méthodes standard
+- ✅ **Testabilité** - Les traits sont testés indépendamment
+
+### Exemple complet
+
+```php
+<?php
+
+namespace App\DTOs;
+
+use App\Models\User;
+use Carbon\Carbon;
+use Grazulex\LaravelArc\Support\Traits\ConvertsData;
+use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
+use Grazulex\LaravelArc\Support\Traits\ValidatesData;
+
+final class UserDTO
+{
+    use ConvertsData;
+    use DtoUtilities;
+    use ValidatesData;
+
+    public function __construct(
+        public readonly string $id,
+        public readonly string $name,
+        public readonly string $email,
+        public readonly Carbon $created_at,
+        public readonly ?Carbon $updated_at = null,
+    ) {}
+
+    public static function fromModel(User $model): self
+    {
+        return new self(
+            id: $model->id,
+            name: $model->name,
+            email: $model->email,
+            created_at: $model->created_at,
+            updated_at: $model->updated_at,
+        );
+    }
+
+    public function toArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'name' => $this->name,
+            'email' => $this->email,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+        ];
+    }
+
+    public static function rules(): array
+    {
+        return [
+            'id' => ['required', 'uuid'],
+            'name' => ['required', 'string', 'min:2', 'max:100'],
+            'email' => ['required', 'string', 'email', 'unique:users'],
+            'created_at' => ['required', 'date'],
+        ];
+    }
+
+    // La méthode validate() est fournie par le trait ValidatesData
+    // Plus besoin de la dupliquer dans chaque DTO !
+}
+```
 
 ## ValidatesData Trait
 

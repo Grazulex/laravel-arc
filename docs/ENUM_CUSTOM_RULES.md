@@ -9,6 +9,8 @@ En plus de la règle `enum:` standard de Laravel, Laravel Arc propose deux règl
 - `in_enum` : Alternative à la règle `enum:` avec des vérifications supplémentaires
 - `enum_exists` : Vérifie l'existence de la classe enum et valide la valeur
 
+**💡 Nouveau !** Les DTOs générés incluent maintenant des traits puissants pour la validation, la conversion et les utilitaires. Voir le [Guide des Traits](TRAITS_GUIDE.md) pour plus de détails.
+
 ## Configuration YAML
 
 ### Enum de base avec classe PHP
