@@ -34,15 +34,25 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 
 Get started with Laravel Arc in minutes:
 
-```bash
-# Install the package
-composer require grazulex/laravel-arc
 
-# Create your first DTO definition
+### 1. Install the package
+```bash
+composer require grazulex/laravel-arc
+```
+
+### 2a. Create a new DTO definition via a command
+```bash
+php artisan dto:definition-init UserDTO --model=App\Models\User
+```
+
+OR
+
+### 2b.1 Create manually your first DTO definition
+```bash
 mkdir database/dto_definitions
 ```
 
-Create `database/dto_definitions/user.yaml`:
+### 2b.2 Create database/dto_definitions/user.yaml
 ```yaml
 header:
   dto: UserDTO
@@ -66,11 +76,14 @@ options:
   namespace: App\DTOs
 ```
 
-```bash
-# Generate the DTO
-php artisan dto:generate user.yaml
+### 3. Generate the DTO
 
-# Use in your code
+```bash
+php artisan dto:generate user.yaml
+```
+
+### 4. Use in your code
+```php
 $user = new UserDTO();
 $user->name = 'John Doe';
 $user->email = 'john@example.com';
@@ -83,7 +96,7 @@ $user->email = 'john@example.com';
 - 🔧 [Configuration](docs/GETTING_STARTED.md#configuration) - Customize paths and settings
 
 ### Core Concepts
-- 📝 [YAML Schema Reference](YAML_SCHEMA.md) - Complete YAML structure documentation
+- 📝 [YAML Schema Reference](docs/YAML_SCHEMA.md) - Complete YAML structure documentation
 - 🏷️ [Field Types Guide](docs/FIELD_TYPES.md) - All available field types with examples
 - 🔗 [Relationships](docs/RELATIONSHIPS.md) - Working with Eloquent relationships
 - ✅ [Validation Rules](docs/FIELD_TYPES.md#validation-rules) - Laravel validation integration
@@ -94,10 +107,10 @@ $user->email = 'john@example.com';
 
 ### Advanced Features
 - 🚀 [Advanced Usage](docs/ADVANCED_USAGE.md) - Programmatic generation and custom patterns
-- 🔄 [Nested DTOs](NESTED_DTO_GUIDE.md) - Complex nested relationships
-- 📁 [Path Resolution](DTO_PATH_RESOLVER_GUIDE.md) - Custom namespace organization
-- 🚨 [Error Handling](DTO_GENERATION_EXCEPTION_GUIDE.md) - Comprehensive error management
-- 🔢 [Enum Support](ENUM_CUSTOM_RULES.md) - Advanced enum validation
+- 🔄 [Nested DTOs](docs/NESTED_DTO_GUIDE.md) - Complex nested relationships
+- 📁 [Path Resolution](docs/DTO_PATH_RESOLVER_GUIDE.md) - Custom namespace organization
+- 🚨 [Error Handling](docs/DTO_GENERATION_EXCEPTION_GUIDE.md) - Comprehensive error management
+- 🔢 [Enum Support](docs/ENUM_CUSTOM_RULES.md) - Advanced enum validation
 
 ## 🎯 Use Cases
 
