@@ -101,6 +101,7 @@ $user->email = 'john@example.com';
 
 ## Next Steps
 
+- 🎯 [**DTO Usage Guide**](DTO_USAGE_GUIDE.md) - **Essential guide for using DTOs in your Laravel application**
 - 📘 [YAML Schema Documentation](YAML_SCHEMA.md) - Learn about YAML structure and options
 - 🔧 [Field Types Reference](FIELD_TYPES.md) - Explore all available field types
 - 🔗 [Relationships Guide](RELATIONSHIPS.md) - Working with Eloquent relationships

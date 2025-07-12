@@ -11,6 +11,9 @@ This directory contains carefully crafted example YAML definition files showcasi
 ### 🎯 Basic Examples
 Perfect for getting started with Laravel Arc.
 
+**💡 Want to learn how to use these DTOs in your application?** 
+Check out our [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) for comprehensive examples of using DTOs in controllers, services, validation, and more!
+
 #### [`user.yaml`](user.yaml)
 A simple user DTO demonstrating:
 - Basic field types and validation
@@ -290,6 +293,7 @@ options:
 
 ## 📚 Additional Resources
 
+- 🎯 [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) - **How to use DTOs in your Laravel application**
 - 📖 [Getting Started Guide](../docs/GETTING_STARTED.md)
 - 🏷️ [Field Types Reference](../docs/FIELD_TYPES.md)
 - 🔗 [Relationships Guide](../docs/RELATIONSHIPS.md)
