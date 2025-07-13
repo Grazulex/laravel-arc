@@ -15,9 +15,6 @@ fields:
   
 relations:
   # Eloquent relationship definitions (optional)
-  
-options:
-  # Generation options (optional)
 ```
 
 ## Header Section
@@ -29,14 +26,16 @@ The header section contains metadata about the DTO being generated.
 | Attribute | Type | Description | Example |
 |-----------|------|-------------|---------|
 | `dto` | string | Name of the DTO class to generate | `UserDTO` |
+| `model` | string | Associated Eloquent model class | `App\Models\User` |
+| `namespace` | string | Namespace for the generated DTO | `App\DTOs` |
+| `traits` | array | List of behavioral traits to include | `["HasTimestamps", "HasUuid"]` |
 
 ### Optional Attributes
 
 | Attribute | Type | Description | Example |
 |-----------|------|-------------|---------|
 | `table` | string | Database table name (for reference) | `users` |
-| `model` | string | Associated Eloquent model class | `App\Models\User` |
-| `use` | array/string | Use statements for traits, imports, or other classes | `["App\Traits\HasUuid", "Validator"]` |
+| `use` | array/string | Use statements for traits, imports, or other classes | `["App\Traits\CustomTrait", "Validator"]` |
 | `extends` | string | Base class that the DTO should extend | `BaseDTO` |
 
 ### Example
@@ -46,8 +45,14 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
   use:
-    - App\Traits\HasUuid
+    - App\Traits\CustomTrait
+```
     - Illuminate\Support\Facades\Validator
   extends: BaseDTO
 ```
@@ -490,7 +495,102 @@ header:
   table: products
   model: App\Models\Product
   use:
-    - App\Traits\HasUuid
+    - App\Traits\CustomTrait
+```
+
+## Behavioral Traits System
+
+Laravel Arc now uses a trait-based system for adding behavioral functionality to DTOs. Instead of using the deprecated `options` section, you can now specify traits in the `header.traits` array.
+
+### Available Behavioral Traits
+
+| Trait | Description | Fields Added | Methods Added |
+|-------|-------------|--------------|---------------|
+| `HasTimestamps` | Adds timestamp fields and methods | `created_at`, `updated_at` | `touch()`, `wasRecentlyCreated()`, `getAge()` |
+| `HasUuid` | Adds UUID field and generation | `id` (UUID type) | UUID validation and generation |
+| `HasSoftDeletes` | Adds soft deletion support | `deleted_at` | Soft delete methods |
+| `HasVersioning` | Adds versioning support | `version` | `nextVersion()`, `isNewerThan()`, `getVersionInfo()` |
+| `HasTagging` | Adds tagging functionality | `tags` | `addTag()`, `removeTag()`, `hasTag()`, `getTags()` |
+| `HasAuditing` | Adds audit trail support | `created_by`, `updated_by` | `createAuditTrail()`, `setCreator()`, `setUpdater()` |
+| `HasCaching` | Adds caching capabilities | Caching metadata | `cache()`, `clearCache()`, `getCacheKey()`, `isCached()` |
+
+### Examples
+
+**Basic traits usage:**
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+
+fields:
+  name:
+    type: string
+    validation: [required, string, max:255]
+  email:
+    type: string
+    validation: [required, email]
+```
+
+**Advanced traits usage:**
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
+
+fields:
+  name:
+    type: string
+    validation: [required, string, max:255]
+  email:
+    type: string
+    validation: [required, email]
+  status:
+    type: string
+    default: "active"
+    validation: [required, in:active,inactive]
+```
+
+### Migration from Options
+
+If you have existing DTOs using the old `options` system, here's how to migrate:
+
+**Old format (deprecated):**
+```yaml
+options:
+  timestamps: true
+  soft_deletes: true
+  uuid: true
+  versioning: true
+  taggable: true
+  auditable: true
+  cacheable: true
+```
+
+**New format (recommended):**
+```yaml
+header:
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes
+    - HasUuid
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
+```
     - App\Traits\Auditable
   extends: BaseDTO
 

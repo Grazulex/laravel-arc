@@ -1,0 +1,213 @@
+# Individual Behavioral Traits Examples
+# This file demonstrates each behavioral trait individually
+
+# 1. HasTimestamps trait - Adds timestamp fields and methods
+---
+header:
+  dto: UserWithTimestampsDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasTimestamps adds:
+# - created_at: datetime field
+# - updated_at: datetime field
+# - touch() method - updates updated_at to current time
+# - wasRecentlyCreated() method - returns true if created < 1 minute ago
+# - getAge() method - returns CarbonInterval since creation
+
+---
+# 2. HasUuid trait - Adds UUID field and generation
+header:
+  dto: UserWithUuidDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasUuid
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasUuid adds:
+# - id: UUID field (required)
+# - UUID validation rules
+# - UUID generation methods
+
+---
+# 3. HasSoftDeletes trait - Adds soft deletion support
+header:
+  dto: UserWithSoftDeletesDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasSoftDeletes
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasSoftDeletes adds:
+# - deleted_at: datetime field (nullable)
+# - Soft delete related methods and validation
+
+---
+# 4. HasVersioning trait - Adds versioning support
+header:
+  dto: UserWithVersioningDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasVersioning
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasVersioning adds:
+# - version: integer field
+# - nextVersion() method - creates new version with incremented version number
+# - isNewerThan(self $other) method - checks if this version is newer
+# - getVersionInfo() method - returns version metadata
+
+---
+# 5. HasTagging trait - Adds tagging functionality
+header:
+  dto: UserWithTaggingDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTagging
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasTagging adds:
+# - tags: array field
+# - addTag(string $tag) method - adds a tag
+# - removeTag(string $tag) method - removes a tag
+# - hasTag(string $tag) method - checks if tag exists
+# - getTags() method - returns all tags
+# - withTag(array $dtos, string $tag) static method - filters DTOs by tag
+
+---
+# 6. HasAuditing trait - Adds audit trail support
+header:
+  dto: UserWithAuditingDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasAuditing
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasAuditing adds:
+# - created_by: string field (nullable)
+# - updated_by: string field (nullable)
+# - createAuditTrail(string $action, ?string $userId) method - creates audit entry
+# - setCreator(string $userId) method - sets creator
+# - setUpdater(string $userId) method - sets updater
+# - getAuditInfo() method - returns audit information
+
+---
+# 7. HasCaching trait - Adds caching capabilities
+header:
+  dto: UserWithCachingDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasCaching
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+
+# HasCaching adds:
+# - Cache-related metadata
+# - getCacheKey() method - returns cache key
+# - cache(int $ttl = 3600) method - caches the DTO
+# - fromCache(string $cacheKey) static method - retrieves from cache
+# - clearCache() method - removes from cache
+# - isCached() method - checks if cached
+# - getCacheMetadata() method - returns cache metadata
+
+---
+# 8. Combined traits example - Common combination
+header:
+  dto: UserWithCommonTraitsDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+  status:
+    type: string
+    default: "active"
+    validation: [required, in:active,inactive,pending]
+
+# This combination provides:
+# - UUID-based IDs
+# - Automatic timestamps
+# - Soft deletion capability
+# - All related methods from each trait

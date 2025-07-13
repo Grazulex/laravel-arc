@@ -1,29 +1,33 @@
-# Simple user DTO example with custom header features
+# Simple user DTO example with modern trait-based system
 header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasUuid
+    - HasTimestamps
   use:
-    - App\Traits\HasUuid
+    - App\DTOs\ProfileDTO
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
+    transformers: [trim, title_case]
   
   email:
     type: string
     required: true
-    rules: [email, unique:users]
+    validation: [required, email, unique:users]
+    transformers: [trim, lowercase]
   
   email_verified_at:
     type: datetime
+    required: false
+    validation: [nullable, date]
   
   # Profile as nested DTO
   profile:
@@ -40,7 +44,11 @@ relations:
     type: belongsToMany
     target: App\Models\Role
 
-options:
-  timestamps: true
-  soft_deletes: false
-  namespace: App\DTOs
+# The HasUuid trait automatically adds:
+# - id field (UUID type)
+# - UUID validation and generation methods
+
+# The HasTimestamps trait automatically adds:
+# - created_at field (datetime)
+# - updated_at field (datetime)
+# - touch(), wasRecentlyCreated(), getAge() methods

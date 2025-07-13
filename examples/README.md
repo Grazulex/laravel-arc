@@ -9,7 +9,7 @@ This directory contains carefully crafted example YAML definition files showcasi
 ## 📁 Example Categories
 
 ### 🎯 Basic Examples
-Perfect for getting started with Laravel Arc.
+Perfect for getting started with Laravel Arc's new trait-based system.
 
 **💡 Want to learn how to use these DTOs in your application?** 
 Check out our [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) for comprehensive examples of using DTOs in controllers, services, validation, and more!
@@ -17,9 +17,24 @@ Check out our [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) for comprehensiv
 #### [`user.yaml`](user.yaml)
 A simple user DTO demonstrating:
 - Basic field types and validation
+- Modern trait-based system (HasUuid, HasTimestamps)
 - Header features with custom `use` statements
 - Extends clause for base classes
-- Timestamp and soft delete options
+- Eloquent relationships
+
+#### [`user-with-all-traits.yaml`](user-with-all-traits.yaml)
+A comprehensive example showcasing all behavioral traits:
+- All 7 behavioral traits (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching)
+- Complete field configuration with validation and transformers
+- Complex relationships and enum support
+- Documentation of all auto-generated fields and methods
+
+#### [`behavioral-traits-examples.yaml`](behavioral-traits-examples.yaml)
+Individual demonstrations of each behavioral trait:
+- Each trait shown separately with its fields and methods
+- Common trait combinations
+- Migration examples from old options system
+- Detailed documentation of trait capabilities
 
 #### [`advanced-user.yaml`](advanced-user.yaml)
 An advanced user DTO showcasing:
@@ -44,8 +59,54 @@ A profile DTO designed for nested relationships:
 - Optimized for use as nested DTO
 - Clean field structure
 
-### 🚀 Advanced Options Examples
-New advanced options demonstrating Laravel Arc's enhanced capabilities.
+### 🚀 Behavioral Traits System
+Laravel Arc now uses a powerful trait-based system for adding behavioral functionality to DTOs.
+
+#### Available Behavioral Traits
+Instead of using the old `options` system, Laravel Arc now provides behavioral traits that can be mixed and matched:
+
+| Trait | Description | Auto-Generated Fields | Auto-Generated Methods |
+|-------|-------------|----------------------|----------------------|
+| `HasTimestamps` | Timestamp management | `created_at`, `updated_at` | `touch()`, `wasRecentlyCreated()`, `getAge()` |
+| `HasUuid` | UUID generation | `id` (UUID type) | UUID validation and generation |
+| `HasSoftDeletes` | Soft deletion | `deleted_at` | Soft delete methods |
+| `HasVersioning` | Version control | `version` | `nextVersion()`, `isNewerThan()`, `getVersionInfo()` |
+| `HasTagging` | Tagging system | `tags` | `addTag()`, `removeTag()`, `hasTag()`, `getTags()` |
+| `HasAuditing` | Audit trails | `created_by`, `updated_by` | `createAuditTrail()`, `setCreator()`, `setUpdater()` |
+| `HasCaching` | Caching support | Cache metadata | `cache()`, `clearCache()`, `getCacheKey()`, `isCached()` |
+
+#### Migration from Options System
+**Old format (deprecated):**
+```yaml
+options:
+  timestamps: true
+  soft_deletes: true
+  uuid: true
+  versioning: true
+  taggable: true
+  auditable: true
+  cacheable: true
+```
+
+**New format (recommended):**
+```yaml
+header:
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes
+    - HasUuid
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
+```
+
+#### [`behavioral-traits-examples.yaml`](behavioral-traits-examples.yaml)
+Individual demonstrations of each behavioral trait:
+- Each trait shown separately with its fields and methods
+- Common trait combinations
+- Migration examples from old options system
+- Detailed documentation of trait capabilities
 
 #### [`advanced-options.yaml`](advanced-options.yaml)
 A comprehensive demonstration of all new advanced options:

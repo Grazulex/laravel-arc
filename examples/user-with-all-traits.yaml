@@ -1,0 +1,99 @@
+# Complete example showing all available behavioral traits
+# This demonstrates how to use Laravel Arc's new trait-based system
+
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  
+  # All available behavioral traits
+  traits:
+    - HasTimestamps      # Adds created_at, updated_at fields and methods
+    - HasUuid           # Adds id field with UUID type and generation
+    - HasSoftDeletes    # Adds deleted_at field and soft delete methods
+    - HasVersioning     # Adds version field and versioning methods
+    - HasTagging        # Adds tags field and tagging methods
+    - HasAuditing       # Adds created_by, updated_by fields and audit methods
+    - HasCaching        # Adds caching capabilities and methods
+    
+  # Custom use statements if needed
+  use:
+    - App\Traits\CustomTrait
+    - App\Enums\UserStatus
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, min:2, max:100]
+    transformers: [trim, title_case]
+    
+  email:
+    type: string
+    required: true
+    validation: [required, email, unique:users]
+    transformers: [trim, lowercase]
+    
+  status:
+    type: enum
+    enum_class: App\Enums\UserStatus
+    default: "active"
+    validation: [required, in:active,inactive,pending]
+    
+  age:
+    type: integer
+    required: false
+    validation: [nullable, integer, min:0, max:150]
+    transformers: [abs]
+    
+  phone:
+    type: string
+    required: false
+    validation: [nullable, string, regex:/^[0-9\-\+\s\(\)]+$/]
+    transformers: [normalize_phone]
+    
+  profile_picture:
+    type: string
+    required: false
+    validation: [nullable, url]
+    
+  bio:
+    type: text
+    required: false
+    validation: [nullable, string, max:1000]
+    transformers: [trim]
+
+relations:
+  profile:
+    type: hasOne
+    target: App\Models\Profile
+    
+  posts:
+    type: hasMany
+    target: App\Models\Post
+    
+  roles:
+    type: belongsToMany
+    target: App\Models\Role
+    
+  company:
+    type: belongsTo
+    target: App\Models\Company
+
+# Generated DTO will include these behavioral trait fields automatically:
+# - id (UUID) - from HasUuid trait
+# - created_at, updated_at (datetime) - from HasTimestamps trait  
+# - deleted_at (datetime, nullable) - from HasSoftDeletes trait
+# - version (integer) - from HasVersioning trait
+# - tags (array) - from HasTagging trait
+# - created_by, updated_by (string) - from HasAuditing trait
+# - Cache-related metadata - from HasCaching trait
+
+# Generated DTO will include these behavioral trait methods automatically:
+# HasTimestamps: touch(), wasRecentlyCreated(), getAge()
+# HasUuid: UUID generation and validation
+# HasSoftDeletes: Soft delete methods
+# HasVersioning: nextVersion(), isNewerThan(), getVersionInfo()
+# HasTagging: addTag(), removeTag(), hasTag(), getTags()
+# HasAuditing: createAuditTrail(), setCreator(), setUpdater(), getAuditInfo()
+# HasCaching: cache(), clearCache(), getCacheKey(), isCached(), getCacheMetadata()
