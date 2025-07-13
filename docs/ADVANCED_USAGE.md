@@ -7,7 +7,7 @@ This guide covers advanced features and techniques for Laravel Arc, including pr
 - [Programmatic DTO Generation](#programmatic-dto-generation)
 - [Path Resolver for Namespace Organization](#path-resolver-for-namespace-organization)
 - [Enhanced Error Handling](#enhanced-error-handling)
-- [Advanced Options Configuration](#advanced-options-configuration)
+- [Advanced Behavioral Traits Configuration](#advanced-behavioral-traits-configuration)
 - [Custom Header Statements](#custom-header-statements)
 - [Nested DTO Relationships](#nested-dto-relationships)
 - [Environment-Specific Configuration](#environment-specific-configuration)
@@ -60,12 +60,13 @@ $definition = [
         'email' => [
             'type' => 'string',
             'required' => true,
-            'rules' => ['email', 'unique:users'],
+            'validation' => ['email', 'unique:users'],
         ],
     ],
-    'options' => [
-        'timestamps' => true,
+    'header' => [
+        'dto' => 'DynamicUserDTO',
         'namespace' => 'App\DTOs\Dynamic',
+        'traits' => ['HasTimestamps', 'HasUuid'],
     ],
 ];
 
@@ -106,7 +107,7 @@ class BatchDtoGenerator
 
     private function resolveOutputPath(array $definition): string
     {
-        $namespace = $definition['options']['namespace'] ?? 'App\DTOs';
+        $namespace = $definition['header']['namespace'] ?? 'App\DTOs';
         $dtoName = $definition['header']['dto'];
         
         return DtoPathResolver::resolveOutputPath($dtoName, $namespace);
@@ -289,31 +290,30 @@ class CustomDtoGenerator
 }
 ```
 
-## Advanced Options Configuration
+## Advanced Behavioral Traits Configuration
 
-Laravel Arc provides powerful advanced options that can be configured in your YAML files to add specialized functionality to your DTOs. These options automatically generate additional methods and fields.
+Laravel Arc provides powerful behavioral traits that can be configured in your YAML files to add specialized functionality to your DTOs. These traits automatically generate additional methods and fields.
 
-### UUID Option
+### HasUuid Trait
 
 Enable automatic UUID generation and helper methods:
 
 ```yaml
-options:
-  uuid: true
+header:
+  traits:
+    - HasUuid
 ```
 
 **Generated Features:**
 - Adds `id` field with UUID type and validation
-- Generates `generateUuid()` static method
-- Generates `withGeneratedUuid()` static method
+- Generates UUID validation rules
+- Provides UUID generation capabilities
 
 **Usage:**
 ```php
-// Generate UUID
-$uuid = UserDTO::generateUuid();
-
-// Create DTO with auto-generated UUID
-$userDto = UserDTO::withGeneratedUuid([
+// The HasUuid trait automatically handles UUID validation
+$userDto = UserDTO::fromArray([
+    'id' => \Illuminate\Support\Str::uuid(),
     'name' => 'John Doe',
     'email' => 'john@example.com'
 ]);

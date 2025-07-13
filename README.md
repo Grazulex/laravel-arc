@@ -27,7 +27,7 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - 🔗 **Eloquent relationships** - Full support for Laravel relationship types
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
 - 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
-- 🎯 **Powerful trait system** - Built-in traits for validation, data conversion, and utilities
+- 🎯 **Powerful trait system** - Built-in behavioral traits for common functionality (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching) plus 3 functional traits (ValidatesData, ConvertsData, DtoUtilities) in every DTO
 - 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, HTML, PHP Array, Query String, MessagePack, Collection)
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
@@ -53,14 +53,15 @@ php artisan dto:definition-init UserDTO --model=App\\Models\\User
 **2. Define your DTO in YAML**
 ```yaml
 # dto-definitions/UserDTO.yaml
-name: UserDTO
-namespace: App\DTOs
+header:
+  dto: UserDTO
+  namespace: App\DTOs
+  model: App\Models\User
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: integer
-    validation: [required, integer]
-  
   name:
     type: string
     validation: [required, string, max:255]

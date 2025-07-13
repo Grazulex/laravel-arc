@@ -1,54 +1,66 @@
-# Product DTO with all features
+# Product DTO with modern trait-based system
 header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
   use:
-    - App\Traits\HasUuid
     - App\Traits\Sluggable
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
-    rules: [min:2, max:255]
+    validation: [required, string, min:2, max:255]
+    transformers: [trim, title_case]
   
   description:
     type: text
-    rules: [max:1000]
+    required: false
+    validation: [nullable, string, max:1000]
+    transformers: [trim]
   
   price:
     type: decimal
-    rules: [numeric, min:0]
+    required: true
+    validation: [required, numeric, min:0]
   
   stock_quantity:
     type: integer
     default: 0
-    rules: [integer, min:0]
+    validation: [integer, min:0]
   
   is_active:
     type: boolean
     default: true
+    validation: [boolean]
   
   status:
     type: enum
     values: [draft, published, archived]
     default: draft
+    validation: [required, in:draft,published,archived]
   
   tags:
     type: array
-    rules: [array, distinct]
+    required: false
+    validation: [nullable, array, distinct]
   
   specifications:
     type: json
+    required: false
+    validation: [nullable, json]
   
   published_at:
     type: datetime
+    required: false
+    validation: [nullable, date]
 
 relations:
   category:
@@ -59,7 +71,8 @@ relations:
     type: hasMany
     target: App\Models\Review
 
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
+# - HasSoftDeletes: deleted_at
+# - HasVersioning: version

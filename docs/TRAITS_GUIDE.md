@@ -5,24 +5,43 @@
   <p><strong>Guide complet des traits intégrés de Laravel Arc</strong></p>
 </div>
 
-Laravel Arc DTOs are powered by three essential traits that provide validation, data conversion, and utility functionality. This guide covers all the methods available and how to use them effectively.
+Laravel Arc DTOs are powered by two types of traits:
 
-*Les DTOs Laravel Arc sont alimentés par trois traits essentiels qui fournissent des fonctionnalités de validation, de conversion de données et d'utilitaires. Ce guide couvre toutes les méthodes disponibles et comment les utiliser efficacement.*
+1. **Functional Traits** - Three essential traits automatically included in every DTO that provide validation, data conversion, and utility functionality
+2. **Behavioral Traits** - Optional traits that add specific fields and methods to DTOs (HasTimestamps, HasUuid, HasSoftDeletes, etc.)
+
+This guide covers all the methods available and how to use them effectively.
+
+*Les DTOs Laravel Arc sont alimentés par deux types de traits :*
+
+1. **Traits fonctionnels** - Trois traits essentiels automatiquement inclus dans chaque DTO qui fournissent des fonctionnalités de validation, de conversion de données et d'utilitaires
+2. **Traits comportementaux** - Traits optionnels qui ajoutent des champs et méthodes spécifiques aux DTOs (HasTimestamps, HasUuid, HasSoftDeletes, etc.)
 
 ## 📋 Table of Contents / Table des matières
 
 - [Overview / Vue d'ensemble](#overview)
-- [ValidatesData Trait](#validatesdata-trait)
-- [ConvertsData Trait](#convertsdata-trait)
-- [Advanced Options Generated Methods](#advanced-options-generated-methods)
-- [DtoUtilities Trait](#dtoutilities-trait)
+- [Functional Traits (Automatic) / Traits fonctionnels (automatiques)](#functional-traits)
+  - [ValidatesData Trait](#validatesdata-trait)
+  - [ConvertsData Trait](#convertsdata-trait)
+  - [DtoUtilities Trait](#dtoutilities-trait)
+- [Behavioral Traits (Optional) / Traits comportementaux (optionnels)](#behavioral-traits)
+  - [HasTimestamps Trait](#hastimestamps-trait)
+  - [HasUuid Trait](#hasuuid-trait)
+  - [HasSoftDeletes Trait](#hassoftdeletes-trait)
+  - [HasVersioning Trait](#hasversioning-trait)
+  - [HasTagging Trait](#hastagging-trait)
+  - [HasAuditing Trait](#hasauditing-trait)
+  - [HasCaching Trait](#hascaching-trait)
 - [French Documentation / Documentation française](#documentation-française)
 - [Best Practices](#best-practices)
 - [Examples](#examples)
 
 ## Overview
 
-Every generated DTO automatically includes these three traits:
+Laravel Arc uses a two-tier trait system:
+
+### Functional Traits (Automatic)
+Every generated DTO automatically includes these three functional traits:
 
 ```php
 <?php
@@ -43,12 +62,41 @@ final class UserDTO
 }
 ```
 
+### Behavioral Traits (Optional)
+You can optionally include behavioral traits that add specific fields and methods:
+
+```yaml
+# In your YAML definition
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+```
+
+**Available Behavioral Traits:**
+- `HasTimestamps` - Adds created_at, updated_at fields and methods
+- `HasUuid` - Adds id field with UUID type and generation
+- `HasSoftDeletes` - Adds deleted_at field and soft delete methods
+- `HasVersioning` - Adds version field and versioning methods
+- `HasTagging` - Adds tags field and tagging methods
+- `HasAuditing` - Adds created_by, updated_by fields and audit methods
+- `HasCaching` - Adds caching capabilities and methods
+
 **Benefits:**
-- ✅ **No code duplication** - Standard methods are provided by traits
+- ✅ **No code duplication** - Standard methods are provided by functional traits
 - ✅ **Extensibility** - DTOs can still extend other classes
+- ✅ **Behavioral composability** - Mix and match behavioral traits as needed
 - ✅ **Reusability** - All DTOs benefit from the same utility methods
 - ✅ **Maintainability** - Single implementation for standard methods
 - ✅ **Testability** - Traits are tested independently
+
+## Functional Traits
+
+These three traits are automatically included in every generated DTO and provide core functionality.
 
 ## Documentation française
 
@@ -878,6 +926,285 @@ $isNewer = $v2->isNewerThan($userDto); // true
 // Check features
 $hasTag = $userDto->hasTag('premium'); // true
 $slug = $userDto->getSlug(); // "john-doe"
+$isCached = $userDto->isCached(); // true
+
+// Create audit trail
+$audit = $userDto->createAuditTrail('created', $currentUserId);
+```
+
+## Behavioral Traits
+
+These traits can be optionally included in your DTOs by specifying them in the YAML `header.traits` array.
+
+### HasTimestamps Trait
+
+Adds timestamp fields and methods to DTOs.
+
+**Auto-Generated Fields:**
+- `created_at` (datetime, nullable)
+- `updated_at` (datetime, nullable)
+
+**Available Methods:**
+
+#### `touch(): static`
+Updates the updated_at timestamp to the current time.
+
+```php
+$touchedDto = $userDto->touch();
+```
+
+#### `wasRecentlyCreated(): bool`
+Returns true if the DTO was created less than 1 minute ago.
+
+```php
+$isRecent = $userDto->wasRecentlyCreated(); // true/false
+```
+
+#### `getAge(): \Carbon\CarbonInterval`
+Returns the age of the DTO as a CarbonInterval.
+
+```php
+$age = $userDto->getAge(); // CarbonInterval object
+```
+
+### HasUuid Trait
+
+Adds UUID field and generation capabilities.
+
+**Auto-Generated Fields:**
+- `id` (UUID type, required)
+
+**Features:**
+- Automatic UUID validation
+- UUID generation methods
+- Required field validation
+
+### HasSoftDeletes Trait
+
+Adds soft deletion support to DTOs.
+
+**Auto-Generated Fields:**
+- `deleted_at` (datetime, nullable)
+
+**Features:**
+- Soft delete timestamp tracking
+- Soft delete validation rules
+
+### HasVersioning Trait
+
+Adds version control capabilities.
+
+**Auto-Generated Fields:**
+- `version` (integer)
+
+**Available Methods:**
+
+#### `nextVersion(): static`
+Creates a new version with incremented version number.
+
+```php
+$v1 = $userDto; // version: 1
+$v2 = $userDto->nextVersion(); // version: 2
+```
+
+#### `isNewerThan(self $other): bool`
+Checks if this DTO version is newer than another.
+
+```php
+$isNewer = $v2->isNewerThan($v1); // true
+```
+
+#### `getVersionInfo(): array`
+Returns version information.
+
+```php
+$info = $userDto->getVersionInfo();
+// Returns: ['version' => 1, 'is_latest' => true]
+```
+
+### HasTagging Trait
+
+Adds tagging functionality to DTOs.
+
+**Auto-Generated Fields:**
+- `tags` (array)
+
+**Available Methods:**
+
+#### `addTag(string $tag): static`
+Adds a tag to the DTO.
+
+```php
+$taggedDto = $userDto->addTag('featured');
+```
+
+#### `removeTag(string $tag): static`
+Removes a tag from the DTO.
+
+```php
+$untaggedDto = $userDto->removeTag('featured');
+```
+
+#### `hasTag(string $tag): bool`
+Checks if the DTO has a specific tag.
+
+```php
+$hasTag = $userDto->hasTag('featured'); // true/false
+```
+
+#### `getTags(): array`
+Returns all tags.
+
+```php
+$tags = $userDto->getTags(); // ['featured', 'premium']
+```
+
+#### `withTag(array $dtos, string $tag): array`
+Static method to filter DTOs by tag.
+
+```php
+$featuredDtos = UserDTO::withTag($allDtos, 'featured');
+```
+
+### HasAuditing Trait
+
+Adds audit trail support to DTOs.
+
+**Auto-Generated Fields:**
+- `created_by` (string, nullable)
+- `updated_by` (string, nullable)
+
+**Available Methods:**
+
+#### `createAuditTrail(string $action, ?string $userId = null): array`
+Creates an audit trail entry.
+
+```php
+$audit = $userDto->createAuditTrail('updated', $userId);
+// Returns: ['action' => 'updated', 'user_id' => '...', 'timestamp' => '...', 'changes' => [...]]
+```
+
+#### `setCreator(string $userId): static`
+Sets the creator user ID.
+
+```php
+$createdDto = $userDto->setCreator($userId);
+```
+
+#### `setUpdater(string $userId): static`
+Sets the updater user ID.
+
+```php
+$updatedDto = $userDto->setUpdater($userId);
+```
+
+#### `getAuditInfo(): array`
+Returns audit information.
+
+```php
+$auditInfo = $userDto->getAuditInfo();
+// Returns: ['created_by' => '...', 'updated_by' => '...', 'created_at' => '...', 'updated_at' => '...']
+```
+
+### HasCaching Trait
+
+Adds caching capabilities to DTOs.
+
+**Auto-Generated Fields:**
+- Cache-related metadata
+
+**Available Methods:**
+
+#### `getCacheKey(): string`
+Returns the cache key for this DTO.
+
+```php
+$key = $userDto->getCacheKey(); // "dto:App\DTOs\UserDTO:hash"
+```
+
+#### `cache(int $ttl = 3600): static`
+Caches the DTO with specified TTL.
+
+```php
+$userDto->cache(3600); // Cache for 1 hour
+```
+
+#### `fromCache(string $cacheKey): ?static`
+Retrieves DTO from cache.
+
+```php
+$cachedDto = UserDTO::fromCache($key);
+```
+
+#### `clearCache(): bool`
+Removes the DTO from cache.
+
+```php
+$cleared = $userDto->clearCache(); // true/false
+```
+
+#### `isCached(): bool`
+Checks if the DTO is cached.
+
+```php
+$isCached = $userDto->isCached(); // true/false
+```
+
+#### `getCacheMetadata(): array`
+Returns cache metadata.
+
+```php
+$metadata = $userDto->getCacheMetadata();
+// Returns: ['key' => '...', 'exists' => true, 'size' => 1024]
+```
+
+### Combined Behavioral Traits Usage
+
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:255]
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+```
+
+```php
+use App\DTOs\UserDTO;
+
+// Create DTO with all behavioral traits
+$userDto = UserDTO::fromArray([
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+])
+->addTag('premium')
+->addTag('verified')
+->setCreator($currentUserId)
+->cache(3600);
+
+// Use versioning
+$v2 = $userDto->nextVersion();
+$isNewer = $v2->isNewerThan($userDto); // true
+
+// Check features
+$hasTag = $userDto->hasTag('premium'); // true
+$age = $userDto->getAge(); // CarbonInterval
 $isCached = $userDto->isCached(); // true
 
 // Create audit trail

@@ -3,19 +3,18 @@ header:
   dto: AddressDTO
   table: addresses
   model: App\Models\Address
-  use:
-    - App\Traits\HasUuid
+  namespace: App\DTOs\Common
+  traits:
+    - HasTimestamps
+    - HasUuid
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   type:
     type: enum
     values: [billing, shipping, both]
     default: both
+    validation: [required, in:billing,shipping,both]
   
   first_name:
     type: string
@@ -107,7 +106,6 @@ relations:
     type: belongsTo
     target: App\Models\Country
 
-options:
-  timestamps: true
-  soft_deletes: false
-  namespace: App\DTOs\Common
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)

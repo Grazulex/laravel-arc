@@ -1,32 +1,39 @@
-# Advanced User DTO with custom header features
+# Advanced User DTO with modern trait-based system
 header:
   dto: AdvancedUserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
   use:
-    - App\Traits\HasUuid
-    - App\Traits\Auditable
+    - App\Traits\CustomTrait
     - Illuminate\Support\Facades\Validator
     - App\Interfaces\UserInterface
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
+    transformers: [trim, title_case]
   
   email:
     type: string
     required: true
-    rules: [email, unique:users]
+    validation: [required, email, unique:users]
+    transformers: [trim, lowercase]
   
   email_verified_at:
     type: datetime
+    required: false
+    validation: [nullable, date]
   
   status:
     type: enum
@@ -53,7 +60,10 @@ relations:
     type: hasOne
     target: App\Models\Profile
 
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
+# - HasSoftDeletes: deleted_at
+# - HasVersioning: version
+# - HasTagging: tags
+# - HasAuditing: created_by, updated_by

@@ -57,30 +57,28 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: uuid
-    required: true
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
   email:
     type: string
     required: true
-    rules: [email, unique:users]
+    validation: [required, email, unique:users]
   email_verified_at:
     type: datetime
+    required: false
 
 relations:
   posts:
     type: hasMany
     target: App\Models\Post
-
-options:
-  timestamps: true
-  namespace: App\DTOs
 ```
 
 ### 3. Generate the DTO
@@ -118,25 +116,25 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: uuid
-    required: true
   name:
     type: string
     required: true
-    rules: [min:2, max:255]
+    validation: [required, string, min:2, max:255]
   price:
     type: decimal
-    rules: [numeric, min:0]
+    validation: [numeric, min:0]
   is_active:
     type: boolean
     default: true
 
-options:
-  timestamps: true
-  namespace: App\DTOs
+# HasTimestamps trait automatically adds created_at and updated_at fields
+# HasUuid trait automatically adds id field with UUID validation
 ```
 
 ### Generate and Use

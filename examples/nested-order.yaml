@@ -3,20 +3,22 @@ header:
   dto: OrderDTO
   table: orders
   model: App\Models\Order
+  namespace: App\DTOs\Ecommerce
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
+    - HasAuditing
   use:
-    - App\Traits\HasUuid
     - App\Services\OrderService
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   order_number:
     type: string
     required: true
-    rules: [unique:orders, size:12]
+    validation: [required, string, unique:orders, size:12]
   
   status:
     type: enum
@@ -119,7 +121,9 @@ relations:
     type: hasMany
     target: App\Models\Shipment
 
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs\Ecommerce
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
+# - HasSoftDeletes: deleted_at
+# - HasVersioning: version
+# - HasAuditing: created_by, updated_by

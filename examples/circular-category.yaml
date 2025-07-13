@@ -3,20 +3,20 @@ header:
   dto: CategoryDTO
   table: categories
   model: App\Models\Category
+  namespace: App\DTOs\Catalog
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
   use:
-    - App\Traits\HasUuid
     - App\Traits\Sluggable
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
   
   slug:
     type: string
@@ -101,7 +101,7 @@ relations:
     type: hasMany
     target: App\Models\Product
 
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs\Catalog
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
+# - HasSoftDeletes: deleted_at
