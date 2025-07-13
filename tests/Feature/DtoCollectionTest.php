@@ -116,7 +116,7 @@ describe('DtoCollection', function () {
     it('collection() method is equivalent to fromModels()', function () {
         $collection1 = TestDto::collection($this->models);
         $collection2 = TestDto::fromModels($this->models);
-        
+
         expect($collection1)->toBeInstanceOf(DtoCollection::class);
         expect($collection2)->toBeInstanceOf(DtoCollection::class);
         expect($collection1->count())->toBe($collection2->count());
@@ -215,15 +215,15 @@ describe('DtoCollection', function () {
     it('supports filtering and sorting as mentioned in the issue', function () {
         // Test the exact syntax mentioned in the issue
         $collection = TestDto::collection($this->models);
-        
+
         // Test where() filtering
         $active = $collection->where('is_active', true);
         expect($active->count())->toBe(2); // Only 2 active users in test data
-        
-        // Test sortBy() 
+
+        // Test sortBy()
         $sorted = $collection->sortBy('name');
         expect($sorted->first()->name)->toBe('Alice Brown'); // First alphabetically
-        
+
         // Test chaining as mentioned in the issue
         $filteredAndSorted = $collection->where('is_active', true)->sortBy('name');
         expect($filteredAndSorted->count())->toBe(2);
