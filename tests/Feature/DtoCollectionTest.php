@@ -18,7 +18,8 @@ final class TestDto
         public readonly int $id,
         public readonly string $name,
         public readonly string $email,
-        public readonly string $status = 'active'
+        public readonly string $status = 'active',
+        public readonly bool $is_active = true
     ) {}
 
     public static function fromModel($model): self
@@ -27,7 +28,8 @@ final class TestDto
             id: $model->id,
             name: $model->name,
             email: $model->email,
-            status: $model->status ?? 'active'
+            status: $model->status ?? 'active',
+            is_active: $model->is_active ?? (($model->status ?? 'active') === 'active')
         );
     }
 
@@ -38,6 +40,7 @@ final class TestDto
             'name' => $this->name,
             'email' => $this->email,
             'status' => $this->status,
+            'is_active' => $this->is_active,
         ];
     }
 
@@ -78,18 +81,18 @@ dataset('resource_formats', [
 ]);
 
 dataset('dto_field_operations', [
-    'select_fields' => ['only', [['name', 'email']], ['name', 'email'], ['id', 'status']],
-    'exclude_fields' => ['except', [['id']], ['name', 'email', 'status'], ['id']],
+    'select_fields' => ['only', [['name', 'email']], ['name', 'email'], ['id', 'status', 'is_active']],
+    'exclude_fields' => ['except', [['id']], ['name', 'email', 'status', 'is_active'], ['id']],
 ]);
 
 // Helper function to create test data
 function createTestModels(): Collection
 {
     return collect([
-        (object) ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com', 'status' => 'active'],
-        (object) ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com', 'status' => 'inactive'],
-        (object) ['id' => 3, 'name' => 'Bob Johnson', 'email' => 'bob@example.com', 'status' => 'active'],
-        (object) ['id' => 4, 'name' => 'Alice Brown', 'email' => 'alice@example.com', 'status' => 'pending'],
+        (object) ['id' => 1, 'name' => 'John Doe', 'email' => 'john@example.com', 'status' => 'active', 'is_active' => true],
+        (object) ['id' => 2, 'name' => 'Jane Smith', 'email' => 'jane@example.com', 'status' => 'inactive', 'is_active' => false],
+        (object) ['id' => 3, 'name' => 'Bob Johnson', 'email' => 'bob@example.com', 'status' => 'active', 'is_active' => true],
+        (object) ['id' => 4, 'name' => 'Alice Brown', 'email' => 'alice@example.com', 'status' => 'pending', 'is_active' => false],
     ]);
 }
 
@@ -196,7 +199,7 @@ describe('DtoCollection', function () {
         $decoded = json_decode($json, true);
 
         expect($json)->toBeString();
-        expect($decoded)->toHaveKeys(['id', 'name', 'email', 'status']);
+        expect($decoded)->toHaveKeys(['id', 'name', 'email', 'status', 'is_active']);
     });
 
     it('validates DTOs', function () {
@@ -204,7 +207,7 @@ describe('DtoCollection', function () {
         expect($valid->isValid())->toBe(true);
         expect($valid->getErrors())->toBeEmpty();
 
-        $invalid = new TestDto(999, '', 'invalid-email');
+        $invalid = new TestDto(999, '', 'invalid-email', 'inactive', false);
         expect($invalid->isValid())->toBe(false);
         expect($invalid->getErrors())->toHaveKeys(['name', 'email']);
     });
@@ -292,6 +295,7 @@ describe('DtoCollection', function () {
         expect($first)->toHaveKeys(['name', 'email']);
         expect($first)->not->toHaveKey('id');
         expect($first)->not->toHaveKey('status');
+        expect($first)->not->toHaveKey('is_active');
     });
 
     it('excludes specific fields', function () {
@@ -301,7 +305,7 @@ describe('DtoCollection', function () {
         expect($excluded->count())->toBe(4);
 
         $first = $excluded->first();
-        expect($first)->toHaveKeys(['name', 'email']);
+        expect($first)->toHaveKeys(['name', 'email', 'is_active']);
         expect($first)->not->toHaveKey('id');
         expect($first)->not->toHaveKey('status');
     });
