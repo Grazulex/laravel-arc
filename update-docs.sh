@@ -39,7 +39,7 @@ show_help() {
     echo "  $0 readme \"Synchroniser le README avec les dernières fonctionnalités\""
     echo "  $0 all \"Mise à jour complète après ajout des fonctionnalités d'export\""
     echo
-    print_message $PURPLE "💡 Le script créera automatiquement un ticket GitHub et l'assignera à Copilot"
+    print_message $PURPLE "💡 Le script créera automatiquement un ticket GitHub"
 }
 
 # Vérifier les arguments
@@ -209,13 +209,12 @@ ISSUE_URL=$(gh issue create \
     --title "$TITLE" \
     --body "$ISSUE_BODY" \
     --label "$LABELS" \
-    --assignee "@me" \
-    --assignee "Copilot")
+    --assignee "@me")
 
 if [ $? -eq 0 ]; then
     print_message $GREEN "✅ Issue créée avec succès !"
     print_message $BLUE "🔗 URL: $ISSUE_URL"
-    print_message $GREEN "👥 Assignée automatiquement à vous et à Copilot"
+    print_message $GREEN "👥 Assignée automatiquement à vous"
     
     # Extraire le numéro de l'issue de l'URL
     ISSUE_NUMBER=$(echo $ISSUE_URL | grep -o '[0-9]*$')
