@@ -228,11 +228,11 @@ See [`api-controller-example.php`](api-controller-example.php) for comprehensive
 - Pagination with DTOs
 - Filtering and searching
 - Error handling with validation
-- **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown)
+- **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown, MessagePack, Collection)
 
 ### Export Formats Usage
 See [`export-formats-example.php`](export-formats-example.php) for comprehensive examples of:
-- **Single DTO exports** in 9 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack)
+- **Single DTO exports** in 10 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
 - **Collection exports** in multiple formats
 - **Real-world controller usage** with format-based responses
 - **Performance considerations** and format recommendations
@@ -266,6 +266,7 @@ See [`collection-methods-example.php`](collection-methods-example.php) for compr
 ### 4. Learn Practical Usage
 - [`api-controller-example.php`](api-controller-example.php) - API controller patterns
 - [`export-formats-example.php`](export-formats-example.php) - Export in multiple formats
+- [`export-interface-example.php`](export-interface-example.php) - Complete export interface guide
 - [`collection-methods-example.php`](collection-methods-example.php) - Collection management
 
 ## 🔧 Advanced Features Demonstrated

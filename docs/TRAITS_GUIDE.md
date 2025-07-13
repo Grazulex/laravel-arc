@@ -343,6 +343,40 @@ foreach ($userDtos as $userDto) {
 }
 ```
 
+#### Collection Export Methods
+
+Laravel Arc also provides static methods for exporting collections directly:
+
+**`collectionToJson(iterable $models): string`**
+```php
+$json = UserDTO::collectionToJson($users);
+// Returns: {"data":[{"id":123,"name":"John Doe","email":"john@example.com"}]}
+```
+
+**`collectionToYaml(iterable $models): string`**
+```php
+$yaml = UserDTO::collectionToYaml($users);
+// Returns YAML with data wrapper
+```
+
+**`collectionToCsv(iterable $models, string $delimiter = ',', string $enclosure = '"', string $escape = '\\', bool $includeHeaders = true): string`**
+```php
+$csv = UserDTO::collectionToCsv($users);
+// Returns CSV with headers
+```
+
+**`collectionToXml(iterable $models, string $rootElement = 'collection', string $itemElement = 'item', string $encoding = 'UTF-8'): string`**
+```php
+$xml = UserDTO::collectionToXml($users, 'users', 'user');
+// Returns XML with custom root and item elements
+```
+
+**`collectionToMarkdownTable(iterable $models, bool $includeHeaders = true): string`**
+```php
+$markdown = UserDTO::collectionToMarkdownTable($users);
+// Returns markdown table with all users
+```
+
 #### `toJson(int $options = 0): string`
 Converts the DTO to JSON string.
 
@@ -374,6 +408,97 @@ $collection = $userDto->toCollection();
 // $collection is a Collection instance with DTO data
 
 $filtered = $collection->filter(fn($value) => !is_null($value));
+```
+
+#### `toYaml(): string`
+Converts the DTO to YAML format.
+
+```php
+$yaml = $userDto->toYaml();
+// Returns: 
+// id: 123
+// name: "John Doe"
+// email: "john@example.com"
+```
+
+#### `toCsv(string $delimiter = ',', string $enclosure = '"', string $escape = '\\', bool $includeHeaders = true): string`
+Converts the DTO to CSV format.
+
+```php
+$csv = $userDto->toCsv();
+// Returns: id,name,email
+//          123,"John Doe",john@example.com
+
+$csvNoHeaders = $userDto->toCsv(includeHeaders: false);
+// Returns: 123,"John Doe",john@example.com
+```
+
+#### `toXml(string $rootElement = 'dto', string $encoding = 'UTF-8'): string`
+Converts the DTO to XML format.
+
+```php
+$xml = $userDto->toXml();
+// Returns: <?xml version="1.0" encoding="UTF-8"?>
+//          <dto>
+//            <id>123</id>
+//            <name>John Doe</name>
+//            <email>john@example.com</email>
+//          </dto>
+
+$customXml = $userDto->toXml('user');
+// Uses 'user' as root element instead of 'dto'
+```
+
+#### `toToml(): string`
+Converts the DTO to TOML format.
+
+```php
+$toml = $userDto->toToml();
+// Returns: id = 123
+//          name = "John Doe"
+//          email = "john@example.com"
+```
+
+#### `toMarkdownTable(bool $includeHeaders = true): string`
+Converts the DTO to Markdown table format.
+
+```php
+$markdown = $userDto->toMarkdownTable();
+// Returns: | id | name | email |
+//          | --- | --- | --- |
+//          | 123 | John Doe | john@example.com |
+```
+
+#### `toPhpArray(): string`
+Converts the DTO to PHP array export format.
+
+```php
+$phpArray = $userDto->toPhpArray();
+// Returns: array (
+//   'id' => 123,
+//   'name' => 'John Doe',
+//   'email' => 'john@example.com',
+// )
+```
+
+#### `toQueryString(): string`
+Converts the DTO to query string format.
+
+```php
+$queryString = $userDto->toQueryString();
+// Returns: id=123&name=John+Doe&email=john%40example.com
+```
+
+#### `toMessagePack(): string`
+Converts the DTO to MessagePack binary format (requires msgpack extension).
+
+```php
+try {
+    $messagepack = $userDto->toMessagePack();
+    // Returns: binary data
+} catch (\RuntimeException $e) {
+    // MessagePack extension not available
+}
 ```
 
 #### `only(array $keys): array`
