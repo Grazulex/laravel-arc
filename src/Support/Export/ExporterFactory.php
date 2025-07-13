@@ -18,7 +18,7 @@ final class ExporterFactory
      */
     public static function getInstance(): ExporterManagerContract
     {
-        if (!self::$instance instanceof \Grazulex\LaravelArc\Contracts\ExporterManager) {
+        if (! self::$instance instanceof ExporterManagerContract) {
             self::$instance = self::createDefaultManager();
         }
 

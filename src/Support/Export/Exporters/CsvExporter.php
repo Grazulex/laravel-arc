@@ -31,7 +31,7 @@ final class CsvExporter extends AbstractExporter
             $output .= $this->arrayToCsvLine(array_keys($data), $mergedOptions);
         }
 
-        return $output . $this->arrayToCsvLine(array_values($data), $mergedOptions);
+        return $output.$this->arrayToCsvLine(array_values($data), $mergedOptions);
     }
 
     /**

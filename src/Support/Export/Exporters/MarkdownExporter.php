@@ -32,7 +32,7 @@ final class MarkdownExporter extends AbstractExporter
         $output = '| '.implode(' | ', $headers).' |'."\n";
         $output .= '| '.str_repeat('--- | ', count($headers))."\n";
 
-        return $output . ('| ' . implode(' | ', array_map([$this, 'formatValue'], $values)) . ' |');
+        return $output.('| '.implode(' | ', array_map([$this, 'formatValue'], $values)).' |');
     }
 
     /**
