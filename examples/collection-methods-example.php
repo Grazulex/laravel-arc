@@ -9,10 +9,10 @@ declare(strict_types=1);
  * Shows how to use the intuitive collection() alias and advanced collection features.
  */
 
+use Grazulex\LaravelArc\Support\DtoCollection;
 use Grazulex\LaravelArc\Support\Traits\ConvertsData;
 use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
 use Grazulex\LaravelArc\Support\Traits\ValidatesData;
-use Grazulex\LaravelArc\Support\DtoCollection;
 
 /**
  * Example Product DTO for demonstration
@@ -83,20 +83,20 @@ echo "-------------------------------\n\n";
 // Using the new collection() method (intuitive alias)
 $productDtos1 = ProductDto::collection($products);
 echo "Created collection using collection() method:\n";
-echo "Type: " . get_class($productDtos1) . "\n";
-echo "Count: " . $productDtos1->count() . "\n\n";
+echo 'Type: '.get_class($productDtos1)."\n";
+echo 'Count: '.$productDtos1->count()."\n\n";
 
 // Using the original fromModels() method
 $productDtos2 = ProductDto::fromModels($products);
 echo "Created collection using fromModels() method:\n";
-echo "Type: " . get_class($productDtos2) . "\n";
-echo "Count: " . $productDtos2->count() . "\n\n";
+echo 'Type: '.get_class($productDtos2)."\n";
+echo 'Count: '.$productDtos2->count()."\n\n";
 
 // Using fromModelsAsCollection() for standard Collection
 $productDtos3 = ProductDto::fromModelsAsCollection($products);
 echo "Created standard collection using fromModelsAsCollection():\n";
-echo "Type: " . get_class($productDtos3) . "\n";
-echo "Count: " . $productDtos3->count() . "\n\n";
+echo 'Type: '.get_class($productDtos3)."\n";
+echo 'Count: '.$productDtos3->count()."\n\n";
 
 echo "Note: collection() and fromModels() return DtoCollection with advanced features.\n";
 echo "fromModelsAsCollection() returns standard Laravel Collection.\n\n";
@@ -125,7 +125,7 @@ echo "\n\n";
 // Filter by field
 echo "Filter by category (Electronics):\n";
 $electronics = $productDtos->whereField('category', 'Electronics');
-echo "Found " . $electronics->count() . " electronics products\n";
+echo 'Found '.$electronics->count()." electronics products\n";
 foreach ($electronics as $product) {
     echo "- {$product->name} (\${$product->price})\n";
 }
@@ -152,7 +152,7 @@ echo "\n\n";
 echo "Only specific fields from all products:\n";
 $selectedFields = $productDtos->onlyFields(['id', 'name', 'price']);
 foreach ($selectedFields as $product) {
-    echo json_encode($product) . "\n";
+    echo json_encode($product)."\n";
 }
 echo "\n";
 
@@ -160,7 +160,7 @@ echo "\n";
 echo "Exclude specific fields from all products:\n";
 $excludedFields = $productDtos->exceptFields(['description', 'stock']);
 foreach ($excludedFields->take(2) as $product) {
-    echo json_encode($product) . "\n";
+    echo json_encode($product)."\n";
 }
 echo "\n";
 
@@ -174,7 +174,7 @@ echo "------------------------------\n\n";
 // Standard Laravel Collection methods work on DtoCollection
 echo "Active products (using where):\n";
 $activeProducts = $productDtos->where('status', 'active');
-echo "Count: " . $activeProducts->count() . "\n";
+echo 'Count: '.$activeProducts->count()."\n";
 
 echo "Products sorted by price (ascending):\n";
 $sortedByPrice = $productDtos->sortBy('price');
@@ -198,7 +198,7 @@ foreach ($expensive as $product) {
 echo "\n";
 
 echo "Low stock products (< 10):\n";
-$lowStock = $productDtos->filter(fn($product) => $product->stock < 10);
+$lowStock = $productDtos->filter(fn ($product) => $product->stock < 10);
 foreach ($lowStock as $product) {
     echo "- {$product->name}: {$product->stock} units\n";
 }
@@ -214,7 +214,7 @@ echo "----------------------------\n\n";
 /**
  * Example Product Controller showing collection() usage
  */
-class ProductController
+final class ProductController
 {
     public function index()
     {
@@ -246,7 +246,7 @@ class ProductController
             'categories' => $productDtos->groupByField('category')->map->count(),
             'average_price' => $productDtos->avg('price'),
             'total_stock' => $productDtos->sum('stock'),
-            'low_stock_products' => $productDtos->filter(fn($p) => $p->stock < 10)->count(),
+            'low_stock_products' => $productDtos->filter(fn ($p) => $p->stock < 10)->count(),
         ];
 
         return response()->json($analytics);

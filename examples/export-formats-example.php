@@ -170,7 +170,7 @@ echo "---------------------------\n\n";
 
 // Filter and export
 echo "Filtered Export (active users only):\n";
-$activeUsers = $users->filter(fn($user) => $user->status === 'active');
+$activeUsers = $users->filter(fn ($user) => $user->status === 'active');
 echo UserDto::collectionToMarkdownTable($activeUsers);
 echo "\n";
 
@@ -194,7 +194,7 @@ echo "-------------------------------\n\n";
 /**
  * Example showing how to use exports in a Laravel controller
  */
-class UserExportController
+final class UserExportController
 {
     public function export($format = 'json')
     {
@@ -225,7 +225,7 @@ class UserExportController
                 ['Content-Type' => 'application/yaml']
             ),
             'markdown' => response(
-                "# Users Export\n\n" . UserDto::collectionToMarkdownTable($users),
+                "# Users Export\n\n".UserDto::collectionToMarkdownTable($users),
                 200,
                 ['Content-Type' => 'text/markdown']
             ),
