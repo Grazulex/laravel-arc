@@ -14,6 +14,7 @@ Laravel Arc DTOs are powered by three essential traits that provide validation, 
 - [Overview / Vue d'ensemble](#overview)
 - [ValidatesData Trait](#validatesdata-trait)
 - [ConvertsData Trait](#convertsdata-trait)
+- [Advanced Options Generated Methods](#advanced-options-generated-methods)
 - [DtoUtilities Trait](#dtoutilities-trait)
 - [French Documentation / Documentation française](#documentation-française)
 - [Best Practices](#best-practices)
@@ -343,6 +344,21 @@ foreach ($userDtos as $userDto) {
 }
 ```
 
+#### `toHtml(array $attributes = []): string`
+Converts the DTO to HTML table format.
+
+```php
+$html = $userDto->toHtml();
+// Returns: <table>
+//            <tr><th>id</th><td>123</td></tr>
+//            <tr><th>name</th><td>John Doe</td></tr>
+//            <tr><th>email</th><td>john@example.com</td></tr>
+//          </table>
+
+$styledHtml = $userDto->toHtml(['class' => 'user-table']);
+// Returns HTML table with class="user-table"
+```
+
 #### Collection Export Methods
 
 Laravel Arc also provides static methods for exporting collections directly:
@@ -369,6 +385,15 @@ $csv = UserDTO::collectionToCsv($users);
 ```php
 $xml = UserDTO::collectionToXml($users, 'users', 'user');
 // Returns XML with custom root and item elements
+```
+
+**`collectionToHtml(iterable $models, array $attributes = []): string`**
+```php
+$html = UserDTO::collectionToHtml($users);
+// Returns HTML table with all users
+
+$styledHtml = UserDTO::collectionToHtml($users, ['class' => 'users-table']);
+// Returns HTML table with class="users-table"
 ```
 
 **`collectionToMarkdownTable(iterable $models, bool $includeHeaders = true): string`**
@@ -611,6 +636,252 @@ class ProcessUsersJob implements ShouldQueue
         // Process...
     }
 }
+```
+
+## Advanced Options Generated Methods
+
+When using advanced options in your YAML configuration, Laravel Arc generates additional methods in your DTOs. These methods provide specialized functionality based on the options you enable.
+
+### UUID Option Methods (`uuid: true`)
+
+#### `generateUuid(): string`
+Generates a new UUID string.
+
+```php
+$uuid = UserDTO::generateUuid();
+// Returns: "550e8400-e29b-41d4-a716-446655440000"
+```
+
+#### `withGeneratedUuid(array $data = []): static`
+Creates a new instance with a generated UUID.
+
+```php
+$userDto = UserDTO::withGeneratedUuid([
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+]);
+// Returns: UserDTO instance with auto-generated UUID
+```
+
+### Versioning Option Methods (`versioning: true`)
+
+#### `nextVersion(): static`
+Creates a new version with incremented version number.
+
+```php
+$v1 = $userDto; // version: 1
+$v2 = $userDto->nextVersion(); // version: 2
+```
+
+#### `isNewerThan(self $other): bool`
+Checks if this DTO version is newer than another.
+
+```php
+$isNewer = $v2->isNewerThan($v1); // true
+```
+
+#### `getVersionInfo(): array`
+Returns version information.
+
+```php
+$info = $userDto->getVersionInfo();
+// Returns: ['version' => 1, 'is_latest' => true]
+```
+
+### Taggable Option Methods (`taggable: true`)
+
+#### `addTag(string $tag): static`
+Adds a tag to the DTO.
+
+```php
+$taggedDto = $userDto->addTag('featured');
+```
+
+#### `removeTag(string $tag): static`
+Removes a tag from the DTO.
+
+```php
+$untaggedDto = $userDto->removeTag('featured');
+```
+
+#### `hasTag(string $tag): bool`
+Checks if the DTO has a specific tag.
+
+```php
+$hasTag = $userDto->hasTag('featured'); // true/false
+```
+
+#### `getTags(): array`
+Returns all tags.
+
+```php
+$tags = $userDto->getTags(); // ['featured', 'premium']
+```
+
+#### `withTag(array $dtos, string $tag): array`
+Static method to filter DTOs by tag.
+
+```php
+$featuredDtos = UserDTO::withTag($allDtos, 'featured');
+```
+
+### Immutable Option Methods (`immutable: true`)
+
+#### `copy(): static`
+Creates a copy of the DTO.
+
+```php
+$copy = $userDto->copy();
+```
+
+#### `equals(self $other): bool`
+Compares two DTOs for equality.
+
+```php
+$isEqual = $userDto->equals($otherDto); // true/false
+```
+
+#### `hash(): string`
+Returns a hash of the DTO for caching or comparison.
+
+```php
+$hash = $userDto->hash(); // SHA256 hash
+```
+
+### Auditable Option Methods (`auditable: true`)
+
+#### `createAuditTrail(string $action, ?string $userId = null): array`
+Creates an audit trail entry.
+
+```php
+$audit = $userDto->createAuditTrail('updated', $userId);
+// Returns: ['action' => 'updated', 'user_id' => '...', 'timestamp' => '...', 'changes' => [...]]
+```
+
+#### `setCreator(string $userId): static`
+Sets the creator user ID.
+
+```php
+$createdDto = $userDto->setCreator($userId);
+```
+
+#### `setUpdater(string $userId): static`
+Sets the updater user ID.
+
+```php
+$updatedDto = $userDto->setUpdater($userId);
+```
+
+#### `getAuditInfo(): array`
+Returns audit information.
+
+```php
+$auditInfo = $userDto->getAuditInfo();
+// Returns: ['created_by' => '...', 'updated_by' => '...', 'created_at' => '...', 'updated_at' => '...']
+```
+
+### Cacheable Option Methods (`cacheable: true`)
+
+#### `getCacheKey(): string`
+Returns the cache key for this DTO.
+
+```php
+$key = $userDto->getCacheKey(); // "dto:App\DTOs\UserDTO:hash"
+```
+
+#### `cache(int $ttl = 3600): static`
+Caches the DTO with specified TTL.
+
+```php
+$userDto->cache(3600); // Cache for 1 hour
+```
+
+#### `fromCache(string $cacheKey): ?static`
+Retrieves DTO from cache.
+
+```php
+$cachedDto = UserDTO::fromCache($key);
+```
+
+#### `clearCache(): bool`
+Removes the DTO from cache.
+
+```php
+$cleared = $userDto->clearCache(); // true/false
+```
+
+#### `isCached(): bool`
+Checks if the DTO is cached.
+
+```php
+$isCached = $userDto->isCached(); // true/false
+```
+
+#### `getCacheMetadata(): array`
+Returns cache metadata.
+
+```php
+$metadata = $userDto->getCacheMetadata();
+// Returns: ['key' => '...', 'exists' => true, 'size' => 1024]
+```
+
+### Sluggable Option Methods (`sluggable: {from: fieldname}`)
+
+#### `generateSlug(): static`
+Generates a slug from the source field.
+
+```php
+$sluggedDto = $userDto->generateSlug();
+```
+
+#### `updateSlug(): static`
+Updates the slug when the source field changes.
+
+```php
+$updatedDto = $userDto->updateSlug();
+```
+
+#### `getSlug(): string`
+Returns the slug (auto-generates if not set).
+
+```php
+$slug = $userDto->getSlug(); // "john-doe"
+```
+
+#### `hasUniqueSlug(): bool`
+Checks if the slug is unique (basic check).
+
+```php
+$isUnique = $userDto->hasUniqueSlug(); // true/false
+```
+
+### Combined Usage Example
+
+```php
+use App\DTOs\UserDTO;
+
+// Create DTO with UUID and tags
+$userDto = UserDTO::withGeneratedUuid([
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+])
+->generateSlug()
+->addTag('premium')
+->addTag('verified')
+->setCreator($currentUserId)
+->cache(3600);
+
+// Use versioning
+$v2 = $userDto->nextVersion();
+$isNewer = $v2->isNewerThan($userDto); // true
+
+// Check features
+$hasTag = $userDto->hasTag('premium'); // true
+$slug = $userDto->getSlug(); // "john-doe"
+$isCached = $userDto->isCached(); // true
+
+// Create audit trail
+$audit = $userDto->createAuditTrail('created', $currentUserId);
 ```
 
 ## DtoUtilities Trait

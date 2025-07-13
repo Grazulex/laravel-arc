@@ -7,6 +7,7 @@ This guide covers advanced features and techniques for Laravel Arc, including pr
 - [Programmatic DTO Generation](#programmatic-dto-generation)
 - [Path Resolver for Namespace Organization](#path-resolver-for-namespace-organization)
 - [Enhanced Error Handling](#enhanced-error-handling)
+- [Advanced Options Configuration](#advanced-options-configuration)
 - [Custom Header Statements](#custom-header-statements)
 - [Nested DTO Relationships](#nested-dto-relationships)
 - [Environment-Specific Configuration](#environment-specific-configuration)
@@ -287,6 +288,222 @@ class CustomDtoGenerator
     }
 }
 ```
+
+## Advanced Options Configuration
+
+Laravel Arc provides powerful advanced options that can be configured in your YAML files to add specialized functionality to your DTOs. These options automatically generate additional methods and fields.
+
+### UUID Option
+
+Enable automatic UUID generation and helper methods:
+
+```yaml
+options:
+  uuid: true
+```
+
+**Generated Features:**
+- Adds `id` field with UUID type and validation
+- Generates `generateUuid()` static method
+- Generates `withGeneratedUuid()` static method
+
+**Usage:**
+```php
+// Generate UUID
+$uuid = UserDTO::generateUuid();
+
+// Create DTO with auto-generated UUID
+$userDto = UserDTO::withGeneratedUuid([
+    'name' => 'John Doe',
+    'email' => 'john@example.com'
+]);
+```
+
+### Versioning Option
+
+Enable version tracking and comparison:
+
+```yaml
+options:
+  versioning: true
+```
+
+**Generated Features:**
+- Adds `version` field (integer, default: 1)
+- Generates `nextVersion()` method
+- Generates `isNewerThan()` method
+- Generates `getVersionInfo()` method
+
+**Usage:**
+```php
+$v1 = $userDto; // version: 1
+$v2 = $userDto->nextVersion(); // version: 2
+$isNewer = $v2->isNewerThan($v1); // true
+```
+
+### Taggable Option
+
+Enable tag management system:
+
+```yaml
+options:
+  taggable: true
+```
+
+**Generated Features:**
+- Adds `tags` field (array, default: [])
+- Generates tag management methods: `addTag()`, `removeTag()`, `hasTag()`, `getTags()`
+- Generates static `withTag()` filtering method
+
+**Usage:**
+```php
+$taggedDto = $userDto->addTag('premium')->addTag('featured');
+$hasTag = $taggedDto->hasTag('premium'); // true
+$premiumDtos = UserDTO::withTag($allDtos, 'premium');
+```
+
+### Immutable Option
+
+Enable immutable pattern methods:
+
+```yaml
+options:
+  immutable: true
+```
+
+**Generated Features:**
+- Generates `with()` method for immutable updates
+- Generates `copy()` method for duplication
+- Generates `equals()` method for comparison
+- Generates `hash()` method for caching
+
+**Usage:**
+```php
+$newDto = $userDto->with(['name' => 'New Name']);
+$copy = $userDto->copy();
+$isEqual = $userDto->equals($otherDto);
+$hash = $userDto->hash();
+```
+
+### Auditable Option
+
+Enable audit trail functionality:
+
+```yaml
+options:
+  auditable: true
+```
+
+**Generated Features:**
+- Adds `created_by` and `updated_by` fields (UUID)
+- Generates audit methods: `createAuditTrail()`, `setCreator()`, `setUpdater()`, `getAuditInfo()`
+
+**Usage:**
+```php
+$auditedDto = $userDto->setCreator($userId)->setUpdater($userId);
+$auditTrail = $auditedDto->createAuditTrail('updated', $userId);
+```
+
+### Cacheable Option
+
+Enable caching capabilities:
+
+```yaml
+options:
+  cacheable: true
+```
+
+**Generated Features:**
+- Generates caching methods: `cache()`, `fromCache()`, `clearCache()`, `isCached()`
+- Generates cache utilities: `getCacheKey()`, `getCacheMetadata()`
+
+**Usage:**
+```php
+$userDto->cache(3600); // Cache for 1 hour
+$cached = UserDTO::fromCache($userDto->getCacheKey());
+$metadata = $userDto->getCacheMetadata();
+```
+
+### Sluggable Option
+
+Enable slug generation from specified fields:
+
+```yaml
+options:
+  sluggable:
+    from: name
+```
+
+**Generated Features:**
+- Adds `slug` field with validation
+- Generates slug methods: `generateSlug()`, `updateSlug()`, `getSlug()`, `hasUniqueSlug()`
+
+**Usage:**
+```php
+$sluggedDto = $userDto->generateSlug();
+$slug = $sluggedDto->getSlug(); // "john-doe"
+```
+
+### Combined Advanced Options
+
+You can combine multiple advanced options:
+
+```yaml
+options:
+  # Basic options
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs\Advanced
+  
+  # Advanced options
+  uuid: true
+  versioning: true
+  taggable: true
+  immutable: true
+  auditable: true
+  cacheable: true
+  sluggable:
+    from: name
+```
+
+**Programmatic Configuration:**
+```php
+$definition = [
+    'header' => [
+        'dto' => 'AdvancedUserDTO',
+        'model' => 'App\Models\User',
+    ],
+    'fields' => [
+        'name' => ['type' => 'string', 'required' => true],
+        'email' => ['type' => 'string', 'required' => true],
+    ],
+    'options' => [
+        'timestamps' => true,
+        'uuid' => true,
+        'versioning' => true,
+        'taggable' => true,
+        'immutable' => true,
+        'auditable' => true,
+        'cacheable' => true,
+        'sluggable' => ['from' => 'name'],
+        'namespace' => 'App\DTOs\Advanced',
+    ],
+];
+
+$generator = DtoGenerator::make();
+$code = $generator->generateFromDefinition($definition);
+```
+
+### Advanced Options Benefits
+
+1. **Automatic Field Generation**: Options automatically add necessary fields
+2. **Method Generation**: Comprehensive methods for each feature
+3. **Type Safety**: All generated methods are properly typed
+4. **Validation**: Automatic validation rules for generated fields
+5. **Documentation**: Generated methods are self-documenting
+6. **Performance**: Efficient implementations with caching support
+7. **Flexibility**: Options can be combined as needed
+8. **Standards Compliance**: Follows Laravel and PHP best practices
 
 ## Custom Header Statements
 
