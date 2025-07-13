@@ -114,6 +114,9 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -151,10 +154,6 @@ relations:
   roles:
     type: belongsToMany
     target: App\Models\Role
-
-options:
-  timestamps: true
-  namespace: App\DTOs
 ```
 
 ### Company with Employees
@@ -165,6 +164,9 @@ header:
   dto: CompanyDTO
   table: companies
   model: App\Models\Company
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -192,10 +194,6 @@ relations:
   primary_contact:
     type: hasOne
     target: App\Models\User
-
-options:
-  timestamps: true
-  namespace: App\DTOs
 ```
 
 ### E-commerce Example
@@ -206,6 +204,9 @@ header:
   dto: OrderDTO
   table: orders
   model: App\Models\Order
+  namespace: App\DTOs\Ecommerce
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -241,10 +242,6 @@ relations:
   payment:
     type: hasOne
     target: App\Models\Payment
-
-options:
-  timestamps: true
-  namespace: App\DTOs\Ecommerce
 ```
 
 ## Relationship with Nested DTOs
@@ -257,6 +254,9 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -286,10 +286,6 @@ relations:
   company:
     type: belongsTo
     target: App\Models\Company
-
-options:
-  timestamps: true
-  namespace: App\DTOs
 ```
 
 ## Advanced Relationship Examples
@@ -302,6 +298,9 @@ header:
   dto: PostDTO
   table: posts
   model: App\Models\Post
+  namespace: App\DTOs\Blog
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -349,10 +348,6 @@ relations:
   tags:
     type: belongsToMany
     target: App\Models\Tag
-
-options:
-  timestamps: true
-  namespace: App\DTOs\Blog
 ```
 
 ### Inventory Management
@@ -363,6 +358,9 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTOs\Inventory
+  traits:
+    - HasTimestamps
 
 fields:
   id:
@@ -411,10 +409,6 @@ relations:
   orders:
     type: belongsToMany
     target: App\Models\Order
-
-options:
-  timestamps: true
-  namespace: App\DTOs\Inventory
 ```
 
 ## Best Practices
@@ -477,15 +471,15 @@ relations:
 
 ```yaml
 # E-commerce DTOs
-options:
+header:
   namespace: App\DTOs\Ecommerce
 
 # Blog DTOs  
-options:
+header:
   namespace: App\DTOs\Blog
 
 # User management DTOs
-options:
+header:
   namespace: App\DTOs\User
 ```
 

@@ -2,6 +2,25 @@
 
 This guide covers advanced features and techniques for Laravel Arc, including programmatic generation, custom path resolution, enhanced error handling, and complex use cases.
 
+## Important Note
+
+**This guide contains examples using the deprecated `options` section.** The `options` section has been replaced with behavioral traits in the `header.traits` array. Please refer to the [YAML Schema Reference](YAML_SCHEMA.md) and [Traits Guide](TRAITS_GUIDE.md) for the current syntax.
+
+```yaml
+# ✅ New format (recommended)
+header:
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasVersioning
+
+# ❌ Old format (deprecated)
+options:
+  timestamps: true
+  uuid: true
+  versioning: true
+```
+
 ## Table of Contents
 
 - [Programmatic DTO Generation](#programmatic-dto-generation)

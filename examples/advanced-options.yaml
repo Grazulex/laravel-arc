@@ -1,8 +1,17 @@
-# Exemple avancé utilisant toutes les nouvelles options de Laravel Arc
+# Exemple avancé utilisant le nouveau système de traits de Laravel Arc
 header:
   dto: AdvancedProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTOs\Advanced
+  traits:
+    - HasTimestamps      # Ajoute created_at, updated_at
+    - HasSoftDeletes     # Ajoute deleted_at
+    - HasUuid           # Génère id UUID + méthodes UUID
+    - HasVersioning     # Ajoute version + méthodes de versioning
+    - HasTagging        # Ajoute tags + méthodes de tagging
+    - HasAuditing       # Ajoute created_by, updated_by + audit trail
+    - HasCaching        # Ajoute méthodes de cache
   use:
     - App\Traits\Auditable
     - App\Traits\Cacheable
@@ -14,16 +23,19 @@ fields:
     type: string
     required: true
     rules: [min:2, max:200]
+    transformers: [trim, title_case]
   
   description:
     type: text
     required: false
     rules: [max:2000]
+    transformers: [trim]
   
   price:
     type: decimal
     required: true
     rules: [numeric, min:0]
+    transformers: [abs]
   
   category:
     type: enum
@@ -33,28 +45,19 @@ fields:
   is_active:
     type: boolean
     default: true
-    
-  # Les champs supplémentaires seront ajoutés automatiquement par les options :
-  # - id (UUID) grâce à uuid: true
-  # - version (integer) grâce à versioning: true  
-  # - tags (array) grâce à taggable: true
-  # - slug (string) grâce à sluggable
-  # - created_by, updated_by (UUID) grâce à auditable: true
-  # - created_at, updated_at (datetime) grâce à timestamps: true
-  # - deleted_at (datetime) grâce à soft_deletes: true
-
-options:
-  # Options de base existantes
-  timestamps: true        # Ajoute created_at, updated_at
-  soft_deletes: true     # Ajoute deleted_at
-  namespace: App\DTOs\Advanced
   
-  # Nouvelles options avancées
-  uuid: true             # Génère id UUID + méthodes UUID (generateUuid, withGeneratedUuid)
-  versioning: true       # Ajoute version + méthodes de versioning (nextVersion, isNewerThan, getVersionInfo)
-  taggable: true         # Ajoute tags + méthodes de tagging (addTag, removeTag, hasTag, getTags, withTag)
-  immutable: true        # Ajoute méthodes immutables (with, copy, equals, hash)
-  auditable: true        # Ajoute created_by, updated_by + audit trail (createAuditTrail, setCreator, setUpdater, getAuditInfo)
-  cacheable: true        # Ajoute méthodes de cache (getCacheKey, cache, fromCache, clearCache, isCached, getCacheMetadata)
-  sluggable:             # Génère slug à partir du nom (generateSlug, updateSlug, getSlug, hasUniqueSlug)
-    from: name
+  # Slug généré automatiquement
+  slug:
+    type: string
+    transformers: [slugify]
+    
+  # Les champs supplémentaires seront ajoutés automatiquement par les traits :
+  # - id (UUID) grâce à HasUuid
+  # - version (integer) grâce à HasVersioning
+  # - tags (array) grâce à HasTagging
+  # - created_by, updated_by (UUID) grâce à HasAuditing
+  # - created_at, updated_at (datetime) grâce à HasTimestamps
+  # - deleted_at (datetime) grâce à HasSoftDeletes
+
+# Note: L'ancienne section "options" est maintenant remplacée par les traits
+# dans header.traits. Consultez le guide des traits pour plus d'informations.
