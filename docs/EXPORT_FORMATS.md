@@ -143,6 +143,14 @@ try {
 }
 ```
 
+### Collection Export
+```php
+$collection = $user->toCollection();
+// Returns Laravel Collection instance with the DTO data
+// Useful for further processing with Laravel Collection methods
+$filtered = $collection->filter(fn($value) => $value !== null);
+```
+
 ## Collection Export Formats
 
 ### JSON Collection Export

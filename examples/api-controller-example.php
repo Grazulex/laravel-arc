@@ -215,31 +215,49 @@ final class ApiController extends Controller
     /**
      * Export users to different formats
      *
-     * GET /api/users/export?format=json|csv
+     * GET /api/users/export?format=json|csv|xml|yaml|markdown
      */
     public function export(Request $request): JsonResponse
     {
         $format = $request->get('format', 'json');
         $users = User::all();
-        $userDtos = UserDto::fromModels($users);
 
+        // Export using Laravel Arc's built-in export methods
         switch ($format) {
             case 'csv':
-                // For CSV, we might want to flatten the data
-                $csvData = $userDtos->map(function ($dto) {
-                    return collect($dto->toArray())->flatten();
-                });
-
+                $csvData = UserDto::collectionToCsv($users);
                 return response()->json([
                     'format' => 'csv',
-                    'data' => $csvData->toArray(),
+                    'data' => $csvData,
+                ]);
+
+            case 'xml':
+                $xmlData = UserDto::collectionToXml($users, 'users', 'user');
+                return response()->json([
+                    'format' => 'xml',
+                    'data' => $xmlData,
+                ]);
+
+            case 'yaml':
+                $yamlData = UserDto::collectionToYaml($users);
+                return response()->json([
+                    'format' => 'yaml',
+                    'data' => $yamlData,
+                ]);
+
+            case 'markdown':
+                $markdownData = UserDto::collectionToMarkdownTable($users);
+                return response()->json([
+                    'format' => 'markdown',
+                    'data' => $markdownData,
                 ]);
 
             case 'json':
             default:
+                $jsonData = UserDto::collectionToJson($users);
                 return response()->json([
                     'format' => 'json',
-                    'data' => $userDtos->toJsonResource(),
+                    'data' => $jsonData,
                 ]);
         }
     }

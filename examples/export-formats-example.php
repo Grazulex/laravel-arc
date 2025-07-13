@@ -120,6 +120,25 @@ echo "Query String Export:\n";
 echo $singleUser->toQueryString();
 echo "\n\n";
 
+// MessagePack Export (if available)
+echo "MessagePack Export:\n";
+try {
+    $packed = $singleUser->toMessagePack();
+    echo "Binary data length: " . strlen($packed) . " bytes\n";
+    echo "Successfully packed to MessagePack format\n";
+} catch (\RuntimeException $e) {
+    echo "MessagePack extension not available: " . $e->getMessage() . "\n";
+}
+echo "\n";
+
+// Collection Export
+echo "Collection Export (Laravel Collection):\n";
+$collection = $singleUser->toCollection();
+echo "Collection type: " . get_class($collection) . "\n";
+echo "Collection count: " . $collection->count() . "\n";
+echo "Keys: " . $collection->keys()->implode(', ') . "\n";
+echo "\n";
+
 // Field Selection
 echo "Field Selection (only specific fields):\n";
 var_export($singleUser->only(['id', 'name', 'email']));
