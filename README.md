@@ -137,7 +137,7 @@ if (!$userDto->isValid()) {
 
 ### Advanced Features
 - **[Collection Management](docs/COLLECTION_MANAGEMENT.md)** - Working with DTO collections and API resources
-- **[Export Formats](docs/EXPORT_FORMATS.md)** - Export DTOs in 9 different formats
+- **[Export Formats](docs/EXPORT_FORMATS.md)** - Export DTOs in 10 different formats
 - **[Relationships](docs/RELATIONSHIPS.md)** - Eloquent relationships in DTOs
 - **[Nested DTOs](docs/NESTED_DTO_GUIDE.md)** - Building complex nested structures
 - **[CLI Commands](docs/CLI_COMMANDS.md)** - All available Artisan commands
@@ -171,7 +171,7 @@ return [
 Check out the [examples directory](examples/) for complete working examples:
 - **[Basic User DTO](examples/user.yaml)** - Simple user DTO with validation
 - **[API Controllers](examples/api-controller-example.php)** - Using DTOs in API controllers
-- **[Export Formats](examples/export-formats-example.php)** - Export DTOs in 9 different formats
+- **[Export Formats](examples/export-formats-example.php)** - Export DTOs in 10 different formats
 - **[Collection Methods](examples/collection-methods-example.php)** - Advanced collection management
 - **[Nested Structures](examples/nested-order.yaml)** - Complex nested DTOs
 - **[Enum Support](examples/enum-examples.yaml)** - Working with PHP enums
