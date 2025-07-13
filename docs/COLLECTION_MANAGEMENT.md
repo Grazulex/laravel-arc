@@ -35,7 +35,9 @@ class UserResource extends JsonResource
 ### Laravel Arc DTOs (New)
 ```php
 // Controller
-return UserDto::fromModels($users)->toArrayResource();
+return UserDto::collection($users)->toArrayResource();  // Using collection() method
+// OR
+return UserDto::fromModels($users)->toArrayResource();   // Using fromModels() method
 return UserDto::fromModel($user)->toArray();
 
 // UserDto (automatically generated)
@@ -51,9 +53,33 @@ class UserDto
     
     // Automatically generated methods
     public static function fromModel($model): self { ... }
+    public static function collection(iterable $models): DtoCollection { ... }
+    public static function fromModels(iterable $models): DtoCollection { ... }
     public function toArray(): array { ... }
     public function isValid(): bool { ... }
 }
+```
+
+## Collection Method Support
+
+Laravel Arc now supports the intuitive `collection()` method for converting models to DTOs:
+
+```php
+$users = User::all();
+$userDtos = UserDTO::collection($users); // Returns DTOCollection
+$userDtos->where('is_active', true)->sortBy('name');
+```
+
+This is equivalent to using `fromModels()` and provides a more intuitive API:
+
+```php
+// Both methods are equivalent:
+$userDtos1 = UserDTO::collection($users);
+$userDtos2 = UserDTO::fromModels($users);
+
+// Both return DtoCollection with full Laravel collection methods
+$active = $userDtos1->where('is_active', true);
+$sorted = $userDtos2->sortBy('name');
 ```
 
 ## Basic Usage
@@ -65,9 +91,11 @@ class UserDto
 $user = User::find(1);
 $userDto = UserDto::fromModel($user);
 
-// Collection of models
+// Collection of models - Two ways to do this:
 $users = User::all();
 $userDtos = UserDto::fromModels($users); // Returns DtoCollection
+// OR
+$userDtos = UserDto::collection($users); // Returns DtoCollection (alias)
 
 // Standard Laravel collection
 $standardCollection = UserDto::fromModelsAsCollection($users);
@@ -78,7 +106,7 @@ $standardCollection = UserDto::fromModelsAsCollection($users);
 ```php
 // Get standard API format
 $users = User::all();
-$userDtos = UserDto::fromModels($users);
+$userDtos = UserDto::collection($users); // Using collection() method
 
 // Array format
 $apiArray = $userDtos->toArrayResource();
@@ -288,6 +316,7 @@ php artisan dto:generate user.yaml
 ### ConvertsData Trait
 
 - `fromModels(iterable $models): DtoCollection` - Converts a collection of models
+- `collection(iterable $models): DtoCollection` - Alias for fromModels() with intuitive syntax
 - `fromModelsAsCollection(iterable $models): Collection` - Converts to a standard collection
 - `fromPaginator(Paginator $paginator): array` - Handles pagination
 - `collectionToJson(iterable $models): string` - Converts directly to JSON API
@@ -335,6 +364,8 @@ return UserResource::collection($users);
 php artisan dto:generate user.yaml
 
 // Usage
+return UserDto::collection($users)->toArrayResource();
+// OR
 return UserDto::fromModels($users)->toArrayResource();
 ```
 

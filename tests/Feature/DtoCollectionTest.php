@@ -104,6 +104,21 @@ describe('DtoCollection', function () {
         expect($this->collection->count())->toBe(4);
     });
 
+    it('creates collection using collection() method', function () {
+        $collection = TestDto::collection($this->models);
+        expect($collection)->toBeInstanceOf(DtoCollection::class);
+        expect($collection->count())->toBe(4);
+    });
+
+    it('collection() method is equivalent to fromModels()', function () {
+        $collection1 = TestDto::collection($this->models);
+        $collection2 = TestDto::fromModels($this->models);
+        
+        expect($collection1)->toBeInstanceOf(DtoCollection::class);
+        expect($collection2)->toBeInstanceOf(DtoCollection::class);
+        expect($collection1->count())->toBe($collection2->count());
+    });
+
     it('converts to resource format', function (string $method, string $expectedType, bool $hasDataKey) {
         $result = $this->collection->{$method}();
 
@@ -192,6 +207,24 @@ describe('DtoCollection', function () {
         $invalid = new TestDto(999, '', 'invalid-email');
         expect($invalid->isValid())->toBe(false);
         expect($invalid->getErrors())->toHaveKeys(['name', 'email']);
+    });
+
+    it('supports filtering and sorting as mentioned in the issue', function () {
+        // Test the exact syntax mentioned in the issue
+        $collection = TestDto::collection($this->models);
+        
+        // Test where() filtering
+        $active = $collection->where('is_active', true);
+        expect($active->count())->toBe(2); // Only 2 active users in test data
+        
+        // Test sortBy() 
+        $sorted = $collection->sortBy('name');
+        expect($sorted->first()->name)->toBe('Alice Brown'); // First alphabetically
+        
+        // Test chaining as mentioned in the issue
+        $filteredAndSorted = $collection->where('is_active', true)->sortBy('name');
+        expect($filteredAndSorted->count())->toBe(2);
+        expect($filteredAndSorted->first()->name)->toBe('Bob Johnson'); // First active user alphabetically
     });
 
     it('supports Laravel collection methods', function () {

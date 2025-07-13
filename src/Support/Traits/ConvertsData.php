@@ -28,6 +28,18 @@ trait ConvertsData
     }
 
     /**
+     * Convert a collection of models to a specialized DTO collection.
+     * This is an alias for fromModels() for more intuitive usage.
+     *
+     * @param  iterable  $models  The models to convert
+     * @return DtoCollection<int, static> Specialized DTO collection
+     */
+    public static function collection(iterable $models): DtoCollection
+    {
+        return static::fromModels($models);
+    }
+
+    /**
      * Convert a collection of models to a standard collection of DTOs.
      *
      * @param  iterable  $models  The models to convert
