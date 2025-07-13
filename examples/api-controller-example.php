@@ -289,6 +289,47 @@ final class ApiController extends Controller
             ],
         ]);
     }
+
+    /**
+     * Export users in multiple modern formats (NEW in 2025!)
+     *
+     * GET /api/users/export?format=csv|xml|yaml|toml|markdown
+     */
+    public function exportInModernFormats(Request $request): mixed
+    {
+        $users = User::take(10)->get();
+        $format = $request->query('format', 'json');
+
+        return match ($format) {
+            'json' => response()->json(['data' => UserDto::fromModels($users)->toArray()]),
+            'csv' => response(
+                UserDto::collectionToCsv($users),
+                200,
+                ['Content-Type' => 'text/csv', 'Content-Disposition' => 'attachment; filename="users.csv"']
+            ),
+            'xml' => response(
+                UserDto::collectionToXml($users, 'users', 'user'),
+                200,
+                ['Content-Type' => 'application/xml']
+            ),
+            'yaml' => response(
+                UserDto::collectionToYaml($users),
+                200,
+                ['Content-Type' => 'application/yaml']
+            ),
+            'toml' => response(
+                collect($users)->map(fn ($user) => UserDto::fromModel($user)->toToml())->implode("\n\n"),
+                200,
+                ['Content-Type' => 'application/toml']
+            ),
+            'markdown' => response(
+                "# Users Export\n\n".UserDto::collectionToMarkdownTable($users),
+                200,
+                ['Content-Type' => 'text/markdown']
+            ),
+            default => response()->json(['error' => 'Unsupported format'], 400),
+        };
+    }
 }
 
 /**
@@ -415,4 +456,5 @@ final class OrderDto
  * Route::post('/api/users/bulk-update', [ApiController::class, 'bulkUpdate']);
  * Route::get('/api/users/export', [ApiController::class, 'export']);
  * Route::get('/api/users/search', [ApiController::class, 'search']);
+ * Route::get('/api/users/export-modern', [ApiController::class, 'exportInModernFormats']);
  */

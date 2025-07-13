@@ -27,83 +27,95 @@ final class ValidatedTestDto
 }
 
 describe('ValidatesData Trait', function () {
-    it('validates data successfully', function () {
-        $data = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'age' => 30,
-        ];
+    describe('Data Validation', function () {
+        describe('successful validation', function () {
+            it('validates data successfully', function () {
+                $data = [
+                    'name' => 'John Doe',
+                    'email' => 'john@example.com',
+                    'age' => 30,
+                ];
 
-        $validated = ValidatedTestDto::validate($data);
-        expect($validated)->toEqual($data);
+                $validated = ValidatedTestDto::validate($data);
+                expect($validated)->toEqual($data);
+            });
+
+            it('passes validation for valid data', function () {
+                $data = [
+                    'name' => 'John Doe',
+                    'email' => 'john@example.com',
+                    'age' => 30,
+                ];
+
+                expect(ValidatedTestDto::passes($data))->toBe(true);
+            });
+        });
+
+        describe('failed validation', function () {
+            it('throws validation exception for invalid data', function () {
+                $data = [
+                    'name' => '', // required but empty
+                    'email' => 'invalid-email', // invalid email format
+                    'age' => -5, // below minimum
+                ];
+
+                expect(fn () => ValidatedTestDto::validate($data))
+                    ->toThrow(ValidationException::class);
+            });
+
+            it('fails validation for invalid data', function () {
+                $data = [
+                    'name' => '', // required but empty
+                    'email' => 'invalid-email', // invalid email format
+                ];
+
+                expect(ValidatedTestDto::fails($data))->toBe(true);
+                expect(ValidatedTestDto::passes($data))->toBe(false);
+            });
+        });
     });
 
-    it('throws validation exception for invalid data', function () {
-        $data = [
-            'name' => '', // required but empty
-            'email' => 'invalid-email', // invalid email format
-            'age' => -5, // below minimum
-        ];
+    describe('Validator Creation', function () {
+        it('creates validator instance', function () {
+            $data = [
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+            ];
 
-        expect(fn () => ValidatedTestDto::validate($data))
-            ->toThrow(ValidationException::class);
+            $validator = ValidatedTestDto::validator($data);
+            expect($validator)->toBeInstanceOf(Illuminate\Contracts\Validation\Validator::class);
+        });
     });
 
-    it('creates validator instance', function () {
-        $data = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-        ];
+    describe('Nullable Fields', function () {
+        it('handles nullable fields correctly', function () {
+            $data = [
+                'name' => 'John Doe',
+                'email' => 'john@example.com',
+                // age is nullable, so it can be omitted
+            ];
 
-        $validator = ValidatedTestDto::validator($data);
-        expect($validator)->toBeInstanceOf(Illuminate\Contracts\Validation\Validator::class);
+            expect(ValidatedTestDto::passes($data))->toBe(true);
+        });
     });
 
-    it('passes validation for valid data', function () {
-        $data = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            'age' => 30,
-        ];
+    describe('Edge Cases and Boundary Values', function () {
+        it('validates edge cases', function () {
+            $data = [
+                'name' => 'J', // minimum length
+                'email' => 'a@b.co', // minimum valid email
+                'age' => 0, // minimum age
+            ];
 
-        expect(ValidatedTestDto::passes($data))->toBe(true);
-    });
+            expect(ValidatedTestDto::passes($data))->toBe(true);
 
-    it('fails validation for invalid data', function () {
-        $data = [
-            'name' => '', // required but empty
-            'email' => 'invalid-email', // invalid email format
-        ];
+            $data = [
+                'name' => str_repeat('a', 255), // maximum length
+                'email' => 'test@example.com',
+                'age' => 150, // maximum age
+            ];
 
-        expect(ValidatedTestDto::fails($data))->toBe(true);
-        expect(ValidatedTestDto::passes($data))->toBe(false);
-    });
-
-    it('handles nullable fields correctly', function () {
-        $data = [
-            'name' => 'John Doe',
-            'email' => 'john@example.com',
-            // age is nullable, so it can be omitted
-        ];
-
-        expect(ValidatedTestDto::passes($data))->toBe(true);
-    });
-
-    it('validates edge cases', function () {
-        $data = [
-            'name' => 'J', // minimum length
-            'email' => 'a@b.co', // minimum valid email
-            'age' => 0, // minimum age
-        ];
-
-        expect(ValidatedTestDto::passes($data))->toBe(true);
-
-        $data = [
-            'name' => str_repeat('a', 255), // maximum length
-            'email' => 'test@example.com',
-            'age' => 150, // maximum age
-        ];
-
-        expect(ValidatedTestDto::passes($data))->toBe(true);
+            expect(ValidatedTestDto::passes($data))->toBe(true);
+        });
     });
 });
