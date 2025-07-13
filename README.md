@@ -28,6 +28,7 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
 - 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
 - 🎯 **Powerful trait system** - Built-in traits for validation, data conversion, and utilities
+- 📤 **Multiple export formats** - Export DTOs in 9 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack)
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
@@ -95,6 +96,17 @@ $userDtos = UserDTO::fromModels($users); // Alternative syntax
 return response()->json($userDtos->toArrayResource());
 // Output: {"data": [{"id": 1, "name": "John", "email": "john@example.com", "status": "active"}]}
 
+// Export in multiple formats
+$yaml = $userDto->toYaml();
+$csv = $userDto->toCsv();
+$xml = $userDto->toXml();
+$markdown = $userDto->toMarkdownTable();
+
+// Collection exports
+$csvData = UserDTO::collectionToCsv($users);
+$xmlData = UserDTO::collectionToXml($users);
+$yamlData = UserDTO::collectionToYaml($users);
+
 // Validation
 $userDto = UserDTO::fromArray($request->all());
 if (!$userDto->isValid()) {
@@ -117,6 +129,7 @@ if (!$userDto->isValid()) {
 
 ### Advanced Features
 - **[Collection Management](docs/COLLECTION_MANAGEMENT.md)** - Working with DTO collections and API resources
+- **[Export Formats](docs/EXPORT_FORMATS.md)** - Export DTOs in 9 different formats
 - **[Relationships](docs/RELATIONSHIPS.md)** - Eloquent relationships in DTOs
 - **[Nested DTOs](docs/NESTED_DTO_GUIDE.md)** - Building complex nested structures
 - **[CLI Commands](docs/CLI_COMMANDS.md)** - All available Artisan commands
@@ -150,6 +163,8 @@ return [
 Check out the [examples directory](examples/) for complete working examples:
 - **[Basic User DTO](examples/user.yaml)** - Simple user DTO with validation
 - **[API Controllers](examples/api-controller-example.php)** - Using DTOs in API controllers
+- **[Export Formats](examples/export-formats-example.php)** - Export DTOs in 9 different formats
+- **[Collection Methods](examples/collection-methods-example.php)** - Advanced collection management
 - **[Nested Structures](examples/nested-order.yaml)** - Complex nested DTOs
 - **[Enum Support](examples/enum-examples.yaml)** - Working with PHP enums
 
