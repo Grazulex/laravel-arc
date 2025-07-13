@@ -3,24 +3,32 @@ header:
   dto: ProfileDTO
   table: profiles
   model: App\Models\Profile
+  namespace: App\DTOs
+  # Note: No traits specified - only functional traits will be included
 
 fields:
   age:
     type: integer
-    rules: [min:13, max:120]
+    required: false
+    validation: [nullable, integer, min:13, max:120]
   
   bio:
     type: text
-    rules: [max:500]
+    required: false
+    validation: [nullable, string, max:500]
+    transformers: [trim]
   
   website:
     type: string
-    rules: [url]
+    required: false
+    validation: [nullable, url]
   
   avatar:
     type: string
+    required: false
+    validation: [nullable, string]
 
-options:
-  timestamps: false
-  soft_deletes: false
-  namespace: App\DTOs
+# This DTO has no behavioral traits, only the 3 functional traits:
+# - ValidatesData (validation methods)
+# - ConvertsData (conversion methods) 
+# - DtoUtilities (utility methods)

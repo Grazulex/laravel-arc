@@ -3,19 +3,18 @@ header:
   dto: CustomerDTO
   table: customers
   model: App\Models\Customer
-  use:
-    - App\Traits\HasUuid
+  namespace: App\DTOs\Ecommerce
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   first_name:
     type: string
     required: true
-    rules: [min:2, max:50]
+    validation: [required, string, min:2, max:50]
   
   last_name:
     type: string
@@ -87,7 +86,7 @@ relations:
     type: hasMany
     target: App\Models\PaymentMethod
 
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs\Ecommerce
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
+# - HasSoftDeletes: deleted_at

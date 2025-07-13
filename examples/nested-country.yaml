@@ -3,19 +3,17 @@ header:
   dto: CountryDTO
   table: countries
   model: App\Models\Country
-  use:
-    - App\Traits\HasUuid
+  namespace: App\DTOs\Common
+  traits:
+    - HasTimestamps
+    - HasUuid
   extends: BaseDTO
 
 fields:
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
   
   code:
     type: string
@@ -84,7 +82,6 @@ relations:
     type: hasMany
     target: App\Models\City
 
-options:
-  timestamps: true
-  soft_deletes: false
-  namespace: App\DTOs\Common
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)

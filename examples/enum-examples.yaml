@@ -6,16 +6,16 @@ header:
   dto: EnumExampleDTO
   model: App\Models\Product
   table: products
+  namespace: App\DTOs\Examples
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: uuid
-    required: true
-
   name:
     type: string
     required: true
-    rules: [min:2, max:255]
+    validation: [required, string, min:2, max:255]
 
   # Traditional enum with values array
   status:
@@ -85,6 +85,6 @@ fields:
       - enum_exists    # Enum class existence validation
       - required       # Standard Laravel validation
 
-options:
-  timestamps: true
-  namespace: App\DTOs\Examples
+# Behavioral traits automatically add fields:
+# - HasTimestamps: created_at, updated_at
+# - HasUuid: id (UUID type)
