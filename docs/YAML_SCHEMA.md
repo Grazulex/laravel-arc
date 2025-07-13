@@ -319,174 +319,64 @@ relations:
     target: App\Models\Role
 ```
 
-## Options Section
+## Field Transformers
 
-Configure how the DTO is generated.
+Field transformers allow you to automatically transform field values during DTO creation. Transformers are applied before validation and can be chained together.
 
-### Available Options
+### Available Transformers
 
-#### Basic Options
+| Transformer | Description | Example |
+|-------------|-------------|---------|
+| `trim` | Removes whitespace from strings | `"  hello  "` → `"hello"` |
+| `lowercase` | Converts strings to lowercase | `"Hello"` → `"hello"` |
+| `uppercase` | Converts strings to uppercase | `"hello"` → `"HELLO"` |
+| `title_case` | Converts strings to title case | `"hello world"` → `"Hello World"` |
+| `slugify` | Converts strings to URL-friendly slugs | `"Hello World!"` → `"hello-world"` |
+| `abs` | Returns absolute value of numbers | `-5` → `5` |
+| `encrypt` | Encrypts string values | `"secret"` → `"encrypted_value"` |
+| `normalize_phone` | Normalizes phone numbers | `"01 23 45 67 89"` → `"+33123456789"` |
+| `clamp_max:value` | Limits maximum value | `100` with `clamp_max:50` → `50` |
+| `clamp_min:value` | Limits minimum value | `10` with `clamp_min:20` → `20` |
 
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `timestamps` | boolean | `false` | Include `created_at` and `updated_at` fields |
-| `soft_deletes` | boolean | `false` | Include `deleted_at` field |
-| `expose_hidden_by_default` | boolean | `false` | Expose hidden model attributes |
-| `namespace` | string | `App\DTOs` | PHP namespace for the generated DTO |
+### Transformer Syntax
 
-#### Advanced Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| `uuid` | boolean | `false` | Auto-generate UUID `id` field with UUID helper methods |
-| `versioning` | boolean | `false` | Add `version` field with versioning methods |
-| `taggable` | boolean | `false` | Add `tags` field with tag management methods |
-| `immutable` | boolean | `false` | Add immutable helper methods (`with`, `copy`, `equals`, `hash`) |
-| `auditable` | boolean | `false` | Add audit fields (`created_by`, `updated_by`) and audit trail methods |
-| `cacheable` | boolean | `false` | Add caching methods and cache key generation |
-| `sluggable` | object | `null` | Add `slug` field with slug generation methods |
-
-#### Sluggable Configuration
-
-The `sluggable` option accepts an object with configuration:
+Transformers are applied in the order they're specified:
 
 ```yaml
-options:
-  sluggable:
-    from: name  # Source field for slug generation
-```
-
-### Basic Example
-
-```yaml
-options:
-  timestamps: true
-  soft_deletes: false
-  expose_hidden_by_default: false
-  namespace: App\DTOs\Products
-```
-
-### Advanced Example
-
-```yaml
-options:
-  # Basic options
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs\Advanced
+fields:
+  name:
+    type: string
+    transformers: [trim, title_case]
   
-  # Advanced options
-  uuid: true              # Auto-generate UUID field and methods
-  versioning: true        # Add version field and versioning methods
-  taggable: true         # Add tags field and tag management
-  immutable: true        # Add immutable pattern methods
-  auditable: true        # Add audit trail functionality
-  cacheable: true        # Add caching capabilities
-  sluggable:             # Add slug generation
-    from: name
+  email:
+    type: string
+    transformers: [trim, lowercase]
+  
+  phone:
+    type: string
+    transformers: [normalize_phone]
+  
+  price:
+    type: float
+    transformers: [abs, clamp_min:0, clamp_max:9999.99]
 ```
 
-## Advanced Options Details
+### Custom Transformers
 
-### UUID Option (`uuid: true`)
-
-When enabled, automatically adds:
-- **Field**: `id` with type `uuid` and required validation
-- **Methods**: `generateUuid()`, `withGeneratedUuid()`
+You can register custom transformers in your application:
 
 ```php
-// Generated methods
-$dto = ProductDTO::withGeneratedUuid(['name' => 'Test Product']);
-$uuid = ProductDTO::generateUuid();
-```
+use Grazulex\LaravelArc\Support\Transformers\FieldTransformerRegistry;
 
-### Versioning Option (`versioning: true`)
-
-When enabled, automatically adds:
-- **Field**: `version` with type `integer`, default `1`
-- **Methods**: `nextVersion()`, `isNewerThan()`, `getVersionInfo()`
-
-```php
-// Generated methods
-$newVersion = $dto->nextVersion();
-$isNewer = $dto->isNewerThan($otherDto);
-$versionInfo = $dto->getVersionInfo();
-```
-
-### Taggable Option (`taggable: true`)
-
-When enabled, automatically adds:
-- **Field**: `tags` with type `array`, default `[]`
-- **Methods**: `addTag()`, `removeTag()`, `hasTag()`, `getTags()`, `withTag()`
-
-```php
-// Generated methods
-$dto = $dto->addTag('featured');
-$dto = $dto->removeTag('draft');
-$hasTag = $dto->hasTag('featured');
-$tags = $dto->getTags();
-$filteredDtos = ProductDTO::withTag($dtos, 'featured');
-```
-
-### Immutable Option (`immutable: true`)
-
-When enabled, adds immutable pattern methods:
-- **Methods**: `with()`, `copy()`, `equals()`, `hash()`
-
-```php
-// Generated methods
-$newDto = $dto->with(['name' => 'New Name']);
-$copy = $dto->copy();
-$isEqual = $dto->equals($otherDto);
-$hash = $dto->hash();
-```
-
-### Auditable Option (`auditable: true`)
-
-When enabled, automatically adds:
-- **Fields**: `created_by`, `updated_by` with type `uuid`
-- **Methods**: `createAuditTrail()`, `setCreator()`, `setUpdater()`, `getAuditInfo()`
-
-```php
-// Generated methods
-$audit = $dto->createAuditTrail('created', $userId);
-$dto = $dto->setCreator($userId);
-$dto = $dto->setUpdater($userId);
-$auditInfo = $dto->getAuditInfo();
-```
-
-### Cacheable Option (`cacheable: true`)
-
-When enabled, adds caching capabilities:
-- **Methods**: `getCacheKey()`, `cache()`, `fromCache()`, `clearCache()`, `isCached()`, `getCacheMetadata()`
-
-```php
-// Generated methods
-$key = $dto->getCacheKey();
-$dto->cache(3600); // Cache for 1 hour
-$cached = ProductDTO::fromCache($key);
-$dto->clearCache();
-$isCached = $dto->isCached();
-$metadata = $dto->getCacheMetadata();
-```
-
-### Sluggable Option (`sluggable: {from: fieldname}`)
-
-When enabled, automatically adds:
-- **Field**: `slug` with type `string` and slug validation rules
-- **Methods**: `generateSlug()`, `updateSlug()`, `getSlug()`, `hasUniqueSlug()`
-
-```php
-// Generated methods
-$dto = $dto->generateSlug();
-$dto = $dto->updateSlug();
-$slug = $dto->getSlug();
-$isUnique = $dto->hasUniqueSlug();
+$registry = app(FieldTransformerRegistry::class);
+$registry->register('capitalize_first', function ($value) {
+    return is_string($value) ? ucfirst(strtolower($value)) : $value;
+});
 ```
 
 ## Complete Example
 
-Here's a comprehensive example showing all features including advanced options:
+Here's a comprehensive example showing all features including behavioral traits and transformers:
 
 ```yaml
 # database/dto_definitions/product.yaml
@@ -494,8 +384,84 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTOs\Catalog
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes
+    - HasUuid
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
   use:
     - App\Traits\CustomTrait
+  extends: BaseDTO
+
+fields:
+  # Basic fields with transformers
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:255]
+    transformers: [trim, title_case]
+  
+  description:
+    type: text
+    rules: [max:1000]
+    transformers: [trim]
+  
+  # Numeric fields
+  price:
+    type: decimal
+    rules: [numeric, min:0]
+    transformers: [abs]
+  
+  stock_quantity:
+    type: integer
+    default: 0
+    rules: [integer, min:0]
+  
+  # Boolean field
+  is_active:
+    type: boolean
+    default: true
+  
+  # Enum field with PHP enum class
+  status:
+    type: enum
+    class: App\Enums\ProductStatus
+    default: draft
+  
+  # Array field
+  tags:
+    type: array
+    rules: [array, distinct]
+  
+  # JSON field
+  specifications:
+    type: json
+  
+  # Date fields
+  published_at:
+    type: datetime
+  
+  # Nested DTO
+  category_details:
+    type: dto
+    dto: category
+
+relations:
+  category:
+    type: belongsTo
+    target: App\Models\Category
+  
+  reviews:
+    type: hasMany
+    target: App\Models\Review
+  
+  tags:
+    type: belongsToMany
+    target: App\Models\Tag
 ```
 
 ## Behavioral Traits System
@@ -563,126 +529,14 @@ fields:
     validation: [required, in:active,inactive]
 ```
 
-### Migration from Options
-
-If you have existing DTOs using the old `options` system, here's how to migrate:
-
-**Old format (deprecated):**
-```yaml
-options:
-  timestamps: true
-  soft_deletes: true
-  uuid: true
-  versioning: true
-  taggable: true
-  auditable: true
-  cacheable: true
-```
-
-**New format (recommended):**
-```yaml
-header:
-  traits:
-    - HasTimestamps
-    - HasSoftDeletes
-    - HasUuid
-    - HasVersioning
-    - HasTagging
-    - HasAuditing
-    - HasCaching
-```
-    - App\Traits\Auditable
-  extends: BaseDTO
-
-fields:
-  # Basic fields
-  name:
-    type: string
-    required: true
-    rules: [min:2, max:255]
-  
-  description:
-    type: text
-    rules: [max:1000]
-  
-  # Numeric fields
-  price:
-    type: decimal
-    rules: [numeric, min:0]
-  
-  stock_quantity:
-    type: integer
-    default: 0
-    rules: [integer, min:0]
-  
-  # Boolean field
-  is_active:
-    type: boolean
-    default: true
-  
-  # Enum field with PHP enum class
-  status:
-    type: enum
-    class: App\Enums\ProductStatus
-    default: draft
-  
-  # Array field
-  tags:
-    type: array
-    rules: [array, distinct]
-  
-  # JSON field
-  specifications:
-    type: json
-  
-  # Date fields
-  published_at:
-    type: datetime
-  
-  # Nested DTO
-  category_details:
-    type: dto
-    dto: category
-
-relations:
-  category:
-    type: belongsTo
-    target: App\Models\Category
-  
-  reviews:
-    type: hasMany
-    target: App\Models\Review
-  
-  tags:
-    type: belongsToMany
-    target: App\Models\Tag
-
-options:
-  # Basic options
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs\Catalog
-  
-  # Advanced options
-  uuid: true              # Auto-generates UUID id field
-  versioning: true        # Adds version field and methods
-  taggable: true         # Adds tags field and tag methods
-  immutable: true        # Adds immutable helper methods
-  auditable: true        # Adds audit trail fields and methods
-  cacheable: true        # Adds caching capabilities
-  sluggable:             # Adds slug field and methods
-    from: name
-```
-
 This example will generate a DTO with:
-- UUID primary key with helper methods
-- Version tracking with `nextVersion()` and `isNewerThan()`
-- Tag management with `addTag()`, `removeTag()`, `hasTag()`
-- Immutable methods like `with()`, `copy()`, `equals()`
-- Audit trail with `created_by`, `updated_by` fields
-- Caching methods with `cache()`, `fromCache()`, `clearCache()`
-- Slug generation from the `name` field
-- Standard timestamp and soft delete fields
+- UUID primary key with helper methods from HasUuid trait
+- Version tracking with `nextVersion()` and `isNewerThan()` from HasVersioning trait
+- Tag management with `addTag()`, `removeTag()`, `hasTag()` from HasTagging trait
+- Audit trail with `created_by`, `updated_by` fields from HasAuditing trait
+- Caching methods with `cache()`, `fromCache()`, `clearCache()` from HasCaching trait
+- Standard timestamp and soft delete fields from HasTimestamps and HasSoftDeletes traits
+- Field transformers for automatic data cleaning and formatting
 
 ## Best Practices
 
@@ -695,6 +549,17 @@ This example will generate a DTO with:
 - Always add appropriate validation rules
 - Use Laravel's built-in rules when possible
 - Consider required=false fields carefully
+
+### Transformers
+- Apply transformers in logical order (e.g., `trim` before `title_case`)
+- Use transformers to ensure data consistency
+- Consider performance impact of complex transformers
+
+### Behavioral Traits
+- Only include traits you actually need
+- Use HasTimestamps for DTOs representing models with timestamps
+- Use HasUuid for DTOs with UUID primary keys
+- Use HasSoftDeletes for DTOs representing soft-deletable models
 
 ### Organization
 - Group related DTOs in subdirectories

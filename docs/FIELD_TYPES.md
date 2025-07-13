@@ -2,6 +2,21 @@
 
 Laravel Arc supports a comprehensive set of field types for your DTOs. This guide covers all available types with examples and usage patterns.
 
+## Important Note
+
+**Some examples in this guide use the deprecated `options` section.** The `options` section has been replaced with behavioral traits in the `header.traits` array. Please refer to the [YAML Schema Reference](YAML_SCHEMA.md) for the current syntax.
+
+```yaml
+# ✅ New format (recommended)
+header:
+  traits:
+    - HasTimestamps
+
+# ❌ Old format (deprecated)
+options:
+  timestamps: true
+```
+
 ## Field Type Categories
 
 ### Primitive Types

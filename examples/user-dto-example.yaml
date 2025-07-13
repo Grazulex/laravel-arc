@@ -4,6 +4,10 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes
 
 fields:
   id:
@@ -15,11 +19,13 @@ fields:
     type: string
     required: true
     rules: [required, string, min:2, max:255]
+    transformers: [trim, title_case]
 
   email:
     type: string
     required: true
     rules: [required, email, unique:users, max:255]
+    transformers: [trim, lowercase]
 
   status:
     type: enum
@@ -38,6 +44,7 @@ fields:
   phone:
     type: string
     rules: [phone, nullable]
+    transformers: [normalize_phone]
 
   preferences:
     type: json
@@ -58,8 +65,3 @@ relations:
   profile:
     type: hasOne
     target: App\Models\Profile
-
-options:
-  timestamps: true
-  soft_deletes: true
-  namespace: App\DTOs
