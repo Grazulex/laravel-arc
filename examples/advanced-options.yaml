@@ -3,6 +3,10 @@ header:
   dto: AdvancedProductDTO
   table: products
   model: App\Models\Product
+  use:
+    - App\Traits\Auditable
+    - App\Traits\Cacheable
+  extends: BaseDTO
 
 fields:
   # Les champs de base
@@ -29,21 +33,28 @@ fields:
   is_active:
     type: boolean
     default: true
+    
+  # Les champs supplémentaires seront ajoutés automatiquement par les options :
+  # - id (UUID) grâce à uuid: true
+  # - version (integer) grâce à versioning: true  
+  # - tags (array) grâce à taggable: true
+  # - slug (string) grâce à sluggable
+  # - created_by, updated_by (UUID) grâce à auditable: true
+  # - created_at, updated_at (datetime) grâce à timestamps: true
+  # - deleted_at (datetime) grâce à soft_deletes: true
 
 options:
-  # Options existantes
+  # Options de base existantes
   timestamps: true        # Ajoute created_at, updated_at
   soft_deletes: true     # Ajoute deleted_at
-  
-  # Nouvelles options
-  uuid: true             # Génère id UUID + méthodes UUID
-  versioning: true       # Ajoute version + méthodes de versioning
-  taggable: true         # Ajoute tags + méthodes de tagging
-  immutable: true        # Ajoute méthodes immutables (with, copy, equals)
-  auditable: true        # Ajoute created_by, updated_by + audit trail
-  cacheable: true        # Ajoute méthodes de cache
-  sluggable:             # Génère slug à partir du nom
-    from: name
-  
-  # Option standard
   namespace: App\DTOs\Advanced
+  
+  # Nouvelles options avancées
+  uuid: true             # Génère id UUID + méthodes UUID (generateUuid, withGeneratedUuid)
+  versioning: true       # Ajoute version + méthodes de versioning (nextVersion, isNewerThan, getVersionInfo)
+  taggable: true         # Ajoute tags + méthodes de tagging (addTag, removeTag, hasTag, getTags, withTag)
+  immutable: true        # Ajoute méthodes immutables (with, copy, equals, hash)
+  auditable: true        # Ajoute created_by, updated_by + audit trail (createAuditTrail, setCreator, setUpdater, getAuditInfo)
+  cacheable: true        # Ajoute méthodes de cache (getCacheKey, cache, fromCache, clearCache, isCached, getCacheMetadata)
+  sluggable:             # Génère slug à partir du nom (generateSlug, updateSlug, getSlug, hasUniqueSlug)
+    from: name

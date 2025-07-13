@@ -44,6 +44,32 @@ A profile DTO designed for nested relationships:
 - Optimized for use as nested DTO
 - Clean field structure
 
+### 🚀 Advanced Options Examples
+New advanced options demonstrating Laravel Arc's enhanced capabilities.
+
+#### [`advanced-options.yaml`](advanced-options.yaml)
+A comprehensive demonstration of all new advanced options:
+- **UUID generation** with automatic field creation and helper methods
+- **Versioning system** with version tracking and comparison
+- **Taggable functionality** with tag management methods
+- **Immutable patterns** with `with()`, `copy()`, `equals()`, `hash()`
+- **Audit trail** with creator/updater tracking
+- **Caching capabilities** with cache key generation and management
+- **Slug generation** from specified source fields
+- **Combined usage** showing all options working together
+
+#### [`advanced-options-usage.php`](advanced-options-usage.php)
+Complete PHP examples demonstrating:
+- **UUID methods**: `generateUuid()`, `withGeneratedUuid()`
+- **Versioning methods**: `nextVersion()`, `isNewerThan()`, `getVersionInfo()`
+- **Tag management**: `addTag()`, `removeTag()`, `hasTag()`, `getTags()`, `withTag()`
+- **Immutable operations**: `with()`, `copy()`, `equals()`, `hash()`
+- **Audit trail**: `createAuditTrail()`, `setCreator()`, `setUpdater()`, `getAuditInfo()`
+- **Caching**: `cache()`, `fromCache()`, `clearCache()`, `isCached()`, `getCacheMetadata()`
+- **Slug generation**: `generateSlug()`, `updateSlug()`, `getSlug()`, `hasUniqueSlug()`
+- **Combined workflows** using multiple options together
+- **Export examples** with new HTML format
+
 ### 🔢 Enum Examples
 Demonstrating Laravel Arc's powerful enum support.
 

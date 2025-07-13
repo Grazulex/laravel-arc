@@ -110,6 +110,11 @@ echo "Markdown Table Export:\n";
 echo $singleUser->toMarkdownTable();
 echo "\n";
 
+// HTML Export
+echo "HTML Export:\n";
+echo $singleUser->toHtml();
+echo "\n\n";
+
 // PHP Array Export
 echo "PHP Array Export:\n";
 echo $singleUser->toPhpArray();
@@ -180,6 +185,11 @@ echo "Markdown Table Collection Export:\n";
 echo UserDto::collectionToMarkdownTable($users);
 echo "\n";
 
+// HTML Collection Export
+echo "HTML Collection Export:\n";
+echo UserDto::collectionToHtml($users);
+echo "\n\n";
+
 // ========================================
 // Advanced Usage Examples
 // ========================================
@@ -243,6 +253,11 @@ final class UserExportController
                 200,
                 ['Content-Type' => 'application/yaml']
             ),
+            'html' => response(
+                UserDto::collectionToHtml($users),
+                200,
+                ['Content-Type' => 'text/html']
+            ),
             'markdown' => response(
                 "# Users Export\n\n".UserDto::collectionToMarkdownTable($users),
                 200,
@@ -273,6 +288,7 @@ echo "- XML: Good for legacy systems, SOAP services\n";
 echo "- YAML: Human-readable, good for configuration\n";
 echo "- TOML: Modern configuration format\n";
 echo "- Markdown: Perfect for documentation\n";
+echo "- HTML: Great for web display, larger than JSON\n";
 echo "- MessagePack: Most efficient binary format (requires extension)\n\n";
 
 echo "Extension Requirements:\n";
@@ -291,6 +307,7 @@ echo "- UserDto::collectionToJson(\$models)\n";
 echo "- UserDto::collectionToYaml(\$models)\n";
 echo "- UserDto::collectionToCsv(\$models)\n";
 echo "- UserDto::collectionToXml(\$models)\n";
+echo "- UserDto::collectionToHtml(\$models)\n";
 echo "- UserDto::collectionToMarkdownTable(\$models)\n\n";
 
 echo "Single DTO methods (instance):\n";
@@ -300,6 +317,7 @@ echo "- \$dto->toCsv()\n";
 echo "- \$dto->toXml()\n";
 echo "- \$dto->toToml()\n";
 echo "- \$dto->toMarkdownTable()\n";
+echo "- \$dto->toHtml()\n";
 echo "- \$dto->toPhpArray()\n";
 echo "- \$dto->toQueryString()\n";
 echo "- \$dto->toMessagePack()\n\n";
