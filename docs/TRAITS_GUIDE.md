@@ -74,6 +74,8 @@ $fails = UserDTO::fails($data);
 ```php
 // Convertit une collection de modèles
 $userDtos = UserDTO::fromModels($models);
+// OR using collection method
+$userDtos = UserDTO::collection($models);
 
 // Convertit en JSON
 $json = $userDto->toJson($options);
@@ -323,12 +325,17 @@ The `ConvertsData` trait provides methods for converting data between different 
 #### `fromModels(iterable $models): \Illuminate\Support\Collection`
 Converts a collection of models to a collection of DTOs.
 
+#### `collection(iterable $models): \Illuminate\Support\Collection`
+Alias for `fromModels()` - provides more intuitive syntax for converting models to DTOs.
+
 ```php
 use App\DTOs\UserDTO;
 use App\Models\User;
 
 $users = User::all();
 $userDtos = UserDTO::fromModels($users);
+// OR
+$userDtos = UserDTO::collection($users);
 
 // $userDtos is a Collection of UserDTO instances
 foreach ($userDtos as $userDto) {
@@ -414,7 +421,7 @@ class UserController extends Controller
     public function index(): JsonResponse
     {
         $users = User::all();
-        $userDtos = UserDTO::fromModels($users);
+        $userDtos = UserDTO::collection($users); // Using collection() method
 
         return response()->json([
             'data' => $userDtos->map(fn($dto) => $dto->toArray()),
@@ -685,6 +692,8 @@ if ($validator->passes()) {
 ### 2. Leverage Conversion Methods
 ```php
 // ✅ Good - Use trait methods for conversion
+$userDtos = UserDTO::collection($users); // Using collection() method
+// OR
 $userDtos = UserDTO::fromModels($users);
 $json = $userDto->toJson();
 

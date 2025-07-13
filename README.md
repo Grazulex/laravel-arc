@@ -87,7 +87,9 @@ $userDto = UserDTO::fromModel($user);
 
 // Convert a collection to DTO collection (like Laravel Resources)
 $users = User::all();
-$userDtos = UserDTO::fromModels($users);
+$userDtos = UserDTO::collection($users); // Returns DtoCollection
+// OR
+$userDtos = UserDTO::fromModels($users); // Alternative syntax
 
 // API Resource format
 return response()->json($userDtos->toArrayResource());

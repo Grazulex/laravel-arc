@@ -31,7 +31,10 @@ final class ApiController extends Controller
         $users = User::all();
 
         // Convert to DTO collection - similar to Laravel Resources
+        // Two ways to do this:
         $userDtos = UserDto::fromModels($users);
+        // OR using the more intuitive collection() method
+        $userDtos = UserDto::collection($users); // Returns DtoCollection
 
         // Return as JSON resource format
         return response()->json(
@@ -99,7 +102,7 @@ final class ApiController extends Controller
     public function indexGrouped(): JsonResponse
     {
         $users = User::all();
-        $userDtos = UserDto::fromModels($users);
+        $userDtos = UserDto::collection($users); // Using collection() method
 
         // Group by status using DtoCollection methods
         $grouped = $userDtos->groupBy('status');
@@ -122,7 +125,7 @@ final class ApiController extends Controller
     public function stats(): JsonResponse
     {
         $users = User::all();
-        $userDtos = UserDto::fromModels($users);
+        $userDtos = UserDto::collection($users); // Using collection() method
 
         // Use collection methods for statistics
         $stats = [

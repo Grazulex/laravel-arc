@@ -69,7 +69,13 @@ public static function fails(array $data): bool
 #### 🔄 **ConvertsData Trait**
 ```php
 // Convert multiple models to DTOs
-public static function fromModels(iterable $models): Collection
+public static function fromModels(iterable $models): DtoCollection
+
+// Convert multiple models to DTOs (alias for fromModels)
+public static function collection(iterable $models): DtoCollection
+
+// Convert multiple models to standard collection
+public static function fromModelsAsCollection(iterable $models): Collection
 
 // Convert DTO to JSON
 public function toJson(int $options = 0): string
@@ -221,7 +227,10 @@ class UserController extends Controller
         $users = User::all();
         
         // Convert multiple models to DTOs using ConvertsData trait
+        // Two ways to do this:
         $userDtos = UserDTO::fromModels($users);
+        // OR
+        $userDtos = UserDTO::collection($users); // Returns DtoCollection
         
         return response()->json($userDtos->map(fn($dto) => $dto->toArray()));
     }
@@ -305,7 +314,10 @@ class UserController extends Controller
         );
 
         // Convert collection to DTOs using ConvertsData trait
+        // Two ways to do this:
         $userDtos = UserDTO::fromModels($users);
+        // OR
+        $userDtos = UserDTO::collection($users); // Returns DtoCollection
 
         return response()->json([
             'data' => $userDtos->map(fn(UserDTO $dto) => $dto->toArray()),
@@ -805,6 +817,8 @@ class ProcessUserBatchJob implements ShouldQueue
         
         // Use ConvertsData trait to convert multiple models
         $userDtos = UserDTO::fromModels($users);
+        // OR use collection method for more intuitive syntax
+        $userDtos = UserDTO::collection($users); // Returns DtoCollection
         
         foreach ($userDtos as $userDto) {
             // Use DtoUtilities trait to inspect and modify data
@@ -1522,22 +1536,14 @@ $updatedDto = $userDto->with(['name' => 'New Name']);
 $user = $updatedDto->syncToModel($user); // Updates model with DTO data
 ```
 
-### 2. **DTO Collections**
-```php
-// Planned feature - native collection support
-$users = User::all();
-$userDtos = UserDTO::collection($users); // Returns DTOCollection
-$userDtos->where('is_active', true)->sortBy('name');
-```
-
-### 3. **Automatic API Resource Generation**
+### 2. **Automatic API Resource Generation**
 ```php
 // Planned feature - generate API resources from DTOs
 php artisan dto:generate-resource UserDTO
 // Creates UserResource with DTO integration
 ```
 
-### 4. **DTO Transformers**
+### 3. **DTO Transformers**
 ```php
 // Planned feature - transform DTOs to different formats
 $userDto = UserDTO::fromModel($user);
@@ -1545,7 +1551,7 @@ $publicDto = $userDto->transform(PublicUserDTO::class);
 $csvRow = $userDto->transform('csv');
 ```
 
-### 5. **Advanced Validation Scenarios**
+### 4. **Advanced Validation Scenarios**
 ```php
 // Planned feature - conditional validation based on DTO state
 public static function rules(string $scenario = 'default'): array
@@ -1558,28 +1564,28 @@ public static function rules(string $scenario = 'default'): array
 }
 ```
 
-### 6. **DTO Caching**
+### 5. **DTO Caching**
 ```php
 // Planned feature - cache DTOs for performance
 $userDto = UserDTO::fromModel($user)->cache(3600); // Cache for 1 hour
 $cachedDto = UserDTO::fromCache($user->id);
 ```
 
-### 7. **GraphQL Integration**
+### 6. **GraphQL Integration**
 ```php
 // Planned feature - auto-generate GraphQL types from DTOs
 php artisan dto:generate-graphql UserDTO
 // Creates GraphQL type definitions
 ```
 
-### 8. **DTO Migrations**
+### 7. **DTO Migrations**
 ```php
 // Planned feature - migrate DTO structure changes
 php artisan dto:migrate UserDTO --from=v1 --to=v2
 // Handles breaking changes in DTO structure
 ```
 
-### 9. **Event Sourcing Support**
+### 8. **Event Sourcing Support**
 ```php
 // Planned feature - event sourcing with DTOs
 $userDto = UserDTO::fromModel($user);
@@ -1587,7 +1593,7 @@ $event = UserCreatedEvent::fromDTO($userDto);
 event($event);
 ```
 
-### 10. **DTO Serialization Formats**
+### 9. **DTO Serialization Formats**
 ```php
 // Planned feature - multiple serialization formats
 $userDto->toJson(); // JSON
