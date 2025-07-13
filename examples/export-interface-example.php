@@ -166,17 +166,17 @@ echo "\n\n";
 echo "MessagePack Export:\n";
 try {
     $packed = $singleProduct->toMessagePack();
-    echo "✅ Successfully packed to MessagePack format (" . strlen($packed) . " bytes)\n";
-} catch (\RuntimeException $e) {
-    echo "❌ MessagePack extension not available: " . $e->getMessage() . "\n";
+    echo '✅ Successfully packed to MessagePack format ('.mb_strlen($packed)." bytes)\n";
+} catch (RuntimeException $e) {
+    echo '❌ MessagePack extension not available: '.$e->getMessage()."\n";
 }
 echo "\n";
 
 // Collection Export
 echo "Collection Export:\n";
 $collection = $singleProduct->toCollection();
-echo "✅ Converted to Laravel Collection (" . get_class($collection) . ")\n";
-echo "   Keys: " . $collection->keys()->implode(', ') . "\n";
+echo '✅ Converted to Laravel Collection ('.get_class($collection).")\n";
+echo '   Keys: '.$collection->keys()->implode(', ')."\n";
 echo "   Values can be further processed with Collection methods\n";
 echo "\n";
 
@@ -267,7 +267,7 @@ function exportProducts(iterable $products, string $format = 'json'): string
 
 echo "Dynamic export based on format:\n";
 foreach (['json', 'csv', 'xml', 'yaml', 'markdown'] as $format) {
-    echo "- {$format}: " . strlen(exportProducts($products, $format)) . " bytes\n";
+    echo "- {$format}: ".mb_strlen(exportProducts($products, $format))." bytes\n";
 }
 echo "\n";
 
@@ -287,8 +287,8 @@ function exportSingleProduct(ProductDto $product, string $format = 'json'): stri
             'msgpack' => $product->toMessagePack(),
             default => throw new InvalidArgumentException("Unsupported format: {$format}"),
         };
-    } catch (\RuntimeException $e) {
-        return "Export failed: " . $e->getMessage();
+    } catch (RuntimeException $e) {
+        return 'Export failed: '.$e->getMessage();
     }
 }
 
@@ -296,7 +296,7 @@ echo "Single DTO export with error handling:\n";
 foreach (['json', 'yaml', 'csv', 'xml', 'toml', 'markdown', 'php', 'query', 'msgpack'] as $format) {
     $result = exportSingleProduct($singleProduct, $format);
     $status = str_contains($result, 'failed') ? '❌' : '✅';
-    echo "{$status} {$format}: " . (str_contains($result, 'failed') ? $result : strlen($result) . " bytes") . "\n";
+    echo "{$status} {$format}: ".(str_contains($result, 'failed') ? $result : mb_strlen($result).' bytes')."\n";
 }
 echo "\n";
 

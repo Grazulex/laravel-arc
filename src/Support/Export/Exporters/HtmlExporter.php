@@ -40,7 +40,7 @@ final class HtmlExporter extends AbstractExporter
         }
         $html .= '</tr></tbody>';
 
-        return $html . '</table>';
+        return $html.'</table>';
     }
 
     /**
@@ -81,7 +81,7 @@ final class HtmlExporter extends AbstractExporter
         }
         $html .= '</tbody>';
 
-        return $html . '</table>';
+        return $html.'</table>';
     }
 
     /**

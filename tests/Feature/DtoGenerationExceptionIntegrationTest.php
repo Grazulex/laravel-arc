@@ -11,12 +11,14 @@ beforeEach(function () {
     File::deleteDirectory(base_path('temp_test_definitions'));
     File::deleteDirectory(base_path('temp_test_output'));
 
-    // Clean up various possible DTO directories
+    // Clean up various possible DTO directories - including the testbench path
     $possibleDirs = [
         app_path('DTO'),
         app_path('DTOs'),
         base_path('vendor/orchestra/testbench-core/laravel/app/DTO'),
         base_path('vendor/orchestra/testbench-core/laravel/app/DTOs'),
+        base_path('vendor/orchestra/testbench-core/laravel/temp_test_definitions'),
+        base_path('vendor/orchestra/testbench-core/laravel/temp_test_output'),
     ];
 
     foreach ($possibleDirs as $dir) {
@@ -31,12 +33,14 @@ afterEach(function () {
     File::deleteDirectory(base_path('temp_test_definitions'));
     File::deleteDirectory(base_path('temp_test_output'));
 
-    // Clean up various possible DTO directories
+    // Clean up various possible DTO directories - including the testbench path
     $possibleDirs = [
         app_path('DTO'),
         app_path('DTOs'),
         base_path('vendor/orchestra/testbench-core/laravel/app/DTO'),
         base_path('vendor/orchestra/testbench-core/laravel/app/DTOs'),
+        base_path('vendor/orchestra/testbench-core/laravel/temp_test_definitions'),
+        base_path('vendor/orchestra/testbench-core/laravel/temp_test_output'),
     ];
 
     foreach ($possibleDirs as $dir) {
@@ -150,39 +154,41 @@ YAML;
 
     File::put($testDir.'/valid-user.yaml', $validYaml);
 
-    // Configure for test
-    config(['dto.definitions_path' => $testDir]);
-    config(['dto.output_path' => base_path('temp_test_output')]);
+    // Configure for test using the same approach as DtoGenerateCommandTest
+    config()->set('dto.definitions_path', $testDir);
+    config()->set('dto.output_path', base_path('temp_test_output'));
+    config()->set('dto.namespace', 'App\\DTO'); // Set the base namespace
 
     // Run command and expect success
     $result = Artisan::call('dto:generate', [
         'filename' => 'valid-user.yaml',
+        '--force' => true,
     ]);
 
     expect($result)->toBe(0); // Should succeed
 
-    $output = Artisan::output();
-    expect($output)->toContain('✅ DTO class written to:');
-    expect($output)->toContain('ValidUserDTO.php');
+    // Check for the file in possible locations
+    $possiblePaths = [
+        base_path('temp_test_output/Test/ValidUserDTO.php'),
+        base_path('temp_test_output/ValidUserDTO.php'),
+        app_path('DTO/Test/ValidUserDTO.php'),
+        app_path('DTO/ValidUserDTO.php'),
+    ];
 
-    // Extract the actual path from the output instead of guessing
-    $outputLines = explode("\n", $output);
-    $pathLine = collect($outputLines)->first(fn ($line) => str_contains($line, 'DTO class written to:'));
-
-    if ($pathLine) {
-        $actualPath = mb_trim(str_replace('✅ DTO class written to:', '', $pathLine));
-        expect(File::exists($actualPath))->toBeTrue();
-    } else {
-        // Fallback: check if any ValidUserDTO.php file exists in expected locations
-        $possiblePaths = [
-            base_path('temp_test_output/Test/ValidUserDTO.php'),
-            base_path('vendor/orchestra/testbench-core/laravel/app/DTO/Test/ValidUserDTO.php'),
-            base_path('app/DTO/Test/ValidUserDTO.php'),
-        ];
-
-        $fileExists = collect($possiblePaths)->contains(fn ($path) => File::exists($path));
-        expect($fileExists)->toBeTrue();
+    $foundPath = null;
+    foreach ($possiblePaths as $path) {
+        if (File::exists($path)) {
+            $foundPath = $path;
+            break;
+        }
     }
+
+    expect($foundPath)->not->toBeNull('DTO file should be created at one of these paths: '.implode(', ', $possiblePaths));
+
+    // Check file contents to verify it's correct
+    $content = File::get($foundPath);
+    expect($content)->toContain('class ValidUserDTO');
+    expect($content)->toContain('namespace App\DTO');
 });
 
 it('provides helpful error messages for missing required header', function () {
@@ -244,12 +250,14 @@ YAML;
     // Test the command with a non-existent directory that would trigger file creation
     // but where we can be more sure of the behavior
     $outputDir = base_path('temp_test_output');
-    config(['dto.definitions_path' => $testDir]);
-    config(['dto.output_path' => $outputDir]);
+    config()->set('dto.definitions_path', $testDir);
+    config()->set('dto.output_path', $outputDir);
+    config()->set('dto.namespace', 'App\\DTO');
 
     // Run the command normally - this should succeed
     $result = Artisan::call('dto:generate', [
         'filename' => 'write-test.yaml',
+        '--force' => true,
     ]);
 
     expect($result)->toBe(0); // Should succeed

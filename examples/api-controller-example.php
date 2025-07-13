@@ -226,6 +226,7 @@ final class ApiController extends Controller
         switch ($format) {
             case 'csv':
                 $csvData = UserDto::collectionToCsv($users);
+
                 return response()->json([
                     'format' => 'csv',
                     'data' => $csvData,
@@ -233,6 +234,7 @@ final class ApiController extends Controller
 
             case 'xml':
                 $xmlData = UserDto::collectionToXml($users, 'users', 'user');
+
                 return response()->json([
                     'format' => 'xml',
                     'data' => $xmlData,
@@ -240,6 +242,7 @@ final class ApiController extends Controller
 
             case 'yaml':
                 $yamlData = UserDto::collectionToYaml($users);
+
                 return response()->json([
                     'format' => 'yaml',
                     'data' => $yamlData,
@@ -247,6 +250,7 @@ final class ApiController extends Controller
 
             case 'markdown':
                 $markdownData = UserDto::collectionToMarkdownTable($users);
+
                 return response()->json([
                     'format' => 'markdown',
                     'data' => $markdownData,
@@ -255,6 +259,7 @@ final class ApiController extends Controller
             case 'json':
             default:
                 $jsonData = UserDto::collectionToJson($users);
+
                 return response()->json([
                     'format' => 'json',
                     'data' => $jsonData,
