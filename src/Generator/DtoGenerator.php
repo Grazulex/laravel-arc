@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Generator;
 
 use Exception;
-use Grazulex\LaravelArc\Contracts\FieldExpandingOptionGenerator;
 use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
+use Grazulex\LaravelArc\Support\Traits\Behavioral\BehavioralTraitRegistry;
 
 final class DtoGenerator
 {
@@ -15,7 +15,6 @@ final class DtoGenerator
         private FieldGeneratorRegistry $fields,
         private RelationGeneratorRegistry $relations,
         private ValidatorGeneratorRegistry $validators,
-        private OptionGeneratorRegistry $options,
     ) {}
 
     public static function make(): self
@@ -27,7 +26,6 @@ final class DtoGenerator
             $context->fields(),
             $context->relations(),
             $context->validators(),
-            $context->options(),
         );
     }
 
@@ -39,42 +37,50 @@ final class DtoGenerator
             $header = $yaml['header'] ?? [];
             $fieldDefinitions = $yaml['fields'] ?? [];
             $relationDefinitions = $yaml['relations'] ?? [];
-            $optionDefinitions = $yaml['options'] ?? [];
 
-            $namespace = $header['namespace'] ?? 'App\\DTO';
+            // Extract traits from top level or header
+            $traits = $yaml['traits'] ?? $header['traits'] ?? [];
 
-            $className = $this->headers->generate('dto', $header, $context);
-            $modelFQCN = $this->headers->generate('model', $header, $context);
-            $this->headers->generate('table', $header, $context);
+            // Expand trait fields if traits are defined
+            if (! empty($traits)) {
+                $fieldDefinitions = $this->expandTraitFields($fieldDefinitions, $traits);
+            }
+
+            // Extract namespace and class from top level or header
+            $namespace = $yaml['namespace'] ?? $header['namespace'] ?? 'App\\DTO';
+
+            // Merge top-level YAML values into header for compatibility with generators
+            $mergedHeader = array_merge($header, [
+                'namespace' => $namespace,
+                'class' => $yaml['class'] ?? $header['class'] ?? $header['dto'] ?? 'UnnamedDto',
+                'model_fqcn' => $yaml['model_fqcn'] ?? $header['model_fqcn'] ?? '\App\Models\Model',
+                'traits' => $traits,
+            ]);
+
+            $className = $this->headers->generate('dto', $mergedHeader, $context);
+            $modelFQCN = $this->headers->generate('model', $mergedHeader, $context);
+            $this->headers->generate('table', $mergedHeader, $context);
 
             // --- Collect header extras ---
             $headerExtras = [];
-            $useStatements = $this->headers->generate('use', $header, $context);
+            $useStatements = $this->headers->generate('use', $mergedHeader, $context);
             if ($useStatements !== '' && $useStatements !== '0') {
                 $headerExtras[] = $useStatements;
             }
 
-            $extendsClause = $this->headers->generate('extends', $header, $context);
+            // Generate trait use statements
+            if (! empty($traits)) {
+                $traitStatements = $this->headers->generate('traits', $mergedHeader, $context);
+                if ($traitStatements !== '' && $traitStatements !== '0') {
+                    $headerExtras[] = $traitStatements;
+                }
+            }
+
+            $extendsClause = $this->headers->generate('extends', $mergedHeader, $context);
 
             $headerExtra = implode("\n", $headerExtras);
             if ($headerExtra !== '' && $headerExtra !== '0') {
                 $headerExtra .= "\n";
-            }
-
-            // --- Inject extra fields from options ---
-            foreach ($optionDefinitions as $name => $value) {
-                $generator = $this->options->get($name);
-
-                if (! $generator instanceof \Grazulex\LaravelArc\Contracts\OptionGenerator) {
-                    continue; // skip unsupported option
-                }
-
-                if ($generator instanceof FieldExpandingOptionGenerator) {
-                    $extraFields = $generator->expandFields($value);
-                    foreach ($extraFields as $key => $fieldDef) {
-                        $fieldDefinitions[$key] = $fieldDef; // safe override
-                    }
-                }
             }
 
             // --- Generate rendered properties ---
@@ -128,16 +134,6 @@ final class DtoGenerator
                 }
             }
 
-            // --- Generate option methods (non-field-expanding) ---
-            foreach ($optionDefinitions as $name => $value) {
-                $generator = $this->options->get($name);
-                $code = $generator?->generate($name, $value, $context);
-
-                if ($code !== null && $code !== '' && $code !== '0') {
-                    $methods[] = $code;
-                }
-            }
-
             // --- Generate validation rules ---
             $allRules = [];
             foreach ($fieldDefinitions as $name => $def) {
@@ -154,6 +150,15 @@ final class DtoGenerator
                     );
                 }
             }
+
+            // Add trait validation rules
+            if (! empty($traits)) {
+                $traitRules = BehavioralTraitRegistry::getValidationRulesForTraits($traits);
+                $allRules = array_merge($allRules, $traitRules);
+            }
+
+            // NOTE: Trait methods are available via 'use TraitName;' statements
+            // No need to generate them inline - this follows PHP trait architecture
 
             if ($allRules !== []) {
                 $rulesBody = implode("\n", array_map(
@@ -172,6 +177,9 @@ $rulesBody
 PHP;
             }
 
+            // --- Generate behavioral trait use statements for class body ---
+            $behavioralTraitUses = $this->generateBehavioralTraitUses($traits);
+
             // --- Render DTO class ---
             return (new DtoTemplateRenderer())->renderFullDtoWithRenderedProperties(
                 $namespace,
@@ -181,7 +189,8 @@ PHP;
                 $modelFQCN,
                 $methods,
                 $headerExtra,
-                $extendsClause
+                $extendsClause,
+                $behavioralTraitUses
             );
         } catch (DtoGenerationException $e) {
             throw $e;
@@ -193,5 +202,36 @@ PHP;
                 null
             );
         }
+    }
+
+    /**
+     * Expand trait fields into the field definitions.
+     *
+     * @param  array<string, mixed>  $fieldDefinitions
+     * @param  array<string>  $traits
+     * @return array<string, mixed>
+     */
+    private function expandTraitFields(array $fieldDefinitions, array $traits): array
+    {
+        return BehavioralTraitRegistry::expandFields($fieldDefinitions, $traits);
+    }
+
+    /**
+     * Generate behavioral trait use statements for the class body.
+     *
+     * @param  array<string>  $traits
+     */
+    private function generateBehavioralTraitUses(array $traits): string
+    {
+        if ($traits === []) {
+            return '';
+        }
+
+        $useStatements = [];
+        foreach ($traits as $traitName) {
+            $useStatements[] = "    use {$traitName};";
+        }
+
+        return "\n".implode("\n", $useStatements);
     }
 }

@@ -10,7 +10,6 @@ use Grazulex\LaravelArc\Generator\DtoGenerationContext;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
 use Grazulex\LaravelArc\Generator\FieldGeneratorRegistry;
 use Grazulex\LaravelArc\Generator\HeaderGeneratorRegistry;
-use Grazulex\LaravelArc\Generator\OptionGeneratorRegistry;
 use Grazulex\LaravelArc\Generator\RelationGeneratorRegistry;
 use Grazulex\LaravelArc\Generator\ValidatorGeneratorRegistry;
 
@@ -34,10 +33,9 @@ it('handles exception propagation from field generator', function () {
     $fields = new FieldGeneratorRegistry([$fieldGenerator], $context);
     $validators = new ValidatorGeneratorRegistry([], $context);
     $relations = new RelationGeneratorRegistry([], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'dto' => ['class' => 'TestDto'],
@@ -70,10 +68,9 @@ it('handles exception re-throwing with context for field generation', function (
     $fields = new FieldGeneratorRegistry([$fieldGenerator], $context);
     $validators = new ValidatorGeneratorRegistry([], $context);
     $relations = new RelationGeneratorRegistry([], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'dto' => ['class' => 'TestDto'],
@@ -106,10 +103,9 @@ it('handles generic exception from field generator with type extraction', functi
     $fields = new FieldGeneratorRegistry([$fieldGenerator], $context);
     $validators = new ValidatorGeneratorRegistry([], $context);
     $relations = new RelationGeneratorRegistry([], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'dto' => ['class' => 'TestDto'],
@@ -142,10 +138,9 @@ it('handles relation generation exceptions', function () {
     $fields = new FieldGeneratorRegistry([], $context);
     $validators = new ValidatorGeneratorRegistry([], $context);
     $relations = new RelationGeneratorRegistry([$relationGenerator], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'dto' => ['class' => 'TestDto'],
@@ -192,10 +187,9 @@ it('handles validation rule generation exceptions', function () {
     $fields = new FieldGeneratorRegistry([$fieldGenerator], $context);
     $validators = new ValidatorGeneratorRegistry([$validatorGenerator], $context);
     $relations = new RelationGeneratorRegistry([], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'header' => ['dto' => 'TestDto'],
@@ -214,10 +208,9 @@ it('handles DTO generation when no fields are defined', function () {
     $fields = new FieldGeneratorRegistry([], $context);
     $validators = new ValidatorGeneratorRegistry([], $context);
     $relations = new RelationGeneratorRegistry([], $context);
-    $options = new OptionGeneratorRegistry([], $context);
     $headers = new HeaderGeneratorRegistry([], $context);
 
-    $generator = new DtoGenerator($headers, $fields, $relations, $validators, $options);
+    $generator = new DtoGenerator($headers, $fields, $relations, $validators);
 
     $definition = [
         'header' => ['dto' => 'TestDto'],

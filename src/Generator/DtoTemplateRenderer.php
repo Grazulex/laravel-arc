@@ -8,6 +8,25 @@ use Grazulex\LaravelArc\Support\FieldTypeResolver;
 
 final class DtoTemplateRenderer
 {
+    public function render(
+        string $namespace,
+        string $className,
+        string $properties,
+        string $constructor,
+        string $methods,
+        string $headerExtra = '',
+        string $extendsClause = '',
+        string $behavioralTraits = ''
+    ): string {
+        $stub = file_get_contents(__DIR__.'/../Console/Commands/stubs/dto.class.stub');
+
+        return str_replace(
+            ['{{ namespace }}', '{{ class }}', '{{ properties }}', '{{ constructor }}', '{{ methods }}', '{{ header_extra }}', '{{ extends_clause }}', '{{ behavioral_traits }}'],
+            [$namespace, $className, $properties, $constructor, $methods, $headerExtra, $extendsClause, $behavioralTraits],
+            $stub
+        );
+    }
+
     public function renderFromModel(string $modelFQCN, array $fields): string
     {
         $assignments = collect($fields)
@@ -100,24 +119,25 @@ final class DtoTemplateRenderer
         string $modelFQCN,
         array $extraMethods = [],
         string $headerExtra = '',
-        string $extendsClause = ''
+        string $extendsClause = '',
+        string $behavioralTraits = ''
     ): string {
-        // Utiliser les propriétés pré-rendues au lieu de régénérer
+        // Use pre-rendered properties instead of regenerating
         $constructor = collect($renderedProperties)->map(function (string $property, string $name): string {
-            // Transformer les propriétés de classe en paramètres de constructeur
+            // Transform class properties to constructor parameters
             $property = mb_trim($property);
 
-            // Si c'est un champ DTO (déjà avec readonly et virgule), ne pas changer
+            // If it's already a DTO field (with readonly and comma), don't change
             if (str_contains($property, 'readonly') && str_ends_with($property, ',')) {
                 return str_repeat(' ', 8).$property;
             }
 
-            // Sinon, transformer le format standard en format readonly avec virgule
+            // Otherwise, transform standard format to readonly format with comma
             if (str_ends_with($property, ';')) {
                 $property = mb_substr($property, 0, -1).',';
             }
 
-            // Ajouter readonly si pas déjà présent
+            // Add readonly if not already present
             if (! str_contains($property, 'readonly')) {
                 $property = str_replace('public ', 'public readonly ', $property);
             }
@@ -130,14 +150,15 @@ final class DtoTemplateRenderer
             $this->renderToArray($fieldDefinitions),
         ];
 
-        return $this->renderClass(
+        return $this->render(
             $namespace,
             $className,
             '', // properties block not used
             $constructor,
             implode("\n\n", array_merge($baseMethods, $extraMethods)),
             $headerExtra,
-            $extendsClause
+            $extendsClause,
+            $behavioralTraits
         );
     }
 }

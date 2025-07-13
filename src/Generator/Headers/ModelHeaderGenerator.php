@@ -16,7 +16,7 @@ final class ModelHeaderGenerator implements HeaderGenerator
 
     public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
-        $model = $header[$key] ?? 'App\\Models\\Model';
+        $model = $header['model_fqcn'] ?? $header['model'] ?? 'App\\Models\\Model';
 
         if (! is_string($model)) {
             return '\\App\\Models\\Model';

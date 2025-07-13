@@ -23,16 +23,8 @@ use Grazulex\LaravelArc\Generator\Headers\DtoHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\ExtendsHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\ModelHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\TableHeaderGenerator;
+use Grazulex\LaravelArc\Generator\Headers\TraitsHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\UseHeaderGenerator;
-use Grazulex\LaravelArc\Generator\Options\AuditableOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\CacheableOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\ImmutableOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\SluggableOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\SoftDeletesOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\TaggableOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\TimestampsOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\UuidOptionGenerator;
-use Grazulex\LaravelArc\Generator\Options\VersioningOptionGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToManyRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\HasManyRelationGenerator;
@@ -92,6 +84,7 @@ final class DtoGenerationContext
             'table' => new TableHeaderGenerator(),
             'use' => new UseHeaderGenerator(),
             'extends' => new ExtendsHeaderGenerator(),
+            'traits' => new TraitsHeaderGenerator(),
         ]);
     }
 
@@ -141,18 +134,31 @@ final class DtoGenerationContext
         ], $this);
     }
 
-    public function options(): OptionGeneratorRegistry
+    /**
+     * Get behavioral traits from YAML data.
+     *
+     * @param  array<string, mixed>  $yamlData
+     * @return array<string>
+     */
+    public function getBehavioralTraits(array $yamlData): array
     {
-        return new OptionGeneratorRegistry([
-            new TimestampsOptionGenerator(),
-            new SoftDeletesOptionGenerator(),
-            new UuidOptionGenerator(),
-            new VersioningOptionGenerator(),
-            new TaggableOptionGenerator(),
-            new ImmutableOptionGenerator(),
-            new AuditableOptionGenerator(),
-            new CacheableOptionGenerator(),
-            new SluggableOptionGenerator(),
-        ]);
+        $traits = [];
+
+        // Look for traits in the root level
+        if (isset($yamlData['traits']) && is_array($yamlData['traits'])) {
+            $traits = array_merge($traits, $yamlData['traits']);
+        }
+
+        // Look for traits under a 'behavioral' key
+        if (isset($yamlData['behavioral']) && is_array($yamlData['behavioral'])) {
+            $traits = array_merge($traits, $yamlData['behavioral']);
+        }
+
+        // Look for traits under header section
+        if (isset($yamlData['headers']['traits']) && is_array($yamlData['headers']['traits'])) {
+            $traits = array_merge($traits, $yamlData['headers']['traits']);
+        }
+
+        return array_unique($traits);
     }
 }

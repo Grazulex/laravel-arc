@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Grazulex\LaravelArc\Support\Traits\ConvertsData;
+use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
+use Grazulex\LaravelArc\Support\Traits\ValidatesData;
+{{ behavioral_traits_imports }}
+
+/**
+ * Generated DTO using Modern Trait-Based Architecture
+ * 
+ * This DTO always includes the 3 functional traits:
+ * - ValidatesData: Provides validation capabilities
+ * - ConvertsData: Provides data conversion and casting
+ * - DtoUtilities: Provides utility methods (toArray, toJson, etc.)
+ * 
+ * Additional behavioral traits: {{ behavioral_traits_list }}
+ * By default, this DTO does NOT extend any base class unless explicitly specified.
+ */
+final class {{ class }}{{ extends_clause }}
+{
+    use ConvertsData;
+    use DtoUtilities;
+    use ValidatesData;
+{{ behavioral_traits_uses }}
+
+{{ properties }}
+
+    public function __construct(
+{{ constructor }}
+    ) {}
+
+{{ methods }}
+}
