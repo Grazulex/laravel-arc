@@ -99,19 +99,19 @@ fi
 case $UPDATE_TYPE in
     docs)
         TITLE="📚 Mise à jour de la documentation"
-        LABELS="documentation,copilot"
+        LABELS="scope:docs"
         ;;
     examples)
         TITLE="💡 Mise à jour des exemples"
-        LABELS="examples,copilot"
+        LABELS="scope:docs"
         ;;
     readme)
         TITLE="📖 Mise à jour du README"
-        LABELS="documentation,readme,copilot"
+        LABELS="scope:docs"
         ;;
     all)
         TITLE="🔄 Mise à jour complète documentation et exemples"
-        LABELS="documentation,examples,readme,copilot"
+        LABELS="scope:docs"
         ;;
 esac
 
@@ -209,22 +209,20 @@ ISSUE_URL=$(gh issue create \
     --title "$TITLE" \
     --body "$ISSUE_BODY" \
     --label "$LABELS" \
-    --assignee "@me")
+    --assignee "@me" \
+    --assignee "Copilot")
 
 if [ $? -eq 0 ]; then
     print_message $GREEN "✅ Issue créée avec succès !"
     print_message $BLUE "🔗 URL: $ISSUE_URL"
+    print_message $GREEN "👥 Assignée automatiquement à vous et à Copilot"
     
     # Extraire le numéro de l'issue de l'URL
     ISSUE_NUMBER=$(echo $ISSUE_URL | grep -o '[0-9]*$')
     
-    print_message $YELLOW "💡 Pour assigner cette issue à Copilot, vous pouvez :"
-    print_message $YELLOW "   1. Aller sur l'issue: $ISSUE_URL"
-    print_message $YELLOW "   2. Mentionner @copilot dans un commentaire"
-    print_message $YELLOW "   3. Ou utiliser: gh issue edit $ISSUE_NUMBER --add-assignee copilot"
-    
     # Proposer d'ouvrir l'issue dans le navigateur
-    read -p "$(echo -e ${BLUE}🌐 Voulez-vous ouvrir l\'issue dans le navigateur ? ${NC}(y/N) ")" -n 1 -r
+    echo -e "${BLUE}🌐 Voulez-vous ouvrir l'issue dans le navigateur ? ${NC}(y/N)"
+    read -n 1 -r
     echo
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         gh issue view $ISSUE_NUMBER --web
