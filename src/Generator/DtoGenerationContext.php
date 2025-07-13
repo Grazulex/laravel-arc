@@ -24,8 +24,15 @@ use Grazulex\LaravelArc\Generator\Headers\ExtendsHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\ModelHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\TableHeaderGenerator;
 use Grazulex\LaravelArc\Generator\Headers\UseHeaderGenerator;
+use Grazulex\LaravelArc\Generator\Options\AuditableOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\CacheableOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\ImmutableOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\SluggableOptionGenerator;
 use Grazulex\LaravelArc\Generator\Options\SoftDeletesOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\TaggableOptionGenerator;
 use Grazulex\LaravelArc\Generator\Options\TimestampsOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\UuidOptionGenerator;
+use Grazulex\LaravelArc\Generator\Options\VersioningOptionGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToManyRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\BelongsToRelationGenerator;
 use Grazulex\LaravelArc\Generator\Relations\HasManyRelationGenerator;
@@ -139,6 +146,13 @@ final class DtoGenerationContext
         return new OptionGeneratorRegistry([
             new TimestampsOptionGenerator(),
             new SoftDeletesOptionGenerator(),
+            new UuidOptionGenerator(),
+            new VersioningOptionGenerator(),
+            new TaggableOptionGenerator(),
+            new ImmutableOptionGenerator(),
+            new AuditableOptionGenerator(),
+            new CacheableOptionGenerator(),
+            new SluggableOptionGenerator(),
         ]);
     }
 }

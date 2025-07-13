@@ -1,0 +1,49 @@
+# Exemple avancé utilisant toutes les nouvelles options de Laravel Arc
+header:
+  dto: AdvancedProductDTO
+  table: products
+  model: App\Models\Product
+
+fields:
+  # Les champs de base
+  name:
+    type: string
+    required: true
+    rules: [min:2, max:200]
+  
+  description:
+    type: text
+    required: false
+    rules: [max:2000]
+  
+  price:
+    type: decimal
+    required: true
+    rules: [numeric, min:0]
+  
+  category:
+    type: enum
+    class: App\Enums\ProductCategory
+    required: true
+  
+  is_active:
+    type: boolean
+    default: true
+
+options:
+  # Options existantes
+  timestamps: true        # Ajoute created_at, updated_at
+  soft_deletes: true     # Ajoute deleted_at
+  
+  # Nouvelles options
+  uuid: true             # Génère id UUID + méthodes UUID
+  versioning: true       # Ajoute version + méthodes de versioning
+  taggable: true         # Ajoute tags + méthodes de tagging
+  immutable: true        # Ajoute méthodes immutables (with, copy, equals)
+  auditable: true        # Ajoute created_by, updated_by + audit trail
+  cacheable: true        # Ajoute méthodes de cache
+  sluggable:             # Génère slug à partir du nom
+    from: name
+  
+  # Option standard
+  namespace: App\DTOs\Advanced
