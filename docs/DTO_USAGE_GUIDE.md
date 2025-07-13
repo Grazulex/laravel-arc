@@ -117,26 +117,20 @@ Based on this YAML definition:
 header:
   dto: UserDTO
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: uuid
-    required: true
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
   email:
     type: string
     required: true
-    rules: [email, unique:users]
-  created_at:
-    type: datetime
-    required: true
-
-options:
-  timestamps: true
-  namespace: App\DTOs
+    validation: [required, email, unique:users]
 ```
 
 The generated DTO would look like:

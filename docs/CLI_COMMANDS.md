@@ -300,21 +300,20 @@ php artisan dto:definition-init UserDTO
 ```yaml
 header:
   dto: UserDTO
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: integer
-    required: true
-  
   # Add your fields here
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
 
-options:
-  timestamps: true
-  namespace: App\DTOs
+# HasTimestamps trait automatically adds created_at and updated_at fields
+# HasUuid trait automatically adds id field with UUID validation
 ```
 
 #### With Model and Table
@@ -343,21 +342,20 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+    - HasUuid
 
 fields:
-  id:
-    type: integer
-    required: true
-  
   # Add your fields here
   name:
     type: string
     required: true
-    rules: [min:2, max:100]
+    validation: [required, string, min:2, max:100]
 
-options:
-  timestamps: true
-  namespace: App\DTOs
+# HasTimestamps trait automatically adds created_at and updated_at fields
+# HasUuid trait automatically adds id field with UUID validation
 ```
 
 #### Custom Path
