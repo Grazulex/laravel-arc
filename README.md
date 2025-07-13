@@ -28,7 +28,7 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
 - 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
 - 🎯 **Powerful trait system** - Built-in traits for validation, data conversion, and utilities
-- 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
+- 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, HTML, PHP Array, Query String, MessagePack, Collection)
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
@@ -103,6 +103,7 @@ $csv = $userDto->toCsv();
 $xml = $userDto->toXml();
 $toml = $userDto->toToml();
 $markdown = $userDto->toMarkdownTable();
+$html = $userDto->toHtml();
 $phpArray = $userDto->toPhpArray();
 $queryString = $userDto->toQueryString();
 $messagepack = $userDto->toMessagePack();
@@ -113,6 +114,7 @@ $jsonData = UserDTO::collectionToJson($users);
 $csvData = UserDTO::collectionToCsv($users);
 $xmlData = UserDTO::collectionToXml($users);
 $yamlData = UserDTO::collectionToYaml($users);
+$htmlData = UserDTO::collectionToHtml($users);
 $markdownData = UserDTO::collectionToMarkdownTable($users);
 
 // Validation

@@ -320,6 +320,8 @@ Configure how the DTO is generated.
 
 ### Available Options
 
+#### Basic Options
+
 | Option | Type | Default | Description |
 |--------|------|---------|-------------|
 | `timestamps` | boolean | `false` | Include `created_at` and `updated_at` fields |
@@ -327,7 +329,29 @@ Configure how the DTO is generated.
 | `expose_hidden_by_default` | boolean | `false` | Expose hidden model attributes |
 | `namespace` | string | `App\DTOs` | PHP namespace for the generated DTO |
 
-### Example
+#### Advanced Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `uuid` | boolean | `false` | Auto-generate UUID `id` field with UUID helper methods |
+| `versioning` | boolean | `false` | Add `version` field with versioning methods |
+| `taggable` | boolean | `false` | Add `tags` field with tag management methods |
+| `immutable` | boolean | `false` | Add immutable helper methods (`with`, `copy`, `equals`, `hash`) |
+| `auditable` | boolean | `false` | Add audit fields (`created_by`, `updated_by`) and audit trail methods |
+| `cacheable` | boolean | `false` | Add caching methods and cache key generation |
+| `sluggable` | object | `null` | Add `slug` field with slug generation methods |
+
+#### Sluggable Configuration
+
+The `sluggable` option accepts an object with configuration:
+
+```yaml
+options:
+  sluggable:
+    from: name  # Source field for slug generation
+```
+
+### Basic Example
 
 ```yaml
 options:
@@ -337,9 +361,127 @@ options:
   namespace: App\DTOs\Products
 ```
 
+### Advanced Example
+
+```yaml
+options:
+  # Basic options
+  timestamps: true
+  soft_deletes: true
+  namespace: App\DTOs\Advanced
+  
+  # Advanced options
+  uuid: true              # Auto-generate UUID field and methods
+  versioning: true        # Add version field and versioning methods
+  taggable: true         # Add tags field and tag management
+  immutable: true        # Add immutable pattern methods
+  auditable: true        # Add audit trail functionality
+  cacheable: true        # Add caching capabilities
+  sluggable:             # Add slug generation
+    from: name
+```
+
+## Advanced Options Details
+
+### UUID Option (`uuid: true`)
+
+When enabled, automatically adds:
+- **Field**: `id` with type `uuid` and required validation
+- **Methods**: `generateUuid()`, `withGeneratedUuid()`
+
+```php
+// Generated methods
+$dto = ProductDTO::withGeneratedUuid(['name' => 'Test Product']);
+$uuid = ProductDTO::generateUuid();
+```
+
+### Versioning Option (`versioning: true`)
+
+When enabled, automatically adds:
+- **Field**: `version` with type `integer`, default `1`
+- **Methods**: `nextVersion()`, `isNewerThan()`, `getVersionInfo()`
+
+```php
+// Generated methods
+$newVersion = $dto->nextVersion();
+$isNewer = $dto->isNewerThan($otherDto);
+$versionInfo = $dto->getVersionInfo();
+```
+
+### Taggable Option (`taggable: true`)
+
+When enabled, automatically adds:
+- **Field**: `tags` with type `array`, default `[]`
+- **Methods**: `addTag()`, `removeTag()`, `hasTag()`, `getTags()`, `withTag()`
+
+```php
+// Generated methods
+$dto = $dto->addTag('featured');
+$dto = $dto->removeTag('draft');
+$hasTag = $dto->hasTag('featured');
+$tags = $dto->getTags();
+$filteredDtos = ProductDTO::withTag($dtos, 'featured');
+```
+
+### Immutable Option (`immutable: true`)
+
+When enabled, adds immutable pattern methods:
+- **Methods**: `with()`, `copy()`, `equals()`, `hash()`
+
+```php
+// Generated methods
+$newDto = $dto->with(['name' => 'New Name']);
+$copy = $dto->copy();
+$isEqual = $dto->equals($otherDto);
+$hash = $dto->hash();
+```
+
+### Auditable Option (`auditable: true`)
+
+When enabled, automatically adds:
+- **Fields**: `created_by`, `updated_by` with type `uuid`
+- **Methods**: `createAuditTrail()`, `setCreator()`, `setUpdater()`, `getAuditInfo()`
+
+```php
+// Generated methods
+$audit = $dto->createAuditTrail('created', $userId);
+$dto = $dto->setCreator($userId);
+$dto = $dto->setUpdater($userId);
+$auditInfo = $dto->getAuditInfo();
+```
+
+### Cacheable Option (`cacheable: true`)
+
+When enabled, adds caching capabilities:
+- **Methods**: `getCacheKey()`, `cache()`, `fromCache()`, `clearCache()`, `isCached()`, `getCacheMetadata()`
+
+```php
+// Generated methods
+$key = $dto->getCacheKey();
+$dto->cache(3600); // Cache for 1 hour
+$cached = ProductDTO::fromCache($key);
+$dto->clearCache();
+$isCached = $dto->isCached();
+$metadata = $dto->getCacheMetadata();
+```
+
+### Sluggable Option (`sluggable: {from: fieldname}`)
+
+When enabled, automatically adds:
+- **Field**: `slug` with type `string` and slug validation rules
+- **Methods**: `generateSlug()`, `updateSlug()`, `getSlug()`, `hasUniqueSlug()`
+
+```php
+// Generated methods
+$dto = $dto->generateSlug();
+$dto = $dto->updateSlug();
+$slug = $dto->getSlug();
+$isUnique = $dto->hasUniqueSlug();
+```
+
 ## Complete Example
 
-Here's a comprehensive example showing all features:
+Here's a comprehensive example showing all features including advanced options:
 
 ```yaml
 # database/dto_definitions/product.yaml
@@ -354,10 +496,6 @@ header:
 
 fields:
   # Basic fields
-  id:
-    type: uuid
-    required: true
-  
   name:
     type: string
     required: true
@@ -420,11 +558,31 @@ relations:
     target: App\Models\Tag
 
 options:
+  # Basic options
   timestamps: true
   soft_deletes: true
-  expose_hidden_by_default: false
   namespace: App\DTOs\Catalog
+  
+  # Advanced options
+  uuid: true              # Auto-generates UUID id field
+  versioning: true        # Adds version field and methods
+  taggable: true         # Adds tags field and tag methods
+  immutable: true        # Adds immutable helper methods
+  auditable: true        # Adds audit trail fields and methods
+  cacheable: true        # Adds caching capabilities
+  sluggable:             # Adds slug field and methods
+    from: name
 ```
+
+This example will generate a DTO with:
+- UUID primary key with helper methods
+- Version tracking with `nextVersion()` and `isNewerThan()`
+- Tag management with `addTag()`, `removeTag()`, `hasTag()`
+- Immutable methods like `with()`, `copy()`, `equals()`
+- Audit trail with `created_by`, `updated_by` fields
+- Caching methods with `cache()`, `fromCache()`, `clearCache()`
+- Slug generation from the `name` field
+- Standard timestamp and soft delete fields
 
 ## Best Practices
 
