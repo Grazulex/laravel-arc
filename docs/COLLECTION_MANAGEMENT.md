@@ -328,6 +328,7 @@ php artisan dto:generate user.yaml
 - `collectionToYaml(iterable $models): string` - Converts to YAML format
 - `collectionToCsv(iterable $models): string` - Converts to CSV format
 - `collectionToXml(iterable $models): string` - Converts to XML format
+- `collectionToHtml(iterable $models): string` - Converts to HTML table format
 - `collectionToMarkdownTable(iterable $models): string` - Converts to Markdown table
 
 **Single DTO Methods:**
@@ -337,6 +338,7 @@ php artisan dto:generate user.yaml
 - `toXml(): string` - Converts a DTO to XML
 - `toToml(): string` - Converts a DTO to TOML
 - `toMarkdownTable(): string` - Converts a DTO to Markdown table
+- `toHtml(): string` - Converts a DTO to HTML table format
 - `toPhpArray(): string` - Converts a DTO to PHP array format
 - `toQueryString(): string` - Converts a DTO to query string
 - `toMessagePack(): string` - Converts a DTO to MessagePack (binary)
