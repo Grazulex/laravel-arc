@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Support\Traits;
 
 use Grazulex\LaravelArc\Support\DtoCollection;
-use Grazulex\LaravelArc\Support\Export\ExporterFactory;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use RuntimeException;
 use SimpleXMLElement;
-use Throwable;
 
 /**
  * Trait that provides data conversion functionality for DTOs.
@@ -225,18 +223,6 @@ trait ConvertsData
      */
     public function toJson(int $options = 0): string
     {
-        // Use new modular architecture when available, fallback to old implementation
-        try {
-            $manager = ExporterFactory::getInstance();
-            if ($manager->hasExporter('json')) {
-                $exporter = $manager->getExporter('json');
-
-                return $exporter->export($this->toArray(), ['flags' => $options]);
-            }
-        } catch (Throwable $e) {
-            // Fallback to original implementation if new architecture fails
-        }
-
         return json_encode($this->toArray(), $options);
     }
 
