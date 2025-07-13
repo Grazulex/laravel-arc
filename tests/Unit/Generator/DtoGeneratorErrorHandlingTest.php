@@ -4,9 +4,12 @@ declare(strict_types=1);
 
 use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Grazulex\LaravelArc\Support\Traits\Behavioral\BehavioralTraitRegistry;
 
 describe('DtoGenerator Error Handling', function () {
     beforeEach(function () {
+        // Ensure traits are registered
+        BehavioralTraitRegistry::registerDefaults();
         $this->generator = DtoGenerator::make();
     });
 
@@ -116,6 +119,7 @@ describe('DtoGenerator Error Handling', function () {
             'header' => [
                 'dto' => 'ComplexDto',
                 'namespace' => 'App\DTOs',
+                'traits' => ['HasTimestamps', 'HasSoftDeletes'],
             ],
             'fields' => [
                 'id' => [
@@ -137,10 +141,6 @@ describe('DtoGenerator Error Handling', function () {
                     'required' => false,
                 ],
             ],
-            'options' => [
-                'timestamps' => true,
-                'soft_deletes' => true,
-            ],
         ];
 
         $result = $this->generator->generateFromDefinition($yamlContent, 'test.yaml');
@@ -150,7 +150,7 @@ describe('DtoGenerator Error Handling', function () {
         expect($result)->toContain('public readonly int $id');
         expect($result)->toContain('public readonly string $name');
         expect($result)->toContain('public readonly string $email');
-        expect($result)->toContain('public readonly \\Carbon\\Carbon $created_at');
+        expect($result)->toContain('public readonly ?\\Carbon\\Carbon $created_at'); // Nullable timestamp
     });
 
     it('handles empty field definitions', function () {

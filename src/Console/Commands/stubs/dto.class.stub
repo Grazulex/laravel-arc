@@ -13,7 +13,7 @@ final class {{ class }} {{ extends_clause }}
 {
     use ConvertsData;
     use DtoUtilities;
-    use ValidatesData;
+    use ValidatesData;{{ behavioral_traits }}
 
 {{ properties }}
 

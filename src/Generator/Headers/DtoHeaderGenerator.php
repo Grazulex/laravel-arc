@@ -16,6 +16,6 @@ final class DtoHeaderGenerator implements HeaderGenerator
 
     public function generate(string $key, array $header, DtoGenerationContext $context): string
     {
-        return $header[$key] ?? 'UnnamedDto';
+        return $header['class'] ?? $header['dto'] ?? 'UnnamedDto';
     }
 }

@@ -1,7 +1,10 @@
-header:
-  dto: UserDTO
-  table: users
-  model: App\Models\User
+namespace: App\DTO
+class_name: UserDTO
+model: App\Models\User
+
+# Behavioral traits replace options
+traits:
+  - HasTimestamps    # Replaces options.timestamps: true
 
 fields:
   id:
@@ -19,9 +22,3 @@ fields:
   profile:
     type: dto
     dto: profile
-
-options:
-  timestamps: true
-  soft_deletes: false
-  expose_hidden_by_default: false
-  namespace: App\DTO

@@ -5,3 +5,7 @@ parameters:
         - src
     bootstrapFiles:
         - vendor/autoload.php
+
+    ignoreErrors:
+        # Suppress unused trait warnings - these are used dynamically in generated DTOs
+        - '#Trait .* is used zero times and is not analysed#'

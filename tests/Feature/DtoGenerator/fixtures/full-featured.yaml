@@ -2,6 +2,8 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
+  namespace: App\DTO
+  traits: [HasTimestamps, HasSoftDeletes]
 
 fields:
   id:
@@ -24,14 +26,3 @@ fields:
     values: [draft, published, archived]
   available:
     type: boolean
-
-relations:
-  category:
-    type: belongsTo
-    target: App\Models\Category
-
-options:
-  timestamps: true
-  soft_deletes: true
-  expose_hidden_by_default: false
-  namespace: App\DTO

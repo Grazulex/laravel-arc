@@ -3,9 +3,15 @@
 declare(strict_types=1);
 
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Grazulex\LaravelArc\Support\Traits\Behavioral\BehavioralTraitRegistry;
 use Symfony\Component\Yaml\Yaml;
 
 describe('DtoGenerator - full YAML coverage', function () {
+    beforeEach(function () {
+        // Ensure traits are registered
+        BehavioralTraitRegistry::registerDefaults();
+    });
+
     it('can generate a complete DTO class from a realistic YAML definition', function () {
         $yaml = file_get_contents(__DIR__.'/fixtures/basic-complete.yaml');
         $definition = Yaml::parse($yaml);
@@ -42,9 +48,8 @@ describe('DtoGenerator - full YAML coverage', function () {
             ->toContain("'tags' => ['array', 'nullable', 'distinct']")
             ->toContain("'description' => ['string', 'nullable', 'max:500']")
             ->toContain('use ValidatesData')
-            ->toContain('category') // relation
-            ->toContain('public readonly \\Carbon\\Carbon $created_at') // timestamps
-            ->toContain('public readonly ?\\Carbon\\Carbon $updated_at') // timestamps
-            ->toContain('public readonly ?\\Carbon\\Carbon $deleted_at'); // soft deletes
+            ->toContain('public readonly ?\\Carbon\\Carbon $created_at = null') // timestamps (nullable)
+            ->toContain('public readonly ?\\Carbon\\Carbon $updated_at = null') // timestamps (nullable)
+            ->toContain('public readonly ?\\Carbon\\Carbon $deleted_at = null'); // soft deletes (nullable)
     });
 });

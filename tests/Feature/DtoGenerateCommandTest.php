@@ -2,10 +2,14 @@
 
 declare(strict_types=1);
 
+use Grazulex\LaravelArc\Support\Traits\Behavioral\BehavioralTraitRegistry;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 it('can generate a DTO from the full-featured YAML fixture', function () {
+    // Initialize traits registry
+    BehavioralTraitRegistry::registerDefaults();
+
     // 1. Dossier temporaire simulant config('dto.definitions_path')
     $definitionPath = __DIR__.'/temp_definitions';
     File::ensureDirectoryExists($definitionPath);
