@@ -11,6 +11,25 @@ Laravel Arc provides full support for Laravel Eloquent relationships in your DTO
 | `hasMany` | One-to-many relationship | User has many Posts |
 | `belongsToMany` | Many-to-many relationship | User belongs to many Roles |
 
+## Important Note
+
+**All examples in this guide use the new trait-based system.** The old `options` section is deprecated. Use `header.traits` instead:
+
+```yaml
+# ✅ New format (recommended)
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
+
+# ❌ Old format (deprecated)
+options:
+  timestamps: true
+  namespace: App\DTOs
+```
+
 ## Basic Relationship Definition
 
 ### belongsTo (Many-to-One)
