@@ -82,6 +82,8 @@ $active = $userDtos1->where('is_active', true);
 $sorted = $userDtos2->sortBy('name');
 ```
 
+The `collection()` method is simply an alias for `fromModels()` that provides a more familiar API for developers coming from Laravel API Resources. Both methods return a `DtoCollection` instance with all the advanced collection features.
+
 ## Basic Usage
 
 ### 1. Converting Models to DTOs
@@ -315,12 +317,29 @@ php artisan dto:generate user.yaml
 
 ### ConvertsData Trait
 
+**Collection Methods:**
 - `fromModels(iterable $models): DtoCollection` - Converts a collection of models
 - `collection(iterable $models): DtoCollection` - Alias for fromModels() with intuitive syntax
 - `fromModelsAsCollection(iterable $models): Collection` - Converts to a standard collection
 - `fromPaginator(Paginator $paginator): array` - Handles pagination
+
+**Collection Export Methods:**
 - `collectionToJson(iterable $models): string` - Converts directly to JSON API
+- `collectionToYaml(iterable $models): string` - Converts to YAML format
+- `collectionToCsv(iterable $models): string` - Converts to CSV format
+- `collectionToXml(iterable $models): string` - Converts to XML format
+- `collectionToMarkdownTable(iterable $models): string` - Converts to Markdown table
+
+**Single DTO Methods:**
 - `toJson(int $options = 0): string` - Converts a DTO to JSON
+- `toYaml(): string` - Converts a DTO to YAML
+- `toCsv(): string` - Converts a DTO to CSV
+- `toXml(): string` - Converts a DTO to XML
+- `toToml(): string` - Converts a DTO to TOML
+- `toMarkdownTable(): string` - Converts a DTO to Markdown table
+- `toPhpArray(): string` - Converts a DTO to PHP array format
+- `toQueryString(): string` - Converts a DTO to query string
+- `toMessagePack(): string` - Converts a DTO to MessagePack (binary)
 - `toCollection(): Collection` - Converts a DTO to collection
 - `only(array $keys): array` - Selects certain fields
 - `except(array $keys): array` - Excludes certain fields
@@ -329,6 +348,11 @@ php artisan dto:generate user.yaml
 
 - `toArrayResource(array $meta = []): array` - API Resource format
 - `toJsonResource(array $meta = []): string` - JSON API Resource format
+- `whereField(string $field, mixed $value): static` - Filter DTOs by field values
+- `paginate(int $perPage = 15, int $page = 1): array` - Paginate the collection
+- `groupByField(string $field): Collection` - Group DTOs by a field
+- `onlyFields(array $fields): Collection` - Get only specific fields from all DTOs
+- `exceptFields(array $fields): Collection` - Exclude specific fields from all DTOs
 - Plus all Laravel Collection methods (filter, map, groupBy, etc.)
 
 ## Benefits

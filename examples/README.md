@@ -136,7 +136,20 @@ $userDtos = UserDTO::fromModels($users);  // Alternative syntax
 
 // Convert to different formats
 $json = $userDto->toJson();
-$collection = $userDto->toCollection();
+$yaml = $userDto->toYaml();
+$csv = $userDto->toCsv();
+$xml = $userDto->toXml();
+$toml = $userDto->toToml();
+$markdown = $userDto->toMarkdownTable();
+$phpArray = $userDto->toPhpArray();
+$queryString = $userDto->toQueryString();
+$msgpack = $userDto->toMessagePack(); // Requires msgpack extension
+
+// Collection exports
+$csvData = UserDTO::collectionToCsv($users);
+$xmlData = UserDTO::collectionToXml($users);
+$yamlData = UserDTO::collectionToYaml($users);
+$markdownTable = UserDTO::collectionToMarkdownTable($users);
 
 // Filter data
 $publicData = $userDto->only(['name', 'email']);
@@ -215,6 +228,23 @@ See [`api-controller-example.php`](api-controller-example.php) for comprehensive
 - Pagination with DTOs
 - Filtering and searching
 - Error handling with validation
+- **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown)
+
+### Export Formats Usage
+See [`export-formats-example.php`](export-formats-example.php) for comprehensive examples of:
+- **Single DTO exports** in 9 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack)
+- **Collection exports** in multiple formats
+- **Real-world controller usage** with format-based responses
+- **Performance considerations** and format recommendations
+- **Extension requirements** for advanced formats
+
+### Collection Methods Usage
+See [`collection-methods-example.php`](collection-methods-example.php) for comprehensive examples of:
+- **New collection() method** - intuitive alias for fromModels()
+- **DtoCollection advanced features** - API resource format, field filtering, pagination
+- **Laravel Collection compatibility** - all standard collection methods work
+- **Practical controller examples** - analytics, filtering, exporting
+- **Migration from Laravel Resources** - comparison and upgrade path
 
 ## 🎓 Learning Path
 
@@ -232,6 +262,11 @@ See [`api-controller-example.php`](api-controller-example.php) for comprehensive
 - [`nested-order.yaml`](nested-order.yaml) - Complex e-commerce patterns
 - [`nested-customer.yaml`](nested-customer.yaml) - Multi-level nesting
 - [`circular-category.yaml`](circular-category.yaml) - Circular reference handling
+
+### 4. Learn Practical Usage
+- [`api-controller-example.php`](api-controller-example.php) - API controller patterns
+- [`export-formats-example.php`](export-formats-example.php) - Export in multiple formats
+- [`collection-methods-example.php`](collection-methods-example.php) - Collection management
 
 ## 🔧 Advanced Features Demonstrated
 
