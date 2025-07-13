@@ -129,8 +129,10 @@ if (UserDTO::fails($data)) {
 
 ### 🔄 **ConvertsData** - Data Conversion
 ```php
-// Convert multiple models
-$userDtos = UserDTO::fromModels($users);
+// Convert multiple models - Two ways:
+$userDtos = UserDTO::collection($users);  // Intuitive syntax
+// OR
+$userDtos = UserDTO::fromModels($users);  // Alternative syntax
 
 // Convert to different formats
 $json = $userDto->toJson();
@@ -181,7 +183,12 @@ Check out our [**Traits Guide**](../docs/TRAITS_GUIDE.md) for comprehensive docu
        $validated = UserDTO::validate($data);
    }
    
-   // Use ConvertsData trait
+   // Use ConvertsData trait - Two ways:
+   $userDtos = UserDTO::collection($users);  // Intuitive syntax
+   // OR
+   $userDtos = UserDTO::fromModels($users);  // Alternative syntax
+   
+   // Convert to different formats
    $json = $userDto->toJson();
    $publicData = $userDto->only(['name', 'email']);
    

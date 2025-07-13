@@ -57,6 +57,24 @@ describe('ConvertsData Trait', function () {
         expect($dtos->first())->toBeInstanceOf(ConvertedTestDto::class);
     });
 
+    it('converts models to DTO collection using collection() method', function () {
+        $dtos = ConvertedTestDto::collection($this->models);
+
+        expect($dtos)->toBeInstanceOf(DtoCollection::class);
+        expect($dtos->count())->toBe(3);
+        expect($dtos->first())->toBeInstanceOf(ConvertedTestDto::class);
+    });
+
+    it('collection() method is equivalent to fromModels()', function () {
+        $dtos1 = ConvertedTestDto::collection($this->models);
+        $dtos2 = ConvertedTestDto::fromModels($this->models);
+
+        expect($dtos1)->toBeInstanceOf(DtoCollection::class);
+        expect($dtos2)->toBeInstanceOf(DtoCollection::class);
+        expect($dtos1->count())->toBe($dtos2->count());
+        expect($dtos1->first()->toArray())->toBe($dtos2->first()->toArray());
+    });
+
     it('converts models to standard collection', function () {
         $dtos = ConvertedTestDto::fromModelsAsCollection($this->models);
 
