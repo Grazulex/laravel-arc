@@ -54,7 +54,7 @@ Field transformers provide a declarative way to clean, format, and normalize dat
 
 | Transformer | Description | Input | Output |
 |-------------|-------------|--------|--------|
-| `normalize_phone` | Normalizes phone numbers | `"01 23 45 67 89"` | `"+33123456789"` |
+| `normalize_phone` | Normalizes phone numbers (adds +33 for French numbers starting with 0) | `"01 23 45 67 89"` | `"+33123456789"` |
 
 ## Usage Examples
 

@@ -69,7 +69,7 @@ graph TD
 - 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
 - 🎯 **Powerful trait system** - Built-in behavioral traits for common functionality (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching) plus 3 functional traits (ValidatesData, ConvertsData, DtoUtilities) in every DTO
 - 🔄 **Field transformers** - Automatically transform field values during DTO creation with built-in transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
-- 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, HTML, PHP Array, Query String, MessagePack, Collection)
+- 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, HTML, PHP Array, Query String, MessagePack) with dedicated collection methods
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
@@ -88,7 +88,7 @@ composer require grazulex/laravel-arc
 
 **1. Create a DTO definition**
 ```bash
-php artisan dto:definition-init UserDTO --model=App\\Models\\User
+php artisan dto:definition-init UserDTO --model=App\\Models\\User --table=users
 ```
 
 **2. Define your DTO in YAML**
@@ -153,7 +153,7 @@ $queryString = $userDto->toQueryString();
 $messagepack = $userDto->toMessagePack();
 $collection = $userDto->toCollection();
 
-// Collection exports
+// Collection exports (with data wrapper like Laravel Resources)
 $jsonData = UserDTO::collectionToJson($users);
 $csvData = UserDTO::collectionToCsv($users);
 $xmlData = UserDTO::collectionToXml($users);
@@ -227,7 +227,11 @@ fields:
     transformers: [abs, clamp_min:0]  # -19.99 → 19.99
 ```
 
-Available transformers: `trim`, `lowercase`, `uppercase`, `title_case`, `slugify`, `abs`, `encrypt`, `normalize_phone`, `clamp_max`, `clamp_min`
+**Available transformers:**
+- **String transformers**: `trim`, `lowercase`, `uppercase`, `title_case`, `slugify`
+- **Numeric transformers**: `abs`, `clamp_max`, `clamp_min`
+- **Security transformers**: `encrypt`
+- **Phone transformers**: `normalize_phone` (adds +33 prefix for French numbers starting with 0)
 
 ## 📖 Documentation
 
