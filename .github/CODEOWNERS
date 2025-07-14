@@ -1,1 +1,15 @@
-* @Grazulex
+# Ownership for source code
+src/ @Grazulex
+
+# Ownership for documentation
+docs/ @DocsTeam
+
+# Ownership for tests
+tests/ @QAGroup
+
+# Ownership for configuration files
+*.yml @OpsTeam
+*.yaml @OpsTeam
+
+# Ownership for markdown files
+*.md @DocsTeam
