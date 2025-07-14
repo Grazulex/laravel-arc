@@ -2,4 +2,4 @@
 /src/ @Grazulex
 /tests/ @Grazulex
 **/*.{yml,yaml} @Grazulex
-*.md @Grazulex
+**/*.md @Grazulex
