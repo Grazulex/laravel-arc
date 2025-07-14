@@ -1,6 +1,6 @@
 # Export Formats Examples
 
-This document demonstrates the various export formats available in Laravel Arc DTOs.
+This document demonstrates the 9 export formats available in Laravel Arc DTOs.
 
 ## Basic Usage
 

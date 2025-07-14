@@ -1,0 +1,130 @@
+# Export Formats Example - Comprehensive demonstration of all available export formats
+header:
+  dto: ExportFormatsExampleDTO
+  table: examples
+  model: App\Models\Example
+  namespace: App\DTOs\Examples
+  traits:
+    - HasUuid
+    - HasTimestamps
+
+fields:
+  name:
+    type: string
+    required: true
+    validation: [required, string, max:100]
+    transformers: [trim, title_case]
+  
+  email:
+    type: string
+    required: true
+    validation: [required, email]
+    transformers: [trim, lowercase]
+  
+  status:
+    type: string
+    required: true
+    validation: [required, in:active,inactive,pending]
+    default: "active"
+  
+  role:
+    type: string
+    required: true
+    validation: [required, in:admin,user,moderator]
+    default: "user"
+  
+  city:
+    type: string
+    required: false
+    validation: [nullable, string, max:100]
+    transformers: [trim, title_case]
+  
+  country:
+    type: string
+    required: false
+    validation: [nullable, string, max:100]
+    transformers: [trim, title_case]
+  
+  age:
+    type: integer
+    required: false
+    validation: [nullable, integer, min:0, max:150]
+    transformers: [abs, clamp_min:0, clamp_max:150]
+  
+  salary:
+    type: decimal
+    required: false
+    validation: [nullable, numeric, min:0]
+    transformers: [abs, clamp_min:0]
+
+# This DTO demonstrates all available export formats:
+#
+# Single DTO Export Methods (9 formats):
+# - $dto->toJson()           - JSON format (best for APIs)
+# - $dto->toYaml()           - YAML format (human-readable)
+# - $dto->toCsv()            - CSV format (Excel compatible)
+# - $dto->toXml()            - XML format (legacy systems)
+# - $dto->toToml()           - TOML format (modern config)
+# - $dto->toMarkdownTable()  - Markdown table format
+# - $dto->toPhpArray()       - PHP var_export format
+# - $dto->toQueryString()    - HTTP query string format
+# - $dto->toMessagePack()    - MessagePack binary format (requires extension)
+# - $dto->toCollection()     - Laravel Collection (for further processing)
+#
+# Collection Export Methods (6 formats):
+# - ExportFormatsExampleDTO::collectionToJson($models)
+# - ExportFormatsExampleDTO::collectionToYaml($models)
+# - ExportFormatsExampleDTO::collectionToCsv($models)
+# - ExportFormatsExampleDTO::collectionToXml($models)
+# - ExportFormatsExampleDTO::collectionToMarkdownTable($models)
+#
+# Usage Examples:
+#
+# Single DTO:
+# $dto = ExportFormatsExampleDTO::fromModel($model);
+# $json = $dto->toJson(JSON_PRETTY_PRINT);
+# $csv = $dto->toCsv(includeHeaders: true);
+# $xml = $dto->toXml('example');
+# $yaml = $dto->toYaml();
+# $toml = $dto->toToml();
+# $markdown = $dto->toMarkdownTable();
+# $php = $dto->toPhpArray();
+# $query = $dto->toQueryString();
+# $collection = $dto->toCollection();
+#
+# Collection:
+# $models = Model::all();
+# $json = ExportFormatsExampleDTO::collectionToJson($models);
+# $csv = ExportFormatsExampleDTO::collectionToCsv($models);
+# $xml = ExportFormatsExampleDTO::collectionToXml($models, 'examples', 'example');
+# $yaml = ExportFormatsExampleDTO::collectionToYaml($models);
+# $markdown = ExportFormatsExampleDTO::collectionToMarkdownTable($models);
+#
+# Controller Usage:
+# public function export(Request $request)
+# {
+#     $models = Model::all();
+#     
+#     return match ($request->query('format', 'json')) {
+#         'json' => response()->json(['data' => ExportFormatsExampleDTO::fromModels($models)->toArray()]),
+#         'csv' => response(ExportFormatsExampleDTO::collectionToCsv($models), 200, [
+#             'Content-Type' => 'text/csv',
+#             'Content-Disposition' => 'attachment; filename="export.csv"'
+#         ]),
+#         'xml' => response(ExportFormatsExampleDTO::collectionToXml($models), 200, [
+#             'Content-Type' => 'application/xml'
+#         ]),
+#         'yaml' => response(ExportFormatsExampleDTO::collectionToYaml($models), 200, [
+#             'Content-Type' => 'application/yaml'
+#         ]),
+#         'markdown' => response(ExportFormatsExampleDTO::collectionToMarkdownTable($models), 200, [
+#             'Content-Type' => 'text/markdown'
+#         ]),
+#         default => response()->json(['error' => 'Unsupported format'], 400),
+#     };
+# }
+#
+# Extension Requirements:
+# - YAML: php-yaml extension (fallback implementation available)
+# - MessagePack: php-msgpack extension (throws exception if not available)
+# - All other formats: No additional extensions required

@@ -68,8 +68,8 @@ graph TD
 - ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
 - 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
 - 🎯 **Powerful trait system** - Built-in behavioral traits for common functionality (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching) plus 3 functional traits (ValidatesData, ConvertsData, DtoUtilities) in every DTO
-- 🔄 **Field transformers** - Automatically transform field values during DTO creation with built-in transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
-- 📤 **Multiple export formats** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, HTML, PHP Array, Query String, MessagePack) with dedicated collection methods
+- 🔄 **Field transformers** - Automatically transform field values during DTO creation with 10 built-in transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
+- 📤 **Multiple export formats** - Export DTOs in 9 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack) with dedicated collection methods
 - 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
 - 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
@@ -140,7 +140,7 @@ $userDtos = UserDTO::fromModels($users); // Alternative syntax
 return response()->json($userDtos->toArrayResource());
 // Output: {"data": [{"id": 1, "name": "John", "email": "john@example.com", "status": "active"}]}
 
-// Export in multiple formats - 10 formats available
+// Export in multiple formats - 9 formats available
 $json = $userDto->toJson();
 $yaml = $userDto->toYaml();
 $csv = $userDto->toCsv();
@@ -178,7 +178,7 @@ Every DTO automatically includes these three powerful traits:
 - **ConvertsData** - Provides conversion methods (`toJson()`, `toCsv()`, `toXml()`, etc.)
 - **DtoUtilities** - Provides utility methods (`getProperties()`, `with()`, `equals()`)
 
-### Behavioral Traits (Optional)
+### Behavioral Traits (Optional) - 7 Available Traits
 Add specific functionality by including traits in your YAML definition:
 
 ```yaml
