@@ -392,21 +392,6 @@ foreach ($userDtos as $userDto) {
 }
 ```
 
-#### `toHtml(array $attributes = []): string`
-Converts the DTO to HTML table format.
-
-```php
-$html = $userDto->toHtml();
-// Returns: <table>
-//            <tr><th>id</th><td>123</td></tr>
-//            <tr><th>name</th><td>John Doe</td></tr>
-//            <tr><th>email</th><td>john@example.com</td></tr>
-//          </table>
-
-$styledHtml = $userDto->toHtml(['class' => 'user-table']);
-// Returns HTML table with class="user-table"
-```
-
 #### Collection Export Methods
 
 Laravel Arc also provides static methods for exporting collections directly:
@@ -433,15 +418,6 @@ $csv = UserDTO::collectionToCsv($users);
 ```php
 $xml = UserDTO::collectionToXml($users, 'users', 'user');
 // Returns XML with custom root and item elements
-```
-
-**`collectionToHtml(iterable $models, array $attributes = []): string`**
-```php
-$html = UserDTO::collectionToHtml($users);
-// Returns HTML table with all users
-
-$styledHtml = UserDTO::collectionToHtml($users, ['class' => 'users-table']);
-// Returns HTML table with class="users-table"
 ```
 
 **`collectionToMarkdownTable(iterable $models, bool $includeHeaders = true): string`**

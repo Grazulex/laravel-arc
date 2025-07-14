@@ -197,7 +197,6 @@ final class UserController extends Controller
             'csv' => $content = UserDTO::collectionToCsv($users),
             'xml' => $content = UserDTO::collectionToXml($users),
             'yaml' => $content = UserDTO::collectionToYaml($users),
-            'html' => $content = UserDTO::collectionToHtml($users),
             'markdown' => $content = UserDTO::collectionToMarkdownTable($users),
             default => $content = UserDTO::collectionToJson($users),
         };

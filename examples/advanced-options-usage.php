@@ -198,8 +198,8 @@ echo "\n=== Export Examples ===\n";
 // JSON export
 echo 'JSON: '.$completeProduct->toJson()."\n";
 
-// HTML export (new format)
-echo 'HTML: '.$completeProduct->toHtml()."\n";
+// Markdown export
+echo 'Markdown: '.$completeProduct->toMarkdownTable()."\n";
 
 // CSV export
 echo 'CSV: '.$completeProduct->toCsv()."\n";
@@ -209,6 +209,6 @@ $products = [$product, $completeProduct];
 $collection = AdvancedProductDTO::collection($products);
 
 echo 'Collection JSON: '.$collection->toJson()."\n";
-echo 'Collection HTML: '.AdvancedProductDTO::collectionToHtml($products)."\n";
+echo 'Collection Markdown: '.AdvancedProductDTO::collectionToMarkdownTable($products)."\n";
 
 echo "\n=== Advanced Options Demo Complete ===\n";

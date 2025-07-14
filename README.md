@@ -147,7 +147,6 @@ $csv = $userDto->toCsv();
 $xml = $userDto->toXml();
 $toml = $userDto->toToml();
 $markdown = $userDto->toMarkdownTable();
-$html = $userDto->toHtml();
 $phpArray = $userDto->toPhpArray();
 $queryString = $userDto->toQueryString();
 $messagepack = $userDto->toMessagePack();
@@ -158,7 +157,6 @@ $jsonData = UserDTO::collectionToJson($users);
 $csvData = UserDTO::collectionToCsv($users);
 $xmlData = UserDTO::collectionToXml($users);
 $yamlData = UserDTO::collectionToYaml($users);
-$htmlData = UserDTO::collectionToHtml($users);
 $markdownData = UserDTO::collectionToMarkdownTable($users);
 
 // Validation
