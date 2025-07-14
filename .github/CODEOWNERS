@@ -1,4 +1,4 @@
-# All source code and config changes need your approval
+# All source code and config changes need @Grazulex approval
 /src/ @Grazulex
 /tests/ @Grazulex
 **/*.{yml,yaml} @Grazulex
