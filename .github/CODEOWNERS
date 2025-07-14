@@ -1,6 +1,5 @@
 # All source code and config changes need your approval
 /src/ @Grazulex
 /tests/ @Grazulex
-**/*.yml @Grazulex
-**/*.yaml @Grazulex
+**/*.{yml,yaml} @Grazulex
 *.md @Grazulex
