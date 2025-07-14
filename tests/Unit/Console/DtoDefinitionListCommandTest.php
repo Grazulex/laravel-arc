@@ -76,4 +76,42 @@ relations:
             '--path' => $testDir,
         ])->assertExitCode(Command::SUCCESS);
     });
+
+    it('lists yaml files with json output', function () {
+        $testDir = base_path('test-dto-definitions');
+        File::ensureDirectoryExists($testDir);
+
+        // Create a test YAML file with new header format
+        File::put($testDir.'/user.yaml', 'header:
+  dto: UserDTO
+  namespace: App\\DTO
+  model: App\\Models\\User
+  traits:
+    - HasTimestamps
+    - HasUuid
+fields:
+  - name: id
+    type: integer
+  - name: email
+    type: string
+relations:
+  - name: posts
+    type: hasMany
+');
+
+        $this->artisan('dto:definition-list', [
+            '--path' => $testDir,
+            '--json' => true,
+        ])->assertExitCode(Command::SUCCESS);
+    });
+
+    it('shows empty json array when no yaml files are found', function () {
+        $testDir = base_path('test-dto-definitions');
+        File::ensureDirectoryExists($testDir);
+
+        $this->artisan('dto:definition-list', [
+            '--path' => $testDir,
+            '--json' => true,
+        ])->assertExitCode(Command::SUCCESS);
+    });
 });

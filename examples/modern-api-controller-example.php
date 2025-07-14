@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Modern API Controller example using Laravel Arc's new trait-based system
- * 
+ *
  * This example demonstrates how to use behavioral traits in your DTOs
  * and leverage them in API controllers for clean, maintainable code.
  */
@@ -11,12 +13,12 @@ namespace App\Http\Controllers\Api;
 
 use App\DTOs\UserDTO;
 use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Collection;
 
-class UserController extends Controller
+final class UserController extends Controller
 {
     /**
      * Display a listing of users with DTO transformation
@@ -26,7 +28,7 @@ class UserController extends Controller
         $users = User::query()
             ->when($request->search, function ($query, $search) {
                 $query->where('name', 'like', "%{$search}%")
-                      ->orWhere('email', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%");
             })
             ->when($request->has('with_deleted'), function ($query) {
                 $query->withTrashed(); // Works with HasSoftDeletes trait
@@ -37,7 +39,7 @@ class UserController extends Controller
         $userDtos = UserDTO::collection($users->items());
 
         return response()->json([
-            'data' => $userDtos->map(fn($dto) => $dto->toArray()),
+            'data' => $userDtos->map(fn ($dto) => $dto->toArray()),
             'pagination' => [
                 'current_page' => $users->currentPage(),
                 'per_page' => $users->perPage(),
@@ -56,7 +58,7 @@ class UserController extends Controller
         if (UserDTO::fails($request->all())) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => UserDTO::validator($request->all())->errors()
+                'errors' => UserDTO::validator($request->all())->errors(),
             ], 422);
         }
 
@@ -124,13 +126,13 @@ class UserController extends Controller
         if (UserDTO::fails($request->all())) {
             return response()->json([
                 'message' => 'Validation failed',
-                'errors' => UserDTO::validator($request->all())->errors()
+                'errors' => UserDTO::validator($request->all())->errors(),
             ], 422);
         }
 
         $originalDto = UserDTO::fromModel($user);
         $validated = UserDTO::validate($request->all());
-        
+
         // Create updated DTO using DtoUtilities trait
         $updatedDto = $originalDto->with($validated);
 
@@ -236,6 +238,7 @@ class UserController extends Controller
                     if (method_exists($dto, 'cache')) {
                         $dto->cache($ttl);
                     }
+
                     return $dto;
                 });
                 break;
@@ -247,7 +250,7 @@ class UserController extends Controller
         return response()->json([
             'message' => "Bulk operation '{$operation}' completed",
             'processed' => $results->count(),
-            'users' => $results->map(fn($dto) => $dto->toArray()),
+            'users' => $results->map(fn ($dto) => $dto->toArray()),
         ]);
     }
 
@@ -278,9 +281,9 @@ class UserController extends Controller
 
         // Add tag analytics if HasTagging trait is available
         if (method_exists($userDtos->first(), 'getTags')) {
-            $allTags = $userDtos->flatMap(fn($dto) => $dto->getTags())->unique();
+            $allTags = $userDtos->flatMap(fn ($dto) => $dto->getTags())->unique();
             $analytics['tag_stats'] = $allTags->mapWithKeys(function ($tag) use ($userDtos) {
-                return [$tag => $userDtos->filter(fn($dto) => $dto->hasTag($tag))->count()];
+                return [$tag => $userDtos->filter(fn ($dto) => $dto->hasTag($tag))->count()];
             });
         }
 
@@ -326,7 +329,7 @@ class UserController extends Controller
 
 /**
  * Example YAML definition for the UserDTO used in this controller:
- * 
+ *
  * # database/dto_definitions/user.yaml
  * header:
  *   dto: UserDTO
@@ -340,34 +343,34 @@ class UserController extends Controller
  *     - HasTagging        # Adds tags field and tagging methods
  *     - HasAuditing       # Adds created_by, updated_by fields and audit methods
  *     - HasCaching        # Adds caching capabilities
- * 
+ *
  * fields:
  *   name:
  *     type: string
  *     required: true
  *     validation: [required, string, min:2, max:100]
  *     transformers: [trim, title_case]
- *   
+ *
  *   email:
  *     type: string
  *     required: true
  *     validation: [required, email, unique:users]
  *     transformers: [trim, lowercase]
- *   
+ *
  *   status:
  *     type: string
  *     default: "active"
  *     validation: [required, in:active,inactive,pending]
- * 
+ *
  * relations:
  *   profile:
  *     type: hasOne
  *     target: App\Models\Profile
- *   
+ *
  *   posts:
  *     type: hasMany
  *     target: App\Models\Post
- * 
+ *
  * Available methods from behavioral traits:
  * - HasTimestamps: touch(), wasRecentlyCreated(), getAge()
  * - HasUuid: Automatic UUID validation
