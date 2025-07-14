@@ -36,12 +36,13 @@ it('creates a YAML DTO definition file with dto:definition-init', function () {
 
     $yaml = Yaml::parseFile($yamlPath);
 
-    expect($yaml['dto'])->toBe('ExampleDTO')
-        ->and($yaml['model'])->toBe('App\\Models\\Example')
-        ->and($yaml['table'])->toBe('examples')
+    expect($yaml['header']['dto'])->toBe('ExampleDTO')
+        ->and($yaml['header']['model'])->toBe('App\\Models\\Example')
+        ->and($yaml['header']['table'])->toBe('examples')
         ->and($yaml['fields'])->toBeArray()
         ->and($yaml['relations'])->toBeArray()
-        ->and($yaml['options']['namespace'])->toBeString();
+        ->and($yaml['header']['namespace'])->toBeString()
+        ->and($yaml['header']['traits'])->toBeArray();
 });
 
 it('lists the generated YAML file with dto:definition-list', function () {
@@ -49,16 +50,15 @@ it('lists the generated YAML file with dto:definition-list', function () {
 
     $yamlFile = $pathOption.'/example.yaml';
     File::put($yamlFile, <<<'YAML'
-dto: ExampleDTO
-model: App\Models\Example
-table: examples
+header:
+  dto: ExampleDTO
+  model: App\Models\Example
+  table: examples
+  namespace: App\DTOs
+  traits:
+    - HasTimestamps
 fields: []
 relations: []
-options:
-  timestamps: true
-  soft_deletes: false
-  expose_hidden_by_default: false
-  namespace: App\DTOs
 YAML
     );
 

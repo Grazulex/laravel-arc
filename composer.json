@@ -19,7 +19,7 @@
     },
     "require-dev": {
         "laravel/pint": "^1.22",
-        "pestphp/pest": "^3.8",
+        "pestphp/pest": "*",
         "pestphp/pest-plugin-laravel": "^3.2",
         "larastan/larastan": "^3.4",
         "rector/rector": "^2.0",
