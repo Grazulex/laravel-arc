@@ -1,6 +1,6 @@
 # Export Formats Examples
 
-This document demonstrates the various export formats available in Laravel Arc DTOs.
+This document demonstrates the 9 export formats available in Laravel Arc DTOs.
 
 ## Basic Usage
 
@@ -151,25 +151,6 @@ $collection = $user->toCollection();
 $filtered = $collection->filter(fn($value) => $value !== null);
 ```
 
-### HTML Export
-```php
-echo $user->toHtml();
-// <table>
-//   <tr><th>id</th><td>1</td></tr>
-//   <tr><th>name</th><td>John Doe</td></tr>
-//   <tr><th>email</th><td>john@example.com</td></tr>
-//   <tr><th>status</th><td>active</td></tr>
-// </table>
-
-echo $user->toHtml(['class' => 'user-table']);
-// <table class="user-table">
-//   <tr><th>id</th><td>1</td></tr>
-//   <tr><th>name</th><td>John Doe</td></tr>
-//   <tr><th>email</th><td>john@example.com</td></tr>
-//   <tr><th>status</th><td>active</td></tr>
-// </table>
-```
-
 ## Collection Export Formats
 
 ### JSON Collection Export
@@ -250,31 +231,6 @@ echo UserDto::collectionToMarkdownTable($users);
 // | 2 | Jane Smith | jane@example.com | active |
 ```
 
-### HTML Collection Export
-```php
-echo UserDto::collectionToHtml($users);
-// <table>
-//   <thead>
-//     <tr><th>id</th><th>name</th><th>email</th><th>status</th></tr>
-//   </thead>
-//   <tbody>
-//     <tr><td>1</td><td>John Doe</td><td>john@example.com</td><td>active</td></tr>
-//     <tr><td>2</td><td>Jane Smith</td><td>jane@example.com</td><td>active</td></tr>
-//   </tbody>
-// </table>
-
-echo UserDto::collectionToHtml($users, ['class' => 'users-table']);
-// <table class="users-table">
-//   <thead>
-//     <tr><th>id</th><th>name</th><th>email</th><th>status</th></tr>
-//   </thead>
-//   <tbody>
-//     <tr><td>1</td><td>John Doe</td><td>john@example.com</td><td>active</td></tr>
-//     <tr><td>2</td><td>Jane Smith</td><td>jane@example.com</td><td>active</td></tr>
-//   </tbody>
-// </table>
-```
-
 ## Real-world Use Cases
 
 ### API Response in Multiple Formats
@@ -290,7 +246,6 @@ class UserController extends Controller
             'xml' => response($dto->toXml(), 200, ['Content-Type' => 'application/xml']),
             'csv' => response($dto->toCsv(), 200, ['Content-Type' => 'text/csv']),
             'yaml' => response($dto->toYaml(), 200, ['Content-Type' => 'application/yaml']),
-            'html' => response($dto->toHtml(), 200, ['Content-Type' => 'text/html']),
             default => response()->json($dto->toArray()),
         };
     }
@@ -307,7 +262,6 @@ class UserController extends Controller
                 'Content-Disposition' => 'attachment; filename="users.csv"',
             ]),
             'yaml' => response(UserDto::collectionToYaml($users), 200, ['Content-Type' => 'application/yaml']),
-            'html' => response(UserDto::collectionToHtml($users), 200, ['Content-Type' => 'text/html']),
             default => response()->json(['data' => UserDto::fromModels($users)->toArray()]),
         };
     }
@@ -331,11 +285,6 @@ file_put_contents('deployment.yaml', $yaml);
 $examples = UserDto::collectionToMarkdownTable($sampleUsers);
 $documentation = "# User API Examples\n\n" . $examples;
 file_put_contents('docs/api-examples.md', $documentation);
-
-// Generate HTML tables for web documentation
-$htmlTable = UserDto::collectionToHtml($sampleUsers, ['class' => 'api-examples']);
-$htmlDoc = "<h1>User API Examples</h1>\n" . $htmlTable;
-file_put_contents('docs/api-examples.html', $htmlDoc);
 ```
 
 ### Data Exchange with Legacy Systems

@@ -256,10 +256,7 @@ Create new DTO definition files with basic structure.
 ### Basic Usage
 
 ```bash
-# Create basic definition
-php artisan dto:definition-init UserDTO
-
-# Create with model and table
+# Create with model and table (both required)
 php artisan dto:definition-init UserDTO --model=App\Models\User --table=users
 
 # Create with custom path
@@ -271,52 +268,16 @@ php artisan dto:definition-init UserDTO --model=App\Models\User --table=users --
 
 ### Options
 
-| Option | Description | Example |
-|--------|-------------|---------|
-| `--model` | Associated Eloquent model | `--model=App\Models\User` |
-| `--table` | Database table name | `--table=users` |
-| `--path` | Custom output path | `--path=/custom/path` |
-| `--force` | Overwrite existing files | `--force` |
+| Option | Description | Required | Example |
+|--------|-------------|----------|---------|
+| `--model` | Associated Eloquent model | Yes | `--model=App\Models\User` |
+| `--table` | Database table name | Yes | `--table=users` |
+| `--path` | Custom output path | No | `--path=/custom/path` |
+| `--force` | Overwrite existing files | No | `--force` |
 
 ### Examples
 
-#### Basic Definition
-
-```bash
-php artisan dto:definition-init UserDTO
-```
-
-**Output:**
-```
-✅ DTO definition created successfully!
-   File: /path/to/database/dto_definitions/UserDTO.yaml
-   
-   Next steps:
-   1. Edit the definition file to add your fields
-   2. Run: php artisan dto:generate UserDTO.yaml
-```
-
-**Generated file (`UserDTO.yaml`):**
-```yaml
-header:
-  dto: UserDTO
-  namespace: App\DTOs
-  traits:
-    - HasTimestamps
-    - HasUuid
-
-fields:
-  # Add your fields here
-  name:
-    type: string
-    required: true
-    validation: [required, string, min:2, max:100]
-
-# HasTimestamps trait automatically adds created_at and updated_at fields
-# HasUuid trait automatically adds id field with UUID validation
-```
-
-#### With Model and Table
+#### Create DTO Definition
 
 ```bash
 php artisan dto:definition-init UserDTO --model=App\Models\User --table=users

@@ -22,6 +22,30 @@ A simple user DTO demonstrating:
 - Extends clause for base classes
 - Eloquent relationships
 
+#### [`field-transformers-example.yaml`](field-transformers-example.yaml)
+Comprehensive field transformers demonstration:
+- All 10 available transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
+- String transformers with practical examples
+- Numeric transformers with range clamping
+- Chained transformers for complex data processing
+- Real-world usage patterns and comments
+
+#### [`export-formats-comprehensive.yaml`](export-formats-comprehensive.yaml)
+Complete export formats demonstration:
+- All 9 single DTO export methods
+- All 6 collection export methods
+- Controller usage examples
+- Extension requirements and recommendations
+- Performance considerations
+
+#### [`modern-traits-comprehensive.yaml`](modern-traits-comprehensive.yaml)
+Modern trait system demonstration:
+- All 7 behavioral traits with auto-generated fields
+- All 3 functional traits (automatic in every DTO)
+- Migration guide from old options system
+- Detailed method documentation
+- Practical usage examples
+
 #### [`user-with-all-traits.yaml`](user-with-all-traits.yaml)
 A comprehensive example showcasing all behavioral traits:
 - All 7 behavioral traits (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching)
@@ -62,7 +86,7 @@ A profile DTO designed for nested relationships:
 ### 🚀 Behavioral Traits System
 Laravel Arc now uses a powerful trait-based system for adding behavioral functionality to DTOs.
 
-#### Available Behavioral Traits
+#### Available Behavioral Traits (7 traits)
 Instead of using the old `options` system, Laravel Arc now provides behavioral traits that can be mixed and matched:
 
 | Trait | Description | Auto-Generated Fields | Auto-Generated Methods |
@@ -315,11 +339,11 @@ See [`api-controller-example.php`](api-controller-example.php) for comprehensive
 - Pagination with DTOs
 - Filtering and searching
 - Error handling with validation
-- **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown, MessagePack, Collection)
+- **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown, MessagePack, Collection - 9 formats total)
 
 ### Export Formats Usage
 See [`export-formats-example.php`](export-formats-example.php) for comprehensive examples of:
-- **Single DTO exports** in 10 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
+- **Single DTO exports** in 9 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
 - **Collection exports** in multiple formats
 - **Real-world controller usage** with format-based responses
 - **Performance considerations** and format recommendations
@@ -404,10 +428,11 @@ The nested chain demonstrates automatic depth limiting:
 
 ### Professional Namespace Organization
 ```yaml
-options:
+header:
   namespace: App\DTOs\Ecommerce  # Domain-specific organization
-  timestamps: true
-  soft_deletes: true
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes
 ```
 
 ## 📝 Best Practices Demonstrated
@@ -490,10 +515,11 @@ fields:
 
 ### Environment-Specific Configuration
 ```yaml
-options:
-  timestamps: true
-  soft_deletes: ${APP_ENV === 'production'}
-  namespace: ${APP_ENV === 'testing' ? 'Tests\\DTOs' : 'App\\DTOs'}
+header:
+  traits:
+    - HasTimestamps
+    - HasSoftDeletes  # Only in production
+  namespace: App\DTOs  # Adjust based on environment
 ```
 
 ## 📚 Additional Resources
