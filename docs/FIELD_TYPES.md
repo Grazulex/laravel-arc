@@ -382,7 +382,7 @@ fields:
 
 options:
   timestamps: true
-  namespace: App\DTOs\Ecommerce
+  namespace: App\DTO\Ecommerce
 ```
 
 ### User Profile DTO
@@ -429,7 +429,7 @@ fields:
 
 options:
   timestamps: true
-  namespace: App\DTOs\User
+  namespace: App\DTO\User
 ```
 
 ## Migration from Other Field Types

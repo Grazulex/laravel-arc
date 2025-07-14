@@ -27,7 +27,7 @@ The header section contains metadata about the DTO being generated.
 |-----------|------|-------------|---------|
 | `dto` | string | Name of the DTO class to generate | `UserDTO` |
 | `model` | string | Associated Eloquent model class | `App\Models\User` |
-| `namespace` | string | Namespace for the generated DTO | `App\DTOs` |
+| `namespace` | string | Namespace for the generated DTO | `App\DTO` |
 | `traits` | array | List of behavioral traits to include | `["HasTimestamps", "HasUuid"]` |
 
 ### Optional Attributes
@@ -45,7 +45,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -384,7 +384,7 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
-  namespace: App\DTOs\Catalog
+  namespace: App\DTO\Catalog
   traits:
     - HasTimestamps
     - HasSoftDeletes
@@ -487,7 +487,7 @@ Laravel Arc now uses a trait-based system for adding behavioral functionality to
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -506,7 +506,7 @@ fields:
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid

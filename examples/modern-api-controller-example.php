@@ -9,7 +9,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -331,7 +331,7 @@ class UserController extends Controller
  * header:
  *   dto: UserDTO
  *   model: App\Models\User
- *   namespace: App\DTOs
+ *   namespace: App\DTO
  *   traits:
  *     - HasTimestamps      # Adds created_at, updated_at fields and methods
  *     - HasUuid           # Adds id field with UUID validation

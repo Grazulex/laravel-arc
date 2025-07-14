@@ -74,7 +74,7 @@ final class DtoPathResolver
                 if (mb_strtoupper($segment) === $segment) {
                     return $segment; // Already uppercase
                 }
-                if (in_array($segment, ['DTOs', 'APIs', 'URLs', 'UUIDs'])) {
+                if (in_array($segment, ['DTO', 'API', 'URL', 'UUID'])) {
                     return $segment; // Preserve known acronyms
                 }
 

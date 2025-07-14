@@ -45,7 +45,7 @@ fields:
 
 options:
   timestamps: false
-  namespace: App\DTOs
+  namespace: App\DTO
 YAML;
 
     File::put($testDir.'/trait-test.yaml', $yaml);

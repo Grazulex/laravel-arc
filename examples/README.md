@@ -273,7 +273,7 @@ Check out our [**Traits Guide**](../docs/TRAITS_GUIDE.md) for comprehensive docu
 
 3. **Use in your application** with built-in traits:
    ```php
-   use App\DTOs\UserDTO;
+   use App\DTO\UserDTO;
    
    // Create DTO from model
    $userDto = UserDTO::fromModel($user);
@@ -405,7 +405,7 @@ The nested chain demonstrates automatic depth limiting:
 ### Professional Namespace Organization
 ```yaml
 options:
-  namespace: App\DTOs\Ecommerce  # Domain-specific organization
+  namespace: App\DTO\Ecommerce  # Domain-specific organization
   timestamps: true
   soft_deletes: true
 ```

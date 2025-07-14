@@ -17,7 +17,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'TestDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [
                 'unsupported_field' => [
@@ -35,7 +35,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'TestDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [
                 'invalid_field' => [
@@ -57,7 +57,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'TestDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [
                 'test_field' => [
@@ -78,7 +78,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'TestDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [
                 'test_field' => [
@@ -96,7 +96,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'TestDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [
                 'name' => [
@@ -118,7 +118,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'ComplexDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
                 'traits' => ['HasTimestamps', 'HasSoftDeletes'],
             ],
             'fields' => [
@@ -157,7 +157,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'EmptyDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
             ],
             'fields' => [],
         ];
@@ -171,7 +171,7 @@ describe('DtoGenerator Error Handling', function () {
         $yamlContent = [
             'header' => [
                 'dto' => 'FullDto',
-                'namespace' => 'App\DTOs',
+                'namespace' => 'App\DTO',
                 'model' => 'App\Models\User',
                 'table' => 'users',
                 'use' => [

@@ -53,8 +53,8 @@ php artisan dto:generate user.yaml
 **Output:**
 ```
 ✅ DTO generated successfully!
-   File: /path/to/app/DTOs/UserDTO.php
-   Namespace: App\DTOs
+   File: /path/to/app/DTO/UserDTO.php
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -68,7 +68,7 @@ php artisan dto:generate user.yaml --output=/custom/path/UserDTO.php
 ```
 ✅ DTO generated successfully!
    File: /custom/path/UserDTO.php
-   Namespace: App\DTOs
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -83,11 +83,11 @@ php artisan dto:generate --all
 ✅ Generated 5 DTOs successfully!
    
    Files generated:
-   • /path/to/app/DTOs/UserDTO.php
-   • /path/to/app/DTOs/ProductDTO.php
-   • /path/to/app/DTOs/OrderDTO.php
-   • /path/to/app/DTOs/ProfileDTO.php
-   • /path/to/app/DTOs/CompanyDTO.php
+   • /path/to/app/DTO/UserDTO.php
+   • /path/to/app/DTO/ProductDTO.php
+   • /path/to/app/DTO/OrderDTO.php
+   • /path/to/app/DTO/ProfileDTO.php
+   • /path/to/app/DTO/CompanyDTO.php
 ```
 
 #### Dry Run Preview
@@ -105,7 +105,7 @@ Generated code for UserDTO:
 <?php
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 final class UserDTO
 {
@@ -117,7 +117,7 @@ final class UserDTO
 }
 =====================================
 
-Would be saved to: /path/to/app/DTOs/UserDTO.php
+Would be saved to: /path/to/app/DTO/UserDTO.php
 ```
 
 #### Force Overwrite
@@ -130,8 +130,8 @@ php artisan dto:generate user.yaml --force
 ```
 ⚠️  Overwriting existing file...
 ✅ DTO generated successfully!
-   File: /path/to/app/DTOs/UserDTO.php
-   Namespace: App\DTOs
+   File: /path/to/app/DTO/UserDTO.php
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -178,31 +178,31 @@ Found 5 definition files in /path/to/database/dto_definitions:
    ├── DTO: UserDTO
    ├── Table: users
    ├── Model: App\Models\User
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 product.yaml
    ├── DTO: ProductDTO
    ├── Table: products
    ├── Model: App\Models\Product
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 order.yaml
    ├── DTO: OrderDTO
    ├── Table: orders
    ├── Model: App\Models\Order
-   └── Namespace: App\DTOs\Ecommerce
+   └── Namespace: App\DTO\Ecommerce
 
 📄 profile.yaml
    ├── DTO: ProfileDTO
    ├── Table: profiles
    ├── Model: App\Models\Profile
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 company.yaml
    ├── DTO: CompanyDTO
    ├── Table: companies
    ├── Model: App\Models\Company
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 ```
 
 #### Compact View
@@ -240,13 +240,13 @@ Found 2 definition files in /custom/definitions:
    ├── DTO: CustomUserDTO
    ├── Table: users
    ├── Model: App\Models\User
-   └── Namespace: Custom\DTOs
+   └── Namespace: Custom\DTO
 
 📄 custom-product.yaml
    ├── DTO: CustomProductDTO
    ├── Table: products
    ├── Model: App\Models\Product
-   └── Namespace: Custom\DTOs
+   └── Namespace: Custom\DTO
 ```
 
 ## dto:definition-init
@@ -300,7 +300,7 @@ php artisan dto:definition-init UserDTO
 ```yaml
 header:
   dto: UserDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -342,7 +342,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -473,7 +473,7 @@ php artisan dto:generate user.yaml
 ❌ DTO Generation Error (File Exists)
 
 Error: DTO file already exists
-File: /path/to/app/DTOs/UserDTO.php
+File: /path/to/app/DTO/UserDTO.php
 
 💡 Suggestions:
   • Use --force to overwrite: php artisan dto:generate user.yaml --force
@@ -581,7 +581,7 @@ jobs:
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git add app/DTOs/
+          git add app/DTO/
           git commit -m "Auto-generate DTOs" || exit 0
           git push
 ```

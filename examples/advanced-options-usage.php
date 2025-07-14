@@ -8,7 +8,7 @@ declare(strict_types=1);
  * Generate the AdvancedProductDTO first: php artisan dto:generate advanced-options.yaml
  */
 
-use App\DTOs\Advanced\AdvancedProductDTO;
+use App\DTO\Advanced\AdvancedProductDTO;
 use App\Enums\ProductCategory;
 
 // =============================================================================

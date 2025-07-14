@@ -3,7 +3,7 @@ header:
   dto: OrderDTO
   table: orders
   model: App\Models\Order
-  namespace: App\DTOs\Ecommerce
+  namespace: App\DTO\Ecommerce
   traits:
     - HasTimestamps
     - HasUuid

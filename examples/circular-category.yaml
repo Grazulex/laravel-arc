@@ -3,7 +3,7 @@ header:
   dto: CategoryDTO
   table: categories
   model: App\Models\Category
-  namespace: App\DTOs\Catalog
+  namespace: App\DTO\Catalog
   traits:
     - HasTimestamps
     - HasUuid

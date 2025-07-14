@@ -46,7 +46,7 @@ Every generated DTO automatically includes these three functional traits:
 ```php
 <?php
 
-namespace App\DTOs;
+namespace App\DTO;
 
 use Grazulex\LaravelArc\Support\Traits\ConvertsData;
 use Grazulex\LaravelArc\Support\Traits\DtoUtilities;
@@ -70,7 +70,7 @@ You can optionally include behavioral traits that add specific fields and method
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -170,7 +170,7 @@ $equal = $userDto->equals($other);
 ```php
 <?php
 
-namespace App\DTOs;
+namespace App\DTO;
 
 use App\Models\User;
 use Carbon\Carbon;
@@ -239,7 +239,7 @@ The `ValidatesData` trait provides powerful validation methods for your DTOs.
 Validates the given data against the DTO's validation rules and returns validated data.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 try {
     $validated = UserDTO::validate($request->all());
@@ -254,7 +254,7 @@ try {
 Creates a validator instance for the given data.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 $validator = UserDTO::validator($request->all());
 
@@ -269,7 +269,7 @@ $validated = $validator->validated();
 Returns `true` if the data passes validation, `false` otherwise.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 if (UserDTO::passes($request->all())) {
     // Validation passed
@@ -284,7 +284,7 @@ if (UserDTO::passes($request->all())) {
 Returns `true` if the data fails validation, `false` otherwise.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 if (UserDTO::fails($request->all())) {
     // Validation failed
@@ -304,7 +304,7 @@ $validated = UserDTO::validate($request->all());
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -338,7 +338,7 @@ class UserController extends Controller
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Validation\ValidationException;
 
@@ -378,7 +378,7 @@ Converts a collection of models to a collection of DTOs.
 Alias for `fromModels()` - provides more intuitive syntax for converting models to DTOs.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $users = User::all();
@@ -454,7 +454,7 @@ $markdown = UserDTO::collectionToMarkdownTable($users);
 Converts the DTO to JSON string.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -471,7 +471,7 @@ $prettyJson = $userDto->toJson(JSON_PRETTY_PRINT);
 Converts the DTO to a Laravel Collection.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -578,7 +578,7 @@ try {
 Returns only the specified keys from the DTO.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -592,7 +592,7 @@ $publicData = $userDto->only(['name', 'email']);
 Returns all keys except the specified ones from the DTO.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -610,7 +610,7 @@ $safeData = $userDto->except(['password', 'remember_token']);
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 
@@ -646,7 +646,7 @@ class UserController extends Controller
 
 namespace App\Jobs;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -834,7 +834,7 @@ $auditInfo = $userDto->getAuditInfo();
 Returns the cache key for this DTO.
 
 ```php
-$key = $userDto->getCacheKey(); // "dto:App\DTOs\UserDTO:hash"
+$key = $userDto->getCacheKey(); // "dto:App\DTO\UserDTO:hash"
 ```
 
 #### `cache(int $ttl = 3600): static`
@@ -906,7 +906,7 @@ $isUnique = $userDto->hasUniqueSlug(); // true/false
 ### Combined Usage Example
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 // Create DTO with UUID and tags
 $userDto = UserDTO::withGeneratedUuid([
@@ -1119,7 +1119,7 @@ Adds caching capabilities to DTOs.
 Returns the cache key for this DTO.
 
 ```php
-$key = $userDto->getCacheKey(); // "dto:App\DTOs\UserDTO:hash"
+$key = $userDto->getCacheKey(); // "dto:App\DTO\UserDTO:hash"
 ```
 
 #### `cache(int $ttl = 3600): static`
@@ -1164,7 +1164,7 @@ $metadata = $userDto->getCacheMetadata();
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -1186,7 +1186,7 @@ fields:
 ```
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 // Create DTO with all behavioral traits
 $userDto = UserDTO::fromArray([
@@ -1221,7 +1221,7 @@ The `DtoUtilities` trait provides utility methods for introspecting and manipula
 Returns all property names of the DTO.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -1235,7 +1235,7 @@ $properties = $userDto->getProperties();
 Checks if the DTO has a specific property.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -1254,7 +1254,7 @@ if (!$userDto->hasProperty('password')) {
 Gets the value of a property by name.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -1274,7 +1274,7 @@ try {
 Creates a new instance with modified properties.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user = User::first();
@@ -1294,7 +1294,7 @@ echo $updatedDto->name; // Updated Name
 Compares two DTOs for equality.
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 $user1 = User::find(1);
@@ -1316,7 +1316,7 @@ $dto1->equals($dto1Copy); // true (same user data)
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 class UserInspectionService
@@ -1358,7 +1358,7 @@ class UserInspectionService
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 
 class UserAuditService
@@ -1468,7 +1468,7 @@ $publicData = array_intersect_key($userDto->toArray(), ['name' => 1, 'email' => 
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\ValidationException;
@@ -1547,7 +1547,7 @@ class UserService
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use App\Services\UserService;
 use Illuminate\Http\Request;

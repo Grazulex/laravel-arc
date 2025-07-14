@@ -54,7 +54,7 @@ header:
   dto: ExampleDTO
   model: App\Models\Example
   table: examples
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 fields: []

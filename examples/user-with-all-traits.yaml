@@ -4,7 +4,7 @@
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   
   # All available behavioral traits
   traits:

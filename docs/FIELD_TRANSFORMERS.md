@@ -64,7 +64,7 @@ Field transformers provide a declarative way to clean, format, and normalize dat
 # dto-definitions/UserDTO.yaml
 header:
   dto: UserDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\User
 
 fields:
@@ -110,7 +110,7 @@ fields:
 # dto-definitions/ProductDTO.yaml
 header:
   dto: ProductDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\Product
 
 fields:
@@ -145,7 +145,7 @@ fields:
 # dto-definitions/UserRegistrationDTO.yaml
 header:
   dto: UserRegistrationDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\User
 
 fields:
@@ -348,7 +348,7 @@ content:
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 class UserDTOTransformersTest extends TestCase
 {

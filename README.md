@@ -96,7 +96,7 @@ php artisan dto:definition-init UserDTO --model=App\\Models\\User
 # dto-definitions/UserDTO.yaml
 header:
   dto: UserDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\User
   traits:
     - HasTimestamps
