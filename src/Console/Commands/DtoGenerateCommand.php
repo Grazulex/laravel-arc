@@ -73,13 +73,25 @@ final class DtoGenerateCommand extends Command
             }
 
             // Validate required header information - support both old and new formats
-            $dtoName = $yaml['header']['dto'] ?? $yaml['dto'] ?? $yaml['class_name'] ?? null;
+            $dtoName = $yaml['header']['dto'] ?? null;
+            if (!$dtoName) {
+                $dtoName = is_string($yaml['dto'] ?? null) ? $yaml['dto'] : ($yaml['dto']['class'] ?? null);
+            }
+            if (!$dtoName) {
+                $dtoName = $yaml['class_name'] ?? null;
+            }
             if (! $dtoName) {
-                throw DtoGenerationException::missingHeader($filePath, 'dto, class_name, or header.dto');
+                throw DtoGenerationException::missingHeader($filePath, 'dto, class_name, dto.class, or header.dto');
             }
 
             // Support both old and new namespace formats during transition
-            $namespace = $yaml['namespace'] ?? $yaml['header']['namespace'] ?? $yaml['options']['namespace'] ?? 'App\\DTO';
+            $namespace = $yaml['namespace'] ?? $yaml['header']['namespace'] ?? null;
+            if (!$namespace && is_array($yaml['dto'] ?? null)) {
+                $namespace = $yaml['dto']['namespace'] ?? null;
+            }
+            if (!$namespace) {
+                $namespace = $yaml['options']['namespace'] ?? 'App\\DTO';
+            }
 
             // Validate namespace format
             if (! DtoPathResolver::isValidNamespace($namespace)) {

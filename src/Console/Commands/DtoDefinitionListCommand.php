@@ -47,7 +47,13 @@ final class DtoDefinitionListCommand extends Command
             $yamlData = Yaml::parseFile($file->getRealPath());
 
             // Récupérer le nom du DTO du fichier YAML, en supportant les anciens et nouveaux formats
-            $dtoName = $yamlData['header']['dto'] ?? $yamlData['dto'] ?? $this->generateDtoNameFromFilename($basename);
+            $dtoName = $yamlData['header']['dto'] ?? null;
+            if (!$dtoName) {
+                $dtoName = is_string($yamlData['dto'] ?? null) ? $yamlData['dto'] : ($yamlData['dto']['class'] ?? null);
+            }
+            if (!$dtoName) {
+                $dtoName = $this->generateDtoNameFromFilename($basename);
+            }
 
             $fieldCount = count($yamlData['fields'] ?? []);
             $relationCount = count($yamlData['relations'] ?? []);
@@ -61,7 +67,10 @@ final class DtoDefinitionListCommand extends Command
                 $this->line("   • {$fieldCount} field(s), {$relationCount} relation(s)");
                 
                 // Show traits information if available
-                $traits = $yamlData['header']['traits'] ?? $yamlData['traits'] ?? [];
+                $traits = $yamlData['header']['traits'] ?? $yamlData['traits'] ?? null;
+                if (!$traits && is_array($yamlData['dto'] ?? null)) {
+                    $traits = $yamlData['dto']['traits'] ?? [];
+                }
                 if (!empty($traits)) {
                     $traitsList = implode(', ', $traits);
                     $this->line("   • Traits: {$traitsList}");
