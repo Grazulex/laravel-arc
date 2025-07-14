@@ -15,7 +15,7 @@ final class DtoDefinitionListCommand extends Command
                             {--path= : Directory containing DTO YAML definitions (overrides config)}
                             {--compact : Display only DTO names}';
 
-    protected $description = 'List all available DTO YAML definition files';
+    protected $description = 'List all available DTO YAML definition files (supports both header and legacy formats)';
 
     public function handle(): int
     {
@@ -46,8 +46,8 @@ final class DtoDefinitionListCommand extends Command
             $basename = $file->getFilenameWithoutExtension();
             $yamlData = Yaml::parseFile($file->getRealPath());
 
-            // Récupérer le nom du DTO du fichier YAML, sinon le générer à partir du nom du fichier
-            $dtoName = $yamlData['header']['dto'] ?? $this->generateDtoNameFromFilename($basename);
+            // Récupérer le nom du DTO du fichier YAML, en supportant les anciens et nouveaux formats
+            $dtoName = $yamlData['header']['dto'] ?? $yamlData['dto'] ?? $this->generateDtoNameFromFilename($basename);
 
             $fieldCount = count($yamlData['fields'] ?? []);
             $relationCount = count($yamlData['relations'] ?? []);
@@ -59,6 +59,14 @@ final class DtoDefinitionListCommand extends Command
             } else {
                 $this->line("✔ $dtoName  =>  ".$file->getFilename());
                 $this->line("   • {$fieldCount} field(s), {$relationCount} relation(s)");
+                
+                // Show traits information if available
+                $traits = $yamlData['header']['traits'] ?? $yamlData['traits'] ?? [];
+                if (!empty($traits)) {
+                    $traitsList = implode(', ', $traits);
+                    $this->line("   • Traits: {$traitsList}");
+                }
+                
                 $this->line('   • DTO class exists: '.($dtoExists ? '✅ '.str_replace(base_path().'/', '', $dtoPath) : '❌'));
                 $this->line('');
             }

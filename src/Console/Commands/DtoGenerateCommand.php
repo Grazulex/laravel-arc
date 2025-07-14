@@ -23,7 +23,7 @@ final class DtoGenerateCommand extends Command
         {--dry-run : Output the result to console instead of saving}
         {--all : Generate all YAML files in the base path}';
 
-    protected $description = 'Generate a full DTO PHP class from a YAML definition.';
+    protected $description = 'Generate a full DTO PHP class from a YAML definition (supports both header and legacy formats)';
 
     public function handle(): int
     {
@@ -72,10 +72,10 @@ final class DtoGenerateCommand extends Command
                 throw DtoGenerationException::yamlParsingError($filePath, $e->getMessage(), $e);
             }
 
-            // Validate required header information
-            $dtoName = $yaml['header']['dto'] ?? $yaml['class_name'] ?? null;
+            // Validate required header information - support both old and new formats
+            $dtoName = $yaml['header']['dto'] ?? $yaml['dto'] ?? $yaml['class_name'] ?? null;
             if (! $dtoName) {
-                throw DtoGenerationException::missingHeader($filePath, 'dto or class_name');
+                throw DtoGenerationException::missingHeader($filePath, 'dto, class_name, or header.dto');
             }
 
             // Support both old and new namespace formats during transition

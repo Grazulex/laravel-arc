@@ -17,7 +17,7 @@ final class DtoDefinitionInitCommand extends Command
                             {--path= : Optional path to store the YAML file (overrides config)}
                             {--force : Overwrite existing file}';
 
-    protected $description = 'Initialize a YAML descriptor file for a DTO';
+    protected $description = 'Initialize a YAML descriptor file for a DTO using modern header format with traits';
 
     public function handle(): int
     {
