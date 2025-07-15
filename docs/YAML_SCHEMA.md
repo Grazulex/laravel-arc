@@ -570,3 +570,59 @@ This example will generate a DTO with:
 - Only include fields you actually need
 - Use relationships judiciously
 - Consider the impact of nested DTOs on performance
+
+## Migration from Options System
+
+**⚠️ The old `options` section has been deprecated** and replaced with the new trait-based system. Here's how to migrate:
+
+### Old Format (Deprecated)
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTO
+
+options:
+  timestamps: true
+  uuid: true
+  soft_deletes: true
+  versioning: true
+  tagging: true
+  auditing: true
+  caching: true
+```
+
+### New Format (Recommended)
+```yaml
+header:
+  dto: UserDTO
+  model: App\Models\User
+  namespace: App\DTO
+  traits:
+    - HasTimestamps
+    - HasUuid
+    - HasSoftDeletes
+    - HasVersioning
+    - HasTagging
+    - HasAuditing
+    - HasCaching
+```
+
+### Migration Steps
+
+1. **Move all options to traits**: Replace boolean options with their corresponding trait names
+2. **Update header structure**: All behavioral options now go in the `header.traits` array
+3. **Review generated code**: The new traits provide the same functionality with better organization
+4. **Test your DTOs**: Ensure all methods and fields work as expected
+
+### Options to Traits Mapping
+
+| Old Option | New Trait | Description |
+|------------|-----------|-------------|
+| `timestamps: true` | `HasTimestamps` | Adds created_at, updated_at fields |
+| `uuid: true` | `HasUuid` | Adds UUID primary key |
+| `soft_deletes: true` | `HasSoftDeletes` | Adds deleted_at field |
+| `versioning: true` | `HasVersioning` | Adds version tracking |
+| `tagging: true` | `HasTagging` | Adds tag management |
+| `auditing: true` | `HasAuditing` | Adds audit trail |
+| `caching: true` | `HasCaching` | Adds caching methods |
