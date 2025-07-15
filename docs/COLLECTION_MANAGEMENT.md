@@ -304,7 +304,7 @@ fields:
 
 options:
   timestamps: true
-  namespace: App\DTOs
+  namespace: App\DTO
 ```
 
 ### Generation

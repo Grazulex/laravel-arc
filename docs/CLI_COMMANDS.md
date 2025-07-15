@@ -54,7 +54,7 @@ php artisan dto:generate user.yaml
 ```
 ✅ DTO generated successfully!
    File: /path/to/app/DTOs/UserDTO.php
-   Namespace: App\DTOs
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -68,7 +68,7 @@ php artisan dto:generate user.yaml --output=/custom/path/UserDTO.php
 ```
 ✅ DTO generated successfully!
    File: /custom/path/UserDTO.php
-   Namespace: App\DTOs
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -105,7 +105,7 @@ Generated code for UserDTO:
 <?php
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 final class UserDTO
 {
@@ -131,7 +131,7 @@ php artisan dto:generate user.yaml --force
 ⚠️  Overwriting existing file...
 ✅ DTO generated successfully!
    File: /path/to/app/DTOs/UserDTO.php
-   Namespace: App\DTOs
+   Namespace: App\DTO
    Class: UserDTO
 ```
 
@@ -158,6 +158,7 @@ php artisan dto:definition-list --path=/custom/path
 |--------|-------------|---------|
 | `--compact` | Show compact view | `--compact` |
 | `--path` | Custom definitions path | `--path=/custom/path` |
+| `--json` | Output results as JSON | `--json` |
 
 ### Examples
 
@@ -178,31 +179,31 @@ Found 5 definition files in /path/to/database/dto_definitions:
    ├── DTO: UserDTO
    ├── Table: users
    ├── Model: App\Models\User
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 product.yaml
    ├── DTO: ProductDTO
    ├── Table: products
    ├── Model: App\Models\Product
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 order.yaml
    ├── DTO: OrderDTO
    ├── Table: orders
    ├── Model: App\Models\Order
-   └── Namespace: App\DTOs\Ecommerce
+   └── Namespace: App\DTO\Ecommerce
 
 📄 profile.yaml
    ├── DTO: ProfileDTO
    ├── Table: profiles
    ├── Model: App\Models\Profile
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 
 📄 company.yaml
    ├── DTO: CompanyDTO
    ├── Table: companies
    ├── Model: App\Models\Company
-   └── Namespace: App\DTOs
+   └── Namespace: App\DTO
 ```
 
 #### Compact View
@@ -247,6 +248,32 @@ Found 2 definition files in /custom/definitions:
    ├── Table: products
    ├── Model: App\Models\Product
    └── Namespace: Custom\DTOs
+```
+
+#### JSON Output
+
+```bash
+php artisan dto:definition-list --json
+```
+
+**Output:**
+```json
+[
+  {
+    "file": "user.yaml",
+    "dto": "UserDTO",
+    "namespace": "App\\DTO",
+    "model": "App\\Models\\User",
+    "table": "users"
+  },
+  {
+    "file": "product.yaml",
+    "dto": "ProductDTO",
+    "namespace": "App\\DTO",
+    "model": "App\\Models\\Product",
+    "table": "products"
+  }
+]
 ```
 
 ## dto:definition-init
@@ -303,7 +330,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid

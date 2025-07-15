@@ -96,7 +96,7 @@ php artisan dto:definition-init UserDTO --model=App\\Models\\User --table=users
 # dto-definitions/UserDTO.yaml
 header:
   dto: UserDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\User
   traits:
     - HasTimestamps
@@ -271,9 +271,8 @@ Laravel Arc works out of the box, but you can customize it:
 ```php
 // config/dto.php
 return [
-    'namespace' => 'App\\DTOs',
-    'output_path' => app_path('DTOs'),
-    'definitions_path' => base_path('dto-definitions'),
+    'definitions_path' => base_path('database/dto_definitions'),
+    'output_path' => base_path('app/DTO'),
 ];
 ```
 
