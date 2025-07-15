@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Grazulex\LaravelArc\Console\Commands;
 
+use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Support\DtoPaths;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 use Symfony\Component\Yaml\Yaml;
 
 final class DtoDefinitionListCommand extends Command
@@ -61,12 +63,17 @@ final class DtoDefinitionListCommand extends Command
 
         foreach ($files as $file) {
             $basename = $file->getFilenameWithoutExtension();
-            $yamlData = Yaml::parseFile($file->getRealPath());
 
-            // Support both new and old YAML formats
-            $dtoName = $yamlData['header']['dto']
-                ?? $yamlData['dto']
-                ?? $this->generateDtoNameFromFilename($basename);
+            try {
+                $yamlData = $this->parseYamlFile($file->getRealPath());
+            } catch (DtoGenerationException $e) {
+                // Skip files with parsing errors in JSON output and continue processing
+                $this->warn("Warning: Skipping '{$basename}' due to YAML parsing error: {$e->getMessage()}");
+
+                continue;
+            }
+
+            $dtoName = $this->extractDtoName($yamlData, $basename, false);
 
             $namespace = $yamlData['header']['namespace']
                 ?? $yamlData['namespace']
@@ -112,12 +119,18 @@ final class DtoDefinitionListCommand extends Command
 
         foreach ($files as $file) {
             $basename = $file->getFilenameWithoutExtension();
-            $yamlData = Yaml::parseFile($file->getRealPath());
 
-            // Support both new and old YAML formats
-            $dtoName = $yamlData['header']['dto']
-                ?? $yamlData['dto']
-                ?? $this->generateDtoNameFromFilename($basename);
+            try {
+                $yamlData = $this->parseYamlFile($file->getRealPath());
+            } catch (DtoGenerationException $e) {
+                // Display error message and skip file
+                $this->error("❌ Error parsing '{$basename}': {$e->getMessage()}");
+                $this->line('');
+
+                continue;
+            }
+
+            $dtoName = $this->extractDtoName($yamlData, $basename);
 
             $namespace = $yamlData['header']['namespace']
                 ?? $yamlData['namespace']
@@ -192,5 +205,76 @@ final class DtoDefinitionListCommand extends Command
         $pascalCase = str_replace(' ', '', ucwords($normalized));
 
         return $pascalCase.'DTO';
+    }
+
+    /**
+     * Parse YAML file with proper error handling.
+     *
+     * @throws DtoGenerationException
+     */
+    private function parseYamlFile(string $filePath): array
+    {
+        try {
+            return Yaml::parseFile($filePath);
+        } catch (YamlParseException $e) {
+            // Handle specific YAML parsing errors with better messages
+            $originalMessage = $e->getMessage();
+            $fileName = basename($filePath);
+
+            if (str_contains($originalMessage, 'Multiple documents are not supported')) {
+                throw DtoGenerationException::yamlParsingError(
+                    $filePath,
+                    "Multiple YAML documents detected in '{$fileName}'. ".
+                    'Each DTO definition must be in a separate file. '.
+                    'If you have multiple DTOs, split them into separate YAML files.',
+                    $e
+                );
+            }
+
+            if (str_contains($originalMessage, 'Complex mappings are not supported')) {
+                throw DtoGenerationException::yamlParsingError(
+                    $filePath,
+                    "Complex YAML mapping detected in '{$fileName}'. ".
+                    'Please use simple key-value pairs and avoid complex YAML structures.',
+                    $e
+                );
+            }
+
+            // Generic YAML parsing error
+            throw DtoGenerationException::yamlParsingError(
+                $filePath,
+                "Invalid YAML syntax in '{$fileName}': {$originalMessage}",
+                $e
+            );
+        }
+    }
+
+    /**
+     * Safely extract DTO name from YAML data.
+     */
+    private function extractDtoName(array $yamlData, string $basename, bool $showWarnings = true): string
+    {
+        // Support both new and old YAML formats
+        $dtoName = $yamlData['header']['dto']
+            ?? $yamlData['dto']
+            ?? $this->generateDtoNameFromFilename($basename);
+
+        // Ensure $dtoName is a string (handle cases where it might be an array)
+        if (is_array($dtoName)) {
+            if ($showWarnings) {
+                $this->warn("Warning: Invalid DTO name format in '{$basename}': DTO name must be a string, got array. Using filename fallback.");
+            }
+
+            return $this->generateDtoNameFromFilename($basename);
+        }
+        if (! is_string($dtoName)) {
+            if ($showWarnings) {
+                $this->warn("Warning: Invalid DTO name format in '{$basename}': DTO name must be a string, got ".gettype($dtoName).'. Using filename fallback.');
+            }
+
+            return $this->generateDtoNameFromFilename($basename);
+        }
+
+        return $dtoName;
     }
 }

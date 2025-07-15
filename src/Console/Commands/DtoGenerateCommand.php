@@ -11,7 +11,7 @@ use Grazulex\LaravelArc\Support\DtoPathResolver;
 use Grazulex\LaravelArc\Support\DtoPaths;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
-use Symfony\Component\Yaml\Exception\ParseException;
+use Symfony\Component\Yaml\Exception\ParseException as YamlParseException;
 use Symfony\Component\Yaml\Yaml;
 
 final class DtoGenerateCommand extends Command
@@ -68,8 +68,35 @@ final class DtoGenerateCommand extends Command
             // Parse YAML with error handling
             try {
                 $yaml = Yaml::parseFile($filePath);
-            } catch (ParseException $e) {
-                throw DtoGenerationException::yamlParsingError($filePath, $e->getMessage(), $e);
+            } catch (YamlParseException $e) {
+                $originalMessage = $e->getMessage();
+                $fileName = basename($filePath);
+
+                if (str_contains($originalMessage, 'Multiple documents are not supported')) {
+                    throw DtoGenerationException::yamlParsingError(
+                        $filePath,
+                        "Multiple YAML documents detected in '{$fileName}'. ".
+                        'Each DTO definition must be in a separate file. '.
+                        'If you have multiple DTOs, split them into separate YAML files.',
+                        $e
+                    );
+                }
+
+                if (str_contains($originalMessage, 'Complex mappings are not supported')) {
+                    throw DtoGenerationException::yamlParsingError(
+                        $filePath,
+                        "Complex YAML mapping detected in '{$fileName}'. ".
+                        'Please use simple key-value pairs and avoid complex YAML structures.',
+                        $e
+                    );
+                }
+
+                // Generic YAML parsing error
+                throw DtoGenerationException::yamlParsingError(
+                    $filePath,
+                    "Invalid YAML syntax in '{$fileName}': {$originalMessage}",
+                    $e
+                );
             }
 
             // Validate required header information
