@@ -5,13 +5,13 @@ declare(strict_types=1);
 /**
  * Modern API Controller example using Laravel Arc's new trait-based system
  *
- * This example demonstrates how to use behavioral traits in your DTOs
+ * This example demonstrates how to use behavioral traits in your DTO
  * and leverage them in API controllers for clean, maintainable code.
  */
 
 namespace App\Http\Controllers\Api;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -35,7 +35,7 @@ final class UserController extends Controller
             })
             ->paginate(15);
 
-        // Convert users to DTOs using the collection method
+        // Convert users to DTO using the collection method
         $userDtos = UserDTO::collection($users->items());
 
         return response()->json([
@@ -301,7 +301,7 @@ final class UserController extends Controller
     }
 
     /**
-     * Helper method to get changes between two DTOs
+     * Helper method to get changes between two DTO
      */
     private function getChanges(UserDTO $original, UserDTO $updated): array
     {
@@ -333,7 +333,7 @@ final class UserController extends Controller
  * header:
  *   dto: UserDTO
  *   model: App\Models\User
- *   namespace: App\DTOs
+ *   namespace: App\DTO
  *   traits:
  *     - HasTimestamps      # Adds created_at, updated_at fields and methods
  *     - HasUuid           # Adds id field with UUID validation

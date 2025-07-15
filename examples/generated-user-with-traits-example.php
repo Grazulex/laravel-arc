@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 use Grazulex\LaravelArc\Support\Traits\Behavioral\HasSoftDeletes;
 use Grazulex\LaravelArc\Support\Traits\Behavioral\HasTimestamps;

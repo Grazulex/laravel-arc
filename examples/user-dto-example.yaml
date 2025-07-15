@@ -4,7 +4,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasSoftDeletes

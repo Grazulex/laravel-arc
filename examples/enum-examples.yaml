@@ -6,7 +6,7 @@ header:
   dto: EnumExampleDTO
   model: App\Models\Product
   table: products
-  namespace: App\DTOs\Examples
+  namespace: App\DTO\Examples
   traits:
     - HasTimestamps
     - HasUuid

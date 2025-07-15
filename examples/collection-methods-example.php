@@ -224,7 +224,7 @@ final class ProductController
             (object) ['id' => 2, 'name' => 'Chair', 'category' => 'Furniture', 'price' => 199.99, 'stock' => 10, 'status' => 'active'],
         ]);
 
-        // Convert to DTOs using the intuitive collection() method
+        // Convert to DTO using the intuitive collection() method
         $productDtos = ProductDto::collection($products);
 
         // Return as API resource
@@ -301,7 +301,7 @@ echo "// Controller\n";
 echo "return UserResource::collection(\$users);\n";
 echo "```\n\n";
 
-echo "After (Laravel Arc DTOs):\n";
+echo "After (Laravel Arc DTO):\n";
 echo "```php\n";
 echo "// UserDto.php (auto-generated from YAML)\n";
 echo "// Contains strong typing, validation, and export methods\n\n";

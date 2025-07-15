@@ -3,7 +3,7 @@ header:
   dto: AdvancedProductDTO
   table: products
   model: App\Models\Product
-  namespace: App\DTOs\Advanced
+  namespace: App\DTO\Advanced
   traits:
     - HasTimestamps      # Ajoute created_at, updated_at
     - HasSoftDeletes     # Ajoute deleted_at

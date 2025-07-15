@@ -6,7 +6,7 @@
 header:
   dto: UserWithTimestampsDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 
@@ -32,7 +32,7 @@ fields:
 header:
   dto: UserWithUuidDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasUuid
 
@@ -56,7 +56,7 @@ fields:
 header:
   dto: UserWithSoftDeletesDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasSoftDeletes
 
@@ -79,7 +79,7 @@ fields:
 header:
   dto: UserWithVersioningDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasVersioning
 
@@ -104,7 +104,7 @@ fields:
 header:
   dto: UserWithTaggingDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTagging
 
@@ -124,14 +124,14 @@ fields:
 # - removeTag(string $tag) method - removes a tag
 # - hasTag(string $tag) method - checks if tag exists
 # - getTags() method - returns all tags
-# - withTag(array $dtos, string $tag) static method - filters DTOs by tag
+# - withTag(array $dto, string $tag) static method - filters DTO by tag
 
 ---
 # 6. HasAuditing trait - Adds audit trail support
 header:
   dto: UserWithAuditingDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasAuditing
 
@@ -158,7 +158,7 @@ fields:
 header:
   dto: UserWithCachingDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasCaching
 
@@ -186,7 +186,7 @@ fields:
 header:
   dto: UserWithCommonTraitsDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid

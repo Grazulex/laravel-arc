@@ -1,7 +1,7 @@
 dto:
   class: UserDto
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasSoftDeletes
     - HasTimestamps
