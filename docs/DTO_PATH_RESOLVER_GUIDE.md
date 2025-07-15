@@ -10,7 +10,7 @@ The `DtoPathResolver` is a utility class that centralizes path and namespace res
 use Grazulex\LaravelArc\Support\DtoPathResolver;
 
 // Resolve output path based on namespace
-$path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs\Admin');
+$path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTO\Admin');
 // Result: /path/to/app/DTOs/Admin/UserDTO.php
 ```
 
@@ -19,17 +19,17 @@ $path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs\Admin');
 ```php
 // Derive namespace from file path
 $namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/Admin/UserDTO.php');
-// Result: App\DTOs\Admin
+// Result: App\DTO\Admin
 ```
 
 ### 3. Namespace Validation
 
 ```php
 // Validate a namespace
-$isValid = DtoPathResolver::isValidNamespace('App\DTOs\Admin');
+$isValid = DtoPathResolver::isValidNamespace('App\DTO\Admin');
 // Result: true
 
-$isValid = DtoPathResolver::isValidNamespace('App\\DTOs'); // Double backslash
+$isValid = DtoPathResolver::isValidNamespace('App\\DTO'); // Double backslash
 // Result: false
 ```
 
@@ -37,18 +37,18 @@ $isValid = DtoPathResolver::isValidNamespace('App\\DTOs'); // Double backslash
 
 ```php
 // Normalize a namespace
-$normalized = DtoPathResolver::normalizeNamespace('\App\DTOs\Admin\\');
-// Result: App\DTOs\Admin
+$normalized = DtoPathResolver::normalizeNamespace('\App\DTO\Admin\\');
+// Result: App\DTO\Admin
 ```
 
 ### 5. Sub-namespace Relationships
 
 ```php
 // Check if a namespace is a sub-namespace of another
-$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs\Admin', 'App\DTOs');
+$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTO\Admin', 'App\DTO');
 // Result: true
 
-$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs', 'App\DTOs');
+$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTO', 'App\DTO');
 // Result: false (same namespace)
 ```
 
@@ -56,19 +56,19 @@ $isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs', 'App\DTOs');
 
 ### Standard Configuration
 
-With standard configuration (`dto.output_path` = `app/DTOs` and `dto.namespace` = `App\DTOs`):
+With standard configuration (`dto.output_path` = `app/DTOs` and `dto.namespace` = `App\DTO`):
 
 ```php
 // Base namespace
-DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs');
+DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTO');
 // → /path/to/app/DTOs/UserDTO.php
 
 // Sub-namespace
-DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTOs\Admin');
+DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTO\Admin');
 // → /path/to/app/DTOs/Admin/AdminUserDTO.php
 
 // Deep sub-namespace
-DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTOs\Admin\Catalog\Products');
+DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTO\Admin\Catalog\Products');
 // → /path/to/app/DTOs/Admin/Catalog/Products/ProductDTO.php
 ```
 
@@ -84,7 +84,7 @@ DtoPathResolver::resolveOutputPath('ExternalDTO', 'Library\External\Data');
 ### Bidirectional Conversion
 
 ```php
-$originalNamespace = 'App\DTOs\Admin\Users';
+$originalNamespace = 'App\DTO\Admin\Users';
 $dtoName = 'UserDTO';
 
 // 1. Resolve the path
@@ -107,7 +107,7 @@ header:
   dto: AdminUserDTO
   
 options:
-  namespace: App\DTOs\Admin
+  namespace: App\DTO\Admin
   
 fields:
   id:
@@ -122,7 +122,7 @@ fields:
 php artisan dto:generate admin-user.yaml
 ```
 
-The DTO will be generated in `app/DTOs/Admin/AdminUserDTO.php` with namespace `App\DTOs\Admin`.
+The DTO will be generated in `app/DTOs/Admin/AdminUserDTO.php` with namespace `App\DTO\Admin`.
 
 ## Special Case Handling
 
@@ -133,7 +133,7 @@ The class automatically handles Windows paths:
 ```php
 $windowsPath = 'C:\path\to\app\DTOs\Admin\UserDTO.php';
 $namespace = DtoPathResolver::resolveNamespaceFromPath($windowsPath);
-// Result: App\DTOs\Admin (identical to Unix paths)
+// Result: App\DTO\Admin (identical to Unix paths)
 ```
 
 ### Acronyms and Abbreviations
@@ -142,24 +142,24 @@ The class preserves known acronyms:
 
 ```php
 $namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/APIs/UserDTO.php');
-// Result: App\DTOs\APIs (not App\DTOs\Apis)
+// Result: App\DTO\APIs (not App\DTO\Apis)
 ```
 
 ## Validation and Errors
 
 ### Valid Namespaces
 
-- `App\DTOs`
-- `App\DTOs\Admin`
+- `App\DTO`
+- `App\DTO\Admin`
 - `MyCompany\Project\DTOs`
 - `_Underscore\Name`
 
 ### Invalid Namespaces
 
 - `""` (empty)
-- `App\\DTOs` (consecutive backslashes)
-- `App\DTOs\` (trailing backslash)
-- `\App\DTOs` (leading backslash)
+- `App\\DTO` (consecutive backslashes)
+- `App\DTO\` (trailing backslash)
+- `\App\DTO` (leading backslash)
 - `App\123Invalid` (starts with number)
 - `App\Invalid-Name` (invalid character)
 

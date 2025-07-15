@@ -117,7 +117,7 @@ Based on this YAML definition:
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -140,7 +140,7 @@ The generated DTO would look like:
 
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 use App\Models\User;
 use Carbon\Carbon;
@@ -209,7 +209,7 @@ final class UserDTO
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -289,7 +289,7 @@ class UserController extends Controller
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -375,7 +375,7 @@ class UserController extends Controller
 
 namespace App\Http\Requests;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreUserRequest extends FormRequest
@@ -406,7 +406,7 @@ class StoreUserRequest extends FormRequest
 
 namespace App\Http\Requests;
 
-use App\DTOs\ProductDTO;
+use App\DTO\ProductDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProductRequest extends FormRequest
@@ -455,7 +455,7 @@ class StoreProductRequest extends FormRequest
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
@@ -552,9 +552,9 @@ class UserService
 
 namespace App\Services;
 
-use App\DTOs\OrderDTO;
-use App\DTOs\ProductDTO;
-use App\DTOs\CustomerDTO;
+use App\DTO\OrderDTO;
+use App\DTO\ProductDTO;
+use App\DTO\CustomerDTO;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Customer;
@@ -614,7 +614,7 @@ class OrderService
 
 namespace App\Http\Controllers;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
@@ -646,7 +646,7 @@ class GetUserProfileAction extends Controller
 
 namespace App\Actions;
 
-use App\DTOs\ProductDTO;
+use App\DTO\ProductDTO;
 use App\Models\Product;
 use Illuminate\Support\Collection;
 
@@ -680,7 +680,7 @@ class GetFeaturedProductsAction
 
 namespace App\Http\Resources;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class UserResource extends JsonResource
@@ -709,7 +709,7 @@ class UserResource extends JsonResource
 
 namespace App\Http\Resources;
 
-use App\DTOs\ProductDTO;
+use App\DTO\ProductDTO;
 use Illuminate\Http\Resources\Json\ResourceCollection;
 
 class ProductCollection extends ResourceCollection
@@ -747,7 +747,7 @@ class ProductCollection extends ResourceCollection
 
 namespace App\Jobs;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Services\EmailService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -789,7 +789,7 @@ class SendWelcomeEmailJob implements ShouldQueue
 
 namespace App\Jobs;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -853,7 +853,7 @@ class ProcessUserBatchJob implements ShouldQueue
 
 namespace App\Services;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Jobs\SendWelcomeEmailJob;
 use App\Models\User;
 
@@ -885,8 +885,8 @@ Laravel Arc DTOs provide powerful validation capabilities through the `Validates
 
 namespace App\Services;
 
-use App\DTOs\OrderDTO;
-use App\DTOs\ProductDTO;
+use App\DTO\OrderDTO;
+use App\DTO\ProductDTO;
 use Illuminate\Validation\ValidationException;
 
 class OrderValidationService
@@ -955,7 +955,7 @@ class OrderValidationService
 
 namespace App\Http\Requests;
 
-use App\DTOs\ProductDTO;
+use App\DTO\ProductDTO;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProductRequest extends FormRequest
@@ -1008,9 +1008,9 @@ class UpdateProductRequest extends FormRequest
 
 namespace App\Services;
 
-use App\DTOs\OrderDTO;
-use App\DTOs\CustomerDTO;
-use App\DTOs\ProductDTO;
+use App\DTO\OrderDTO;
+use App\DTO\CustomerDTO;
+use App\DTO\ProductDTO;
 use App\Models\Order;
 
 class OrderService
@@ -1060,7 +1060,7 @@ class OrderService
 
 namespace Tests\Feature;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Tests\TestCase;
 
@@ -1163,7 +1163,7 @@ class UserControllerTest extends TestCase
 
 namespace Tests\Unit;
 
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 use App\Models\User;
 use Tests\TestCase;
 

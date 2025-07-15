@@ -20,14 +20,14 @@ Laravel Arc provides full support for Laravel Eloquent relationships in your DTO
 header:
   dto: UserDTO
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 
 # ❌ Old format (deprecated)
 options:
   timestamps: true
-  namespace: App\DTOs
+  namespace: App\DTO
 ```
 
 ## Basic Relationship Definition
@@ -114,7 +114,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 
@@ -164,7 +164,7 @@ header:
   dto: CompanyDTO
   table: companies
   model: App\Models\Company
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 
@@ -204,7 +204,7 @@ header:
   dto: OrderDTO
   table: orders
   model: App\Models\Order
-  namespace: App\DTOs\Ecommerce
+  namespace: App\DTO\Ecommerce
   traits:
     - HasTimestamps
 
@@ -254,7 +254,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
 
@@ -298,7 +298,7 @@ header:
   dto: PostDTO
   table: posts
   model: App\Models\Post
-  namespace: App\DTOs\Blog
+  namespace: App\DTO\Blog
   traits:
     - HasTimestamps
 
@@ -358,7 +358,7 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
-  namespace: App\DTOs\Inventory
+  namespace: App\DTO\Inventory
   traits:
     - HasTimestamps
 
@@ -472,15 +472,15 @@ relations:
 ```yaml
 # E-commerce DTOs
 header:
-  namespace: App\DTOs\Ecommerce
+  namespace: App\DTO\Ecommerce
 
 # Blog DTOs  
 header:
-  namespace: App\DTOs\Blog
+  namespace: App\DTO\Blog
 
 # User management DTOs
 header:
-  namespace: App\DTOs\User
+  namespace: App\DTO\User
 ```
 
 ## Common Patterns

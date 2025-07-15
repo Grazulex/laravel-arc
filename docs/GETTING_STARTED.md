@@ -57,7 +57,7 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -90,7 +90,7 @@ php artisan dto:generate user.yaml
 ### 4. Use your DTO
 
 ```php
-use App\DTOs\UserDTO;
+use App\DTO\UserDTO;
 
 $user = new UserDTO();
 $user->name = 'John Doe';
@@ -116,7 +116,7 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid
@@ -144,7 +144,7 @@ php artisan dto:generate product.yaml
 ```
 
 ```php
-use App\DTOs\ProductDTO;
+use App\DTO\ProductDTO;
 
 $product = new ProductDTO();
 $product->name = 'Laptop';

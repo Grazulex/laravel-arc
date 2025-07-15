@@ -84,7 +84,7 @@ $definition = [
     ],
     'header' => [
         'dto' => 'DynamicUserDTO',
-        'namespace' => 'App\DTOs\Dynamic',
+        'namespace' => 'App\DTO\Dynamic',
         'traits' => ['HasTimestamps', 'HasUuid'],
     ],
 ];
@@ -126,7 +126,7 @@ class BatchDtoGenerator
 
     private function resolveOutputPath(array $definition): string
     {
-        $namespace = $definition['header']['namespace'] ?? 'App\DTOs';
+        $namespace = $definition['header']['namespace'] ?? 'App\DTO';
         $dtoName = $definition['header']['dto'];
         
         return DtoPathResolver::resolveOutputPath($dtoName, $namespace);
@@ -151,28 +151,28 @@ Laravel Arc includes a powerful `DtoPathResolver` utility class that centralizes
 use Grazulex\LaravelArc\Support\DtoPathResolver;
 
 // Resolve output path from namespace
-$path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs\Admin');
+$path = DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTO\Admin');
 // Result: /path/to/app/DTOs/Admin/UserDTO.php
 
 // Derive namespace from file path
 $namespace = DtoPathResolver::resolveNamespaceFromPath('/path/to/app/DTOs/Admin/UserDTO.php');
-// Result: App\DTOs\Admin
+// Result: App\DTO\Admin
 ```
 
 ### Namespace Organization Examples
 
 #### Base Namespace
 ```php
-DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTOs');
+DtoPathResolver::resolveOutputPath('UserDTO', 'App\DTO');
 // → /path/to/app/DTOs/UserDTO.php
 ```
 
 #### Sub-namespaces
 ```php
-DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTOs\Admin');
+DtoPathResolver::resolveOutputPath('AdminUserDTO', 'App\DTO\Admin');
 // → /path/to/app/DTOs/Admin/AdminUserDTO.php
 
-DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTOs\Admin\Catalog\Products');
+DtoPathResolver::resolveOutputPath('ProductDTO', 'App\DTO\Admin\Catalog\Products');
 // → /path/to/app/DTOs/Admin/Catalog/Products/ProductDTO.php
 ```
 
@@ -186,15 +186,15 @@ DtoPathResolver::resolveOutputPath('CustomDTO', 'Library\External\Data');
 
 ```php
 // Validate namespace compatibility
-$isValid = DtoPathResolver::isValidNamespace('App\DTOs\Admin');
+$isValid = DtoPathResolver::isValidNamespace('App\DTO\Admin');
 // Result: true
 
 // Normalize namespace (trim whitespace and backslashes)
-$normalized = DtoPathResolver::normalizeNamespace('\App\DTOs\Admin\\');
-// Result: App\DTOs\Admin
+$normalized = DtoPathResolver::normalizeNamespace('\App\DTO\Admin\\');
+// Result: App\DTO\Admin
 
 // Check sub-namespace relationships
-$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTOs\Admin', 'App\DTOs');
+$isSubNamespace = DtoPathResolver::isSubNamespaceOf('App\DTO\Admin', 'App\DTO');
 // Result: true
 ```
 
@@ -208,11 +208,11 @@ class CustomPathResolver
     public function resolveCustomPath(string $dtoName, string $namespace): string
     {
         // Custom logic for special cases
-        if (str_starts_with($namespace, 'App\DTOs\Legacy')) {
+        if (str_starts_with($namespace, 'App\DTO\Legacy')) {
             return base_path('legacy/dto/' . $dtoName . '.php');
         }
         
-        if (str_starts_with($namespace, 'App\DTOs\Generated')) {
+        if (str_starts_with($namespace, 'App\DTO\Generated')) {
             return storage_path('app/generated-dtos/' . $dtoName . '.php');
         }
         
@@ -472,7 +472,7 @@ options:
   # Basic options
   timestamps: true
   soft_deletes: true
-  namespace: App\DTOs\Advanced
+  namespace: App\DTO\Advanced
   
   # Advanced options
   uuid: true
@@ -505,7 +505,7 @@ $definition = [
         'auditable' => true,
         'cacheable' => true,
         'sluggable' => ['from' => 'name'],
-        'namespace' => 'App\DTOs\Advanced',
+        'namespace' => 'App\DTO\Advanced',
     ],
 ];
 
@@ -545,7 +545,7 @@ Generated code:
 <?php
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 use App\Traits\HasUuid;
 use Illuminate\Support\Facades\Validator;
@@ -571,7 +571,7 @@ Generated code:
 <?php
 declare(strict_types=1);
 
-namespace App\DTOs;
+namespace App\DTO;
 
 final class UserDTO extends BaseDTO
 {
@@ -781,7 +781,7 @@ fields:
 options:
   timestamps: ${ENVIRONMENT_TIMESTAMPS:true}
   soft_deletes: ${ENVIRONMENT_SOFT_DELETES:false}
-  namespace: ${ENVIRONMENT_NAMESPACE:App\DTOs}
+  namespace: ${ENVIRONMENT_NAMESPACE:App\DTO}
 ```
 
 ## Performance Optimization
@@ -916,7 +916,7 @@ class GenerateDtoListener
         event(new DtoGenerated(
             $event->definition['header']['dto'],
             $event->outputPath,
-            $event->definition['options']['namespace'] ?? 'App\DTOs'
+            $event->definition['options']['namespace'] ?? 'App\DTO'
         ));
     }
 }
@@ -951,7 +951,7 @@ class GenerateDtoJob implements ShouldQueue
         event(new DtoGenerated(
             $this->definition['header']['dto'],
             $this->outputPath,
-            $this->definition['options']['namespace'] ?? 'App\DTOs'
+            $this->definition['options']['namespace'] ?? 'App\DTO'
         ));
     }
 }

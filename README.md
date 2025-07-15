@@ -96,7 +96,7 @@ php artisan dto:definition-init UserDTO --model=App\\Models\\User --table=users
 # dto-definitions/UserDTO.yaml
 header:
   dto: UserDTO
-  namespace: App\DTOs
+  namespace: App\DTO
   model: App\Models\User
   traits:
     - HasTimestamps
@@ -271,9 +271,8 @@ Laravel Arc works out of the box, but you can customize it:
 ```php
 // config/dto.php
 return [
-    'namespace' => 'App\\DTOs',
-    'output_path' => app_path('DTOs'),
-    'definitions_path' => base_path('dto-definitions'),
+    'definitions_path' => base_path('database/dto_definitions'),
+    'output_path' => base_path('app/DTO'),
 ];
 ```
 
@@ -282,7 +281,7 @@ return [
 Check out the [examples directory](examples/) for complete working examples:
 - **[Basic User DTO](examples/user.yaml)** - Simple user DTO with validation
 - **[API Controllers](examples/api-controller-example.php)** - Using DTOs in API controllers
-- **[Export Formats](examples/export-formats-example.php)** - Export DTOs in 10 different formats
+- **[Export Formats](examples/export-formats-example.php)** - Export DTOs in 9 different formats
 - **[Collection Methods](examples/collection-methods-example.php)** - Advanced collection management
 - **[Nested Structures](examples/nested-order.yaml)** - Complex nested DTOs
 - **[Enum Support](examples/enum-examples.yaml)** - Working with PHP enums
