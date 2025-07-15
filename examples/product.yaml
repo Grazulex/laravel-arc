@@ -3,7 +3,7 @@ header:
   dto: ProductDTO
   table: products
   model: App\Models\Product
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasTimestamps
     - HasUuid

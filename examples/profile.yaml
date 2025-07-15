@@ -3,7 +3,7 @@ header:
   dto: ProfileDTO
   table: profiles
   model: App\Models\Profile
-  namespace: App\DTOs
+  namespace: App\DTO
   # Note: No traits specified - only functional traits will be included
 
 fields:

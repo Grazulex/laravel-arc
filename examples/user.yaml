@@ -3,12 +3,12 @@ header:
   dto: UserDTO
   table: users
   model: App\Models\User
-  namespace: App\DTOs
+  namespace: App\DTO
   traits:
     - HasUuid
     - HasTimestamps
   use:
-    - App\DTOs\ProfileDTO
+    - App\DTO\ProfileDTO
   extends: BaseDTO
 
 fields:

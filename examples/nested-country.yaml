@@ -3,7 +3,7 @@ header:
   dto: CountryDTO
   table: countries
   model: App\Models\Country
-  namespace: App\DTOs\Common
+  namespace: App\DTO\Common
   traits:
     - HasTimestamps
     - HasUuid

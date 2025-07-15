@@ -11,8 +11,8 @@ This directory contains carefully crafted example YAML definition files showcasi
 ### 🎯 Basic Examples
 Perfect for getting started with Laravel Arc's new trait-based system.
 
-**💡 Want to learn how to use these DTOs in your application?** 
-Check out our [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) for comprehensive examples of using DTOs in controllers, services, validation, and more!
+**💡 Want to learn how to use these DTO in your application?** 
+Check out our [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) for comprehensive examples of using DTO in controllers, services, validation, and more!
 
 #### [`user.yaml`](user.yaml)
 A simple user DTO demonstrating:
@@ -84,7 +84,7 @@ A profile DTO designed for nested relationships:
 - Clean field structure
 
 ### 🚀 Behavioral Traits System
-Laravel Arc now uses a powerful trait-based system for adding behavioral functionality to DTOs.
+Laravel Arc now uses a powerful trait-based system for adding behavioral functionality to DTO.
 
 #### Available Behavioral Traits (7 traits)
 Instead of using the old `options` system, Laravel Arc now provides behavioral traits that can be mixed and matched:
@@ -189,7 +189,7 @@ A comprehensive e-commerce order DTO demonstrating:
 
 #### [`nested-customer.yaml`](nested-customer.yaml)
 A customer DTO showcasing:
-- **Nested profile and address DTOs** for complex data structures
+- **Nested profile and address DTO** for complex data structures
 - **Customer preferences** and settings management
 - **Marketing opt-in** management with boolean fields
 - **Customer tier/level** system using enums
@@ -297,7 +297,7 @@ Check out our [**Traits Guide**](../docs/TRAITS_GUIDE.md) for comprehensive docu
 
 3. **Use in your application** with built-in traits:
    ```php
-   use App\DTOs\UserDTO;
+   use App\DTO\UserDTO;
    
    // Create DTO from model
    $userDto = UserDTO::fromModel($user);
@@ -330,13 +330,13 @@ $definition = Yaml::parseFile('examples/nested-order.yaml');
 $generator = DtoGenerator::make();
 $code = $generator->generateFromDefinition($definition);
 
-file_put_contents('app/DTOs/Ecommerce/OrderDTO.php', $code);
+file_put_contents('app/DTO/Ecommerce/OrderDTO.php', $code);
 ```
 
 ### API Controller Usage
-See [`api-controller-example.php`](api-controller-example.php) for comprehensive examples of using DTOs in API controllers for:
+See [`api-controller-example.php`](api-controller-example.php) for comprehensive examples of using DTO in API controllers for:
 - Collection management similar to Laravel Resources
-- Pagination with DTOs
+- Pagination with DTO
 - Filtering and searching
 - Error handling with validation
 - **NEW: Modern export formats** (CSV, XML, YAML, TOML, Markdown, MessagePack, Collection - 9 formats total)
@@ -429,7 +429,7 @@ The nested chain demonstrates automatic depth limiting:
 ### Professional Namespace Organization
 ```yaml
 header:
-  namespace: App\DTOs\Ecommerce  # Domain-specific organization
+  namespace: App\DTO\Ecommerce  # Domain-specific organization
   traits:
     - HasTimestamps
     - HasSoftDeletes
@@ -519,12 +519,12 @@ header:
   traits:
     - HasTimestamps
     - HasSoftDeletes  # Only in production
-  namespace: App\DTOs  # Adjust based on environment
+  namespace: App\DTO  # Adjust based on environment
 ```
 
 ## 📚 Additional Resources
 
-- 🎯 [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) - **How to use DTOs in your Laravel application**
+- 🎯 [**DTO Usage Guide**](../docs/DTO_USAGE_GUIDE.md) - **How to use DTO in your Laravel application**
 - 🎯 [**Traits Guide**](../docs/TRAITS_GUIDE.md) - **Complete guide to ValidatesData, ConvertsData, and DtoUtilities traits**
 - 📖 [Getting Started Guide](../docs/GETTING_STARTED.md)
 - 🏷️ [Field Types Reference](../docs/FIELD_TYPES.md)
@@ -535,6 +535,6 @@ header:
 ---
 
 <div align="center">
-  <p><strong>Ready to create your own DTOs?</strong></p>
+  <p><strong>Ready to create your own DTO?</strong></p>
   <p>Start with our <a href="../docs/GETTING_STARTED.md">Getting Started Guide</a> or explore the <a href="../docs/CLI_COMMANDS.md">CLI Commands</a></p>
 </div>

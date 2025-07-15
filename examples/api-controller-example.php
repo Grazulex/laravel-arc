@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Laravel Arc - API Controller Example
  *
- * This example demonstrates how to use Laravel Arc DTOs in API controllers
+ * This example demonstrates how to use Laravel Arc DTO in API controllers
  * for robust collection management, similar to Laravel API Resources.
  */
 
@@ -65,7 +65,7 @@ final class ApiController extends Controller
             $request->get('per_page', 15)
         );
 
-        // Convert to DTOs with pagination meta
+        // Convert to DTO with pagination meta
         $result = UserDto::fromPaginator($users);
 
         return response()->json($result);
@@ -143,7 +143,7 @@ final class ApiController extends Controller
     }
 
     /**
-     * Get user orders with nested DTOs
+     * Get user orders with nested DTO
      *
      * GET /api/users/{id}/orders
      */
@@ -152,7 +152,7 @@ final class ApiController extends Controller
         $user = User::with('orders')->findOrFail($userId);
         $userDto = UserDto::fromModel($user);
 
-        // Convert orders to DTOs
+        // Convert orders to DTO
         $orderDtos = OrderDto::fromModels($user->orders);
 
         return response()->json([
@@ -164,7 +164,7 @@ final class ApiController extends Controller
     }
 
     /**
-     * Bulk operations with DTOs
+     * Bulk operations with DTO
      *
      * POST /api/users/bulk-update
      */
@@ -176,7 +176,7 @@ final class ApiController extends Controller
         // Get users to update
         $users = User::whereIn('id', $userIds)->get();
 
-        // Convert to DTOs before update for validation
+        // Convert to DTO before update for validation
         $userDtos = UserDto::fromModels($users);
 
         // Validate each DTO with the new data
@@ -202,7 +202,7 @@ final class ApiController extends Controller
             $user->update($updateData);
         });
 
-        // Return updated DTOs
+        // Return updated DTO
         $updatedUsers = User::whereIn('id', $userIds)->get();
         $updatedDtos = UserDto::fromModels($updatedUsers);
 

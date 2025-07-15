@@ -3,7 +3,7 @@ header:
   dto: AddressDTO
   table: addresses
   model: App\Models\Address
-  namespace: App\DTOs\Common
+  namespace: App\DTO\Common
   traits:
     - HasTimestamps
     - HasUuid

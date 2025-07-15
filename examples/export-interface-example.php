@@ -5,7 +5,7 @@ declare(strict_types=1);
 /**
  * Laravel Arc - Export Interface Example
  *
- * This example demonstrates the complete export interface provided by Laravel Arc DTOs.
+ * This example demonstrates the complete export interface provided by Laravel Arc DTO.
  * It shows both single DTO exports and collection exports with all available formats.
  */
 
@@ -109,7 +109,7 @@ $singleProduct = ProductDto::fromModel($products->first());
 echo "1. SINGLE DTO EXPORT INTERFACE\n";
 echo "-------------------------------\n\n";
 
-echo "All available export methods for single DTOs:\n";
+echo "All available export methods for single DTO:\n";
 echo "- toJson(int \$options = 0): string\n";
 echo "- toYaml(): string\n";
 echo "- toCsv(string \$delimiter = ',', string \$enclosure = '\"', string \$escape = '\\', bool \$includeHeaders = true): string\n";

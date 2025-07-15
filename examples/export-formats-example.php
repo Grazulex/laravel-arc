@@ -5,8 +5,8 @@ declare(strict_types=1);
 /**
  * Laravel Arc - Export Formats Example
  *
- * This example demonstrates how to use the new export formats available in Laravel Arc DTOs.
- * All export methods are available on both single DTOs and collections.
+ * This example demonstrates how to use the new export formats available in Laravel Arc DTO.
+ * All export methods are available on both single DTO and collections.
  */
 
 use Grazulex\LaravelArc\Support\Traits\ConvertsData;

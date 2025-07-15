@@ -11,7 +11,7 @@ class_name: User
 # - ConvertsData (always included) - provides data conversion and casting
 # - DtoUtilities (always included) - provides utility methods (toArray, toJson, etc.)
 # 
-# By default, DTOs do NOT extend any base class unless 'extends' is explicitly specified
+# By default, DTO do NOT extend any base class unless 'extends' is explicitly specified
 traits:
   - HasTimestamps    # Adds created_at/updated_at behavior and fields
   - HasSoftDeletes   # Adds deleted_at behavior and field

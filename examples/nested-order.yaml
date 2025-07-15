@@ -3,7 +3,7 @@ header:
   dto: OrderDTO
   table: orders
   model: App\Models\Order
-  namespace: App\DTOs\Ecommerce
+  namespace: App\DTO\Ecommerce
   traits:
     - HasTimestamps
     - HasUuid
@@ -80,7 +80,7 @@ fields:
     default: USD
     rules: [size:3]
   
-  # Array of items (could be nested DTOs too, but we'll use array here)
+  # Array of items (could be nested DTO too, but we'll use array here)
   items:
     type: array
     required: true

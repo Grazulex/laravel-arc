@@ -3,7 +3,7 @@ header:
   dto: ModernTraitsExampleDTO
   table: examples
   model: App\Models\Example
-  namespace: App\DTOs\Examples
+  namespace: App\DTO\Examples
   traits:
     # All available behavioral traits
     - HasUuid          # Adds id field (UUID type) and UUID methods
