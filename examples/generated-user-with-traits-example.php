@@ -21,9 +21,9 @@ final readonly class UserDto
     // Functional traits (existing system)
     use ConvertsData;
     use DtoUtilities;
+
     // Behavioral traits (new system)
     use HasSoftDeletes;
-
     use HasTimestamps;
     use HasUuid;
     use ValidatesData;

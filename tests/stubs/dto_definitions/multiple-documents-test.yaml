@@ -1,0 +1,21 @@
+header:
+  dto: TestDTO
+  namespace: App\DTO
+  model: App\Models\Test
+
+fields:
+  name:
+    type: string
+    rules: required
+
+---
+
+header:
+  dto: AnotherDTO
+  namespace: App\DTO
+  model: App\Models\Another
+
+fields:
+  title:
+    type: string
+    rules: required
