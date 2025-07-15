@@ -49,7 +49,7 @@ fields:
   phone:
     type: string
     required: false
-    validation: [nullable, string, regex:/^[0-9\-\+\s\(\)]+$/]
+    validation: [nullable, string, 'regex:/^[0-9\-\+\s\(\)]+$/']
     transformers: [normalize_phone]
     
   profile_picture:
