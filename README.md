@@ -1,7 +1,7 @@
 # Laravel Arc
 
 <div align="center">
-  <img src="logo.png" alt="Laravel Arc" width="100">
+  <img src="new_logo.png" alt="Laravel Arc" width="100">
   <p><strong>Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YAML definitions — with automatic validation, nested support, and fluent collection handling.</strong></p>
   
   [![Latest Version](https://img.shields.io/packagist/v/grazulex/laravel-arc)](https://packagist.org/packages/grazulex/laravel-arc)
