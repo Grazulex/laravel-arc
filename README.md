@@ -1,6 +1,6 @@
 # Laravel Arc
 
-![Laravel Arc](new_logo.png)
+<img src="new_logo.png" alt="Laravel Arc" width="200">
 
 Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YAML definitions — with automatic validation, nested support, and fluent collection handling.
 
