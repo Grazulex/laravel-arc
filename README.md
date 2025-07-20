@@ -23,45 +23,7 @@
 
 </div>
 
-## 🏗️ Architecture
 
-```mermaid
-graph TD
-    A[YAML Definition] --> B[DTO Generator]
-    B --> C[Generated DTO Class]
-    
-    A --> D[Field Types]
-    A --> E[Transformers]
-    A --> F[Validation Rules]
-    A --> G[Behavioral Traits]
-    
-    C --> H[Functional Traits]
-    H --> I[ValidatesData]
-    H --> J[ConvertsData]
-    H --> K[DtoUtilities]
-    
-    G --> L[HasTimestamps]
-    G --> M[HasUuid]
-    G --> N[HasSoftDeletes]
-    G --> O[HasVersioning]
-    G --> P[HasTagging]
-    G --> Q[HasAuditing]
-    G --> R[HasCaching]
-    
-    E --> S[String Transformers]
-    E --> T[Numeric Transformers]
-    E --> U[Custom Transformers]
-    
-    C --> V[Model Integration]
-    C --> W[Collection Support]
-    C --> X[Export Formats]
-    
-    style A fill:#e1f5fe
-    style C fill:#c8e6c9
-    style H fill:#fff3e0
-    style G fill:#f3e5f5
-    style E fill:#fce4ec
-```
 
 ## <span style="color: #FF9900;">✨</span> Key Features
 
