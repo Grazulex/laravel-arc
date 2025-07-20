@@ -53,6 +53,32 @@ final class DtoTemplateRenderer
         return str_replace('{{ exports }}', $exports, $stub);
     }
 
+    public function renderFromArray(array $fields): string
+    {
+        $assignments = [];
+        $hasTransformers = false;
+
+        foreach ($fields as $field => $config) {
+            if (isset($config['transformers']) && is_array($config['transformers']) && (isset($config['transformers']) && $config['transformers'] !== [])) {
+                $hasTransformers = true;
+                $transformerList = "'".implode("', '", $config['transformers'])."'";
+                $assignments[] = str_repeat(' ', 12)."{$field}: \$registry->transform(\$data['{$field}'] ?? null, [{$transformerList}]),";
+            } else {
+                $assignments[] = str_repeat(' ', 12)."{$field}: \$data['{$field}'] ?? null,";
+            }
+        }
+
+        $registryInit = $hasTransformers ? "\n        \$registry = new \\Grazulex\\LaravelArc\\Support\\Transformers\\FieldTransformerRegistry();\n" : '';
+
+        $stub = file_get_contents(__DIR__.'/../Console/Commands/stubs/dto.from-array.stub');
+
+        return str_replace(
+            ['{{ registry_init }}', '{{ assignments }}'],
+            [$registryInit, implode("\n", $assignments)],
+            $stub
+        );
+    }
+
     public function renderClass(
         string $namespace,
         string $className,
@@ -147,6 +173,7 @@ final class DtoTemplateRenderer
 
         $baseMethods = [
             $this->renderFromModel($modelFQCN, $fieldDefinitions),
+            $this->renderFromArray($fieldDefinitions),
             $this->renderToArray($fieldDefinitions),
         ];
 

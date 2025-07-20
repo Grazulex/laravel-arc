@@ -53,9 +53,13 @@ final class DtoGenerator
             $mergedHeader = array_merge($header, [
                 'namespace' => $namespace,
                 'class' => $yaml['class'] ?? $header['class'] ?? $header['dto'] ?? 'UnnamedDto',
-                'model_fqcn' => $yaml['model_fqcn'] ?? $header['model_fqcn'] ?? '\App\Models\Model',
                 'traits' => $traits,
             ]);
+
+            // Only add model_fqcn if it exists in YAML or header - let ModelHeaderGenerator handle the default
+            if (isset($yaml['model_fqcn']) || isset($header['model_fqcn']) || isset($header['model'])) {
+                $mergedHeader['model_fqcn'] = $yaml['model_fqcn'] ?? $header['model_fqcn'] ?? $header['model'];
+            }
 
             $className = $this->headers->generate('dto', $mergedHeader, $context);
             $modelFQCN = $this->headers->generate('model', $mergedHeader, $context);
