@@ -1,6 +1,6 @@
-# Export Formats Examples
+# Export Formats Guide
 
-This document demonstrates the 9 export formats available in Laravel Arc DTOs.
+This document demonstrates the 10 export formats available in Laravel Arc DTOs.
 
 ## Basic Usage
 
@@ -152,6 +152,8 @@ $filtered = $collection->filter(fn($value) => $value !== null);
 ```
 
 ## Collection Export Formats
+
+Laravel Arc provides 5 dedicated collection export methods that wrap multiple DTOs in a "data" container (similar to Laravel API Resources):
 
 ### JSON Collection Export
 ```php
@@ -308,6 +310,35 @@ $url = "https://legacy-api.com/users?" . $queryParams;
 - **Markdown**: Perfect for documentation
 - **HTML**: Great for web display, larger than JSON
 - **Collection**: Laravel Collection for further processing
+
+## Summary
+
+Laravel Arc provides comprehensive export capabilities:
+
+### Single DTO Export Methods (10 formats):
+1. `toJson()` - JSON format
+2. `toYaml()` - YAML format  
+3. `toCsv()` - CSV format
+4. `toXml()` - XML format
+5. `toToml()` - TOML format
+6. `toMarkdownTable()` - Markdown table format
+7. `toPhpArray()` - PHP array export format
+8. `toQueryString()` - HTTP query string format
+9. `toMessagePack()` - MessagePack binary format (requires extension)
+10. `toCollection()` - Laravel Collection format
+
+### Collection Export Methods (5 formats):
+1. `collectionToJson()` - JSON with data wrapper
+2. `collectionToYaml()` - YAML with data wrapper
+3. `collectionToCsv()` - CSV with headers
+4. `collectionToXml()` - XML with collection wrapper
+5. `collectionToMarkdownTable()` - Markdown table format
+
+### Additional Export Features:
+- HTML export available via custom HtmlExporter class (example implementation)
+- All formats support customization options
+- Automatic data wrapper for collection methods (Laravel API Resource style)
+- Fallback implementations for optional extensions
 
 ## Extensions Required
 
