@@ -343,8 +343,8 @@ See [`api-controller-example.php`](api-controller-example.php) for comprehensive
 
 ### Export Formats Usage
 See [`export-formats-example.php`](export-formats-example.php) for comprehensive examples of:
-- **Single DTO exports** in 9 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
-- **Collection exports** in multiple formats
+- **Single DTO exports** in 10 different formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection)
+- **Collection exports** in 5 formats (JSON, YAML, CSV, XML, Markdown Table)
 - **Real-world controller usage** with format-based responses
 - **Performance considerations** and format recommendations
 - **Extension requirements** for advanced formats

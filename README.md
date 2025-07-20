@@ -73,7 +73,7 @@ graph TD
 - 📦 **<span style="color: #D2D200;">Collection management</span>** - Convert models to DTO collections like Laravel Resources
 - 🎯 **<span style="color: #88C600;">Powerful trait system</span>** - Built-in behavioral traits for common functionality (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching) plus 3 functional traits (ValidatesData, ConvertsData, DtoUtilities) in every DTO
 - 🔄 **<span style="color: #00B470;">Field transformers</span>** - Automatically transform field values during DTO creation with 10 built-in transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
-- 📤 **<span style="color: #FF9900;">Multiple export formats</span>** - Export DTOs in 9 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack) with dedicated collection methods
+- 📤 **<span style="color: #FF9900;">Multiple export formats</span>** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection) with 5 dedicated collection methods
 - 🛠️ **<span style="color: #D2D200;">Powerful CLI commands</span>** - Generate, list, and manage DTOs from the command line
 - 📁 **<span style="color: #88C600;">Smart path resolution</span>** - Automatic namespace-to-path conversion with custom organization
 - 🚨 **<span style="color: #00B470;">Enhanced error handling</span>** - Detailed error messages with actionable suggestions
@@ -144,7 +144,7 @@ $userDtos = UserDTO::fromModels($users); // Alternative syntax
 return response()->json($userDtos->toArrayResource());
 // Output: {"data": [{"id": 1, "name": "John", "email": "john@example.com", "status": "active"}]}
 
-// Export in multiple formats - 9 formats available
+// Export in multiple formats - 10 formats available
 $json = $userDto->toJson();
 $yaml = $userDto->toYaml();
 $csv = $userDto->toCsv();
@@ -285,7 +285,7 @@ return [
 Check out the [examples directory](examples/) for complete working examples:
 - **[<span style="color: #FF9900;">Basic User DTO</span>](examples/user.yaml)** - Simple user DTO with validation
 - **[<span style="color: #88C600;">API Controllers</span>](examples/api-controller-example.php)** - Using DTOs in API controllers
-- **[<span style="color: #00B470;">Export Formats</span>](examples/export-formats-example.php)** - Export DTOs in 9 different formats
+- **[<span style="color: #00B470;">Export Formats</span>](examples/export-formats-example.php)** - Export DTOs in 10 different formats
 - **[<span style="color: #D2D200;">Collection Methods</span>](examples/collection-methods-example.php)** - Advanced collection management
 - **[<span style="color: #FF9900;">Nested Structures</span>](examples/nested-order.yaml)** - Complex nested DTOs
 - **[<span style="color: #88C600;">Enum Support</span>](examples/enum-examples.yaml)** - Working with PHP enums

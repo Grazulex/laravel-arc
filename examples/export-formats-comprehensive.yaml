@@ -59,7 +59,7 @@ fields:
 
 # This DTO demonstrates all available export formats:
 #
-# Single DTO Export Methods (9 formats):
+# Single DTO Export Methods (10 formats):
 # - $dto->toJson()           - JSON format (best for APIs)
 # - $dto->toYaml()           - YAML format (human-readable)
 # - $dto->toCsv()            - CSV format (Excel compatible)
@@ -71,7 +71,7 @@ fields:
 # - $dto->toMessagePack()    - MessagePack binary format (requires extension)
 # - $dto->toCollection()     - Laravel Collection (for further processing)
 #
-# Collection Export Methods (6 formats):
+# Collection Export Methods (5 formats):
 # - ExportFormatsExampleDTO::collectionToJson($models)
 # - ExportFormatsExampleDTO::collectionToYaml($models)
 # - ExportFormatsExampleDTO::collectionToCsv($models)
