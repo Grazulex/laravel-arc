@@ -1,0 +1,9 @@
+    /**
+     * Create a new DTO instance from array data with transformers applied.
+     */
+    public static function fromArray(array $data): self
+    {{{ registry_init }}
+        return new self(
+{{ assignments }}
+        );
+    }
