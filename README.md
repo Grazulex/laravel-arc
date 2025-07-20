@@ -256,6 +256,10 @@ Check out the [examples directory](examples/) for complete working examples:
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
+## <span style="color: #FF9900;">🔒</span> Security
+
+If you discover a security vulnerability, please review our [Security Policy](SECURITY.md) before disclosing it.
+
 ## <span style="color: #FF9900;">📄</span> License
 
 Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE.md).
