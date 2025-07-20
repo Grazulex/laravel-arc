@@ -1,63 +1,96 @@
 # Laravel Arc
 
-<div align="center">
-  <img src="new_logo.png" alt="Laravel Arc" width="100">
-  <p><strong>Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YAML definitions — with automatic validation, nested support, and fluent collection handling.</strong></p>
-  
-  [![Latest Version](https://img.shields.io/packagist/v/grazulex/laravel-arc)](https://packagist.org/packages/grazulex/laravel-arc)
-  [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-arc)](https://packagist.org/packages/grazulex/laravel-arc)
-  [![License](https://img.shields.io/github/license/grazulex/laravel-arc)](LICENSE.md)
-  [![PHP Version](https://img.shields.io/badge/php-%5E8.3-blue)](https://php.net)
-  [![Laravel Version](https://img.shields.io/badge/laravel-%5E12.19-red)](https://laravel.com)
-  [![Tests](https://github.com/Grazulex/laravel-arc/workflows/Tests/badge.svg)](https://github.com/Grazulex/laravel-arc/actions)
-  [![Code Style](https://img.shields.io/badge/code%20style-pint-orange)](https://github.com/laravel/pint)
-</div>
+![Laravel Arc](new_logo.png)
+
+Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YAML definitions — with automatic validation, nested support, and fluent collection handling.
+
+[![Latest Version](https://img.shields.io/packagist/v/grazulex/laravel-arc.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-arc)
+[![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-arc.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-arc)
+[![License](https://img.shields.io/github/license/grazulex/laravel-arc.svg?style=flat-square)](https://github.com/Grazulex/laravel-arc/blob/main/LICENSE.md)
+[![PHP Version](https://img.shields.io/packagist/php-v/grazulex/laravel-arc.svg?style=flat-square)](https://php.net/)
+[![Laravel Version](https://img.shields.io/badge/laravel-12.x-ff2d20?style=flat-square&logo=laravel)](https://laravel.com/)
+[![Tests](https://img.shields.io/github/actions/workflow/status/grazulex/laravel-arc/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/Grazulex/laravel-arc/actions)
+[![Code Style](https://img.shields.io/badge/code%20style-pint-000000?style=flat-square&logo=laravel)](https://github.com/laravel/pint)
+
+## 📖 Table of Contents
+
+- [Overview](#overview)
+- [✨ Features](#-features)
+- [📦 Installation](#-installation)
+- [🚀 Quick Start](#-quick-start)
+- [🎯 Traits System](#-traits-system)
+- [🔄 Field Transformers](#-field-transformers)
+- [📊 Export Formats](#-export-formats)
+- [⚙️ Configuration](#️-configuration)
+- [📚 Documentation](#-documentation)
+- [💡 Examples](#-examples)
+- [🧪 Testing](#-testing)
+- [🔧 Requirements](#-requirements)
+- [🚀 Performance](#-performance)
+- [🤝 Contributing](#-contributing)
+- [🔒 Security](#-security)
+- [📄 License](#-license)
 
 ## Overview
 
-<div style="background: linear-gradient(135deg, #FF9900 0%, #D2D200 25%, #88C600 75%, #00B470 100%); padding: 20px; border-radius: 10px; margin: 20px 0; color: #ffffff; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);">
-
-**Laravel Arc** is a powerful Laravel package that simplifies Data Transfer Object (DTO) management through YAML-driven generation. Define your DTOs in simple YAML files and let Laravel Arc generate type-safe, validated PHP classes with automatic property access and comprehensive collection support.
+Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (DTO) management through YAML-driven generation. Define your DTOs in simple YAML files and let Laravel Arc generate type-safe, validated PHP classes with automatic property access and comprehensive collection support.
 
 **Think of it as Laravel API Resources, but with stronger typing, automatic validation, and generated from YAML definitions.**
 
-</div>
+### 🎯 Use Cases
 
+Laravel Arc is perfect for:
 
+- **API Development** - Type-safe request/response handling
+- **Data Validation** - Consistent validation across your application  
+- **Model Transformation** - Clean data layer separation
+- **Complex Forms** - Nested form validation and processing
+- **API Resources** - Alternative to Laravel Resources with stronger typing
 
-## <span style="color: #FF9900;">✨</span> Key Features
+## ✨ Features
 
-- 🚀 **<span style="color: #FF9900;">YAML-driven generation</span>** - Define DTOs in simple, readable YAML files
-- 🔍 **<span style="color: #D2D200;">Automatic validation</span>** - Built-in Laravel validation rules support
-- 🏗️ **<span style="color: #88C600;">Rich field types</span>** - 14+ field types including enums, UUIDs, nested DTOs, and JSON
-- 🔗 **<span style="color: #00B470;">Eloquent relationships</span>** - Full support for Laravel relationship types
-- ⚡ **<span style="color: #FF9900;">Direct property access</span>** - Clean, modern syntax with PHP 8.3+ features
-- 📦 **<span style="color: #D2D200;">Collection management</span>** - Convert models to DTO collections like Laravel Resources
-- 🎯 **<span style="color: #88C600;">Powerful trait system</span>** - Built-in behavioral traits for common functionality (HasTimestamps, HasUuid, HasSoftDeletes, HasVersioning, HasTagging, HasAuditing, HasCaching) plus 3 functional traits (ValidatesData, ConvertsData, DtoUtilities) in every DTO
-- 🔄 **<span style="color: #00B470;">Field transformers</span>** - Automatically transform field values during DTO creation with 10 built-in transformers (trim, lowercase, uppercase, title_case, slugify, abs, encrypt, normalize_phone, clamp_max, clamp_min)
-- 📤 **<span style="color: #FF9900;">Multiple export formats</span>** - Export DTOs in 10 formats (JSON, YAML, CSV, XML, TOML, Markdown, PHP Array, Query String, MessagePack, Collection) with 5 dedicated collection methods
-- 🛠️ **<span style="color: #D2D200;">Powerful CLI commands</span>** - Generate, list, and manage DTOs from the command line
-- 📁 **<span style="color: #88C600;">Smart path resolution</span>** - Automatic namespace-to-path conversion with custom organization
-- 🚨 **<span style="color: #00B470;">Enhanced error handling</span>** - Detailed error messages with actionable suggestions
-- 📦 **<span style="color: #FF9900;">Zero configuration</span>** - Works out of the box with sensible defaults
-- 🧪 **<span style="color: #D2D200;">Fully tested</span>** - Comprehensive test suite with high coverage
+- 🚀 **YAML-driven generation** - Define DTOs in simple, readable YAML files
+- 🔍 **Automatic validation** - Built-in Laravel validation rules support
+- 🏗️ **Rich field types** - 14+ field types including enums, UUIDs, nested DTOs, and JSON
+- 🔗 **Eloquent relationships** - Full support for Laravel relationship types
+- ⚡ **Direct property access** - Clean, modern syntax with PHP 8.3+ features
+- 📦 **Collection management** - Convert models to DTO collections like Laravel Resources
+- 🎯 **Powerful trait system** - Built-in behavioral traits for common functionality
+- 🔄 **Field transformers** - Automatically transform field values during DTO creation
+- 📤 **Multiple export formats** - Export DTOs in 10 formats
+- 🛠️ **Powerful CLI commands** - Generate, list, and manage DTOs from the command line
+- 📁 **Smart path resolution** - Automatic namespace-to-path conversion with custom organization
+- 🚨 **Enhanced error handling** - Detailed error messages with actionable suggestions
+- 📦 **Zero configuration** - Works out of the box with sensible defaults
+- 🧪 **Fully tested** - Comprehensive test suite with high coverage
 
-## <span style="color: #FF9900;">🚀</span> Quick Start
+## 📦 Installation
 
-### <span style="color: #D2D200;">Installation</span>
+Install the package via Composer:
 
 ```bash
 composer require grazulex/laravel-arc
 ```
 
-### <span style="color: #88C600;">Basic Usage</span>
+> **💡 Auto-Discovery**  
+> The service provider will be automatically registered thanks to Laravel's package auto-discovery.
 
-**<span style="color: #FF9900;">1. Create a DTO definition</span>**
+Publish configuration:
+
+```bash
+php artisan vendor:publish --tag=arc-config
+```
+
+## 🚀 Quick Start
+
+### 1. Create a DTO definition
+
 ```bash
 php artisan dto:definition-init UserDTO --model=App\\Models\\User --table=users
 ```
 
-**<span style="color: #D2D200;">2. Define your DTO in YAML</span>**
+### 2. Define your DTO in YAML
+
 ```yaml
 # dto-definitions/UserDTO.yaml
 header:
@@ -85,12 +118,14 @@ fields:
     validation: [required, in:active,inactive]
 ```
 
-**<span style="color: #88C600;">3. Generate your DTO</span>**
+### 3. Generate your DTO
+
 ```bash
 php artisan dto:generate UserDTO.yaml
 ```
 
-**<span style="color: #00B470;">4. Use your DTO</span>**
+### 4. Use your DTO
+
 ```php
 // Convert a model to DTO
 $user = User::find(1);
@@ -99,8 +134,6 @@ $userDto = UserDTO::fromModel($user);
 // Convert a collection to DTO collection (like Laravel Resources)
 $users = User::all();
 $userDtos = UserDTO::collection($users); // Returns DtoCollection
-// OR
-$userDtos = UserDTO::fromModels($users); // Alternative syntax
 
 // API Resource format
 return response()->json($userDtos->toArrayResource());
@@ -111,19 +144,6 @@ $json = $userDto->toJson();
 $yaml = $userDto->toYaml();
 $csv = $userDto->toCsv();
 $xml = $userDto->toXml();
-$toml = $userDto->toToml();
-$markdown = $userDto->toMarkdownTable();
-$phpArray = $userDto->toPhpArray();
-$queryString = $userDto->toQueryString();
-$messagepack = $userDto->toMessagePack();
-$collection = $userDto->toCollection();
-
-// Collection exports (with data wrapper like Laravel Resources)
-$jsonData = UserDTO::collectionToJson($users);
-$csvData = UserDTO::collectionToCsv($users);
-$xmlData = UserDTO::collectionToXml($users);
-$yamlData = UserDTO::collectionToYaml($users);
-$markdownData = UserDTO::collectionToMarkdownTable($users);
 
 // Validation
 $userDto = UserDTO::fromArray($request->all());
@@ -132,17 +152,20 @@ if (!$userDto->isValid()) {
 }
 ```
 
-## <span style="color: #88C600;">🎯</span> Traits System
+## 🎯 Traits System
 
-> **<span style="color: #FF9900;">💡</span>** Laravel Arc provides a powerful trait system with two types of traits:
+Laravel Arc provides a powerful trait system with two types of traits:
 
-### <span style="border-left: 4px solid #FF9900; padding-left: 10px;">Functional Traits (Automatic)</span>
+### Functional Traits (Automatic)
+
 Every DTO automatically includes these three powerful traits:
-- **<span style="color: #FF9900;">ValidatesData</span>** - Provides validation methods (`validate()`, `passes()`, `fails()`)
-- **<span style="color: #D2D200;">ConvertsData</span>** - Provides conversion methods (`toJson()`, `toCsv()`, `toXml()`, etc.)
-- **<span style="color: #88C600;">DtoUtilities</span>** - Provides utility methods (`getProperties()`, `with()`, `equals()`)
 
-### <span style="border-left: 4px solid #00B470; padding-left: 10px;">Behavioral Traits (Optional) - 7 Available Traits</span>
+- **ValidatesData** - Provides validation methods (`validate()`, `passes()`, `fails()`)
+- **ConvertsData** - Provides conversion methods (`toJson()`, `toCsv()`, `toXml()`, etc.)
+- **DtoUtilities** - Provides utility methods (`getProperties()`, `with()`, `equals()`)
+
+### Behavioral Traits (Optional) - 7 Available Traits
+
 Add specific functionality by including traits in your YAML definition:
 
 ```yaml
@@ -157,7 +180,8 @@ header:
     - HasCaching      # Adds caching capabilities
 ```
 
-**<span style="color: #00B470;">Example usage:</span>**
+Example usage:
+
 ```php
 // Using functional traits (automatic)
 $userDto = UserDTO::fromArray($data);
@@ -172,7 +196,7 @@ $userDto = $userDto->addTag('premium')
                   ->cache(3600);
 ```
 
-## <span style="color: #00B470;">🔄</span> Field Transformers
+## 🔄 Field Transformers
 
 Automatically transform field values during DTO creation:
 
@@ -191,46 +215,38 @@ fields:
     transformers: [abs, clamp_min:0]  # -19.99 → 19.99
 ```
 
-**<span style="color: #88C600;">Available transformers:</span>**
-- **<span style="color: #FF9900;">String transformers</span>**: `trim`, `lowercase`, `uppercase`, `title_case`, `slugify`
-- **<span style="color: #D2D200;">Numeric transformers</span>**: `abs`, `clamp_max`, `clamp_min`
-- **<span style="color: #00B470;">Security transformers</span>**: `encrypt`
-- **<span style="color: #88C600;">Phone transformers</span>**: `normalize_phone` (adds +33 prefix for French numbers starting with 0)
+**Available transformers:**
+- **String transformers**: `trim`, `lowercase`, `uppercase`, `title_case`, `slugify`
+- **Numeric transformers**: `abs`, `clamp_max`, `clamp_min`
+- **Security transformers**: `encrypt`
+- **Phone transformers**: `normalize_phone` (adds +33 prefix for French numbers starting with 0)
 
-## <span style="color: #D2D200;">📖</span> Documentation
+## 📊 Export Formats
 
-**<span style="color: #FF9900;">Complete documentation and guides:</span>**
-- **[📖 Documentation Index](docs/README.md)** - Complete navigation guide
-- **[🚀 Getting Started](docs/GETTING_STARTED.md)** - Installation and first DTO
-- **[📘 DTO Usage Guide](docs/DTO_USAGE_GUIDE.md)** - How to use DTOs in your Laravel application
-- **[🎯 Examples Collection](examples/README.md)** - Working examples and templates
+Export DTOs in 10 different formats:
 
-### <span style="border-left: 3px solid #88C600; padding-left: 8px;">Core Concepts</span>
-- **[YAML Schema](docs/YAML_SCHEMA.md)** - Full YAML configuration reference
-- **[Field Types](docs/FIELD_TYPES.md)** - All available field types and options
-- **[Traits Guide](docs/TRAITS_GUIDE.md)** - Functional and behavioral traits system
-- **[Validation Rules](docs/VALIDATION_RULES.md)** - Custom validation and error handling
+```php
+// Individual exports
+$json = $userDto->toJson();
+$yaml = $userDto->toYaml();
+$csv = $userDto->toCsv();
+$xml = $userDto->toXml();
+$toml = $userDto->toToml();
+$markdown = $userDto->toMarkdownTable();
+$phpArray = $userDto->toPhpArray();
+$queryString = $userDto->toQueryString();
+$messagepack = $userDto->toMessagePack();
+$collection = $userDto->toCollection();
 
-### <span style="border-left: 3px solid #00B470; padding-left: 8px;">Advanced Features</span>
-- **[Collection Management](docs/COLLECTION_MANAGEMENT.md)** - Working with DTO collections and API resources
-- **[Export Formats](docs/EXPORT_FORMATS.md)** - Export DTOs in 10 different formats
-- **[Field Transformers](docs/FIELD_TRANSFORMERS.md)** - Automatic field value transformation
-- **[Relationships](docs/RELATIONSHIPS.md)** - Eloquent relationships in DTOs
-- **[Nested DTOs](docs/NESTED_DTO_GUIDE.md)** - Building complex nested structures
-- **[CLI Commands](docs/CLI_COMMANDS.md)** - All available Artisan commands
-- **[Advanced Usage](docs/ADVANCED_USAGE.md)** - Advanced patterns and customizations
+// Collection exports (with data wrapper like Laravel Resources)
+$jsonData = UserDTO::collectionToJson($users);
+$csvData = UserDTO::collectionToCsv($users);
+$xmlData = UserDTO::collectionToXml($users);
+$yamlData = UserDTO::collectionToYaml($users);
+$markdownData = UserDTO::collectionToMarkdownTable($users);
+```
 
-## <span style="color: #88C600;">🎯</span> Use Cases
-
-Laravel Arc is perfect for:
-
-- **<span style="color: #FF9900;">API Development</span>** - Type-safe request/response handling
-- **<span style="color: #D2D200;">Data Validation</span>** - Consistent validation across your application
-- **<span style="color: #88C600;">Model Transformation</span>** - Clean data layer separation
-- **<span style="color: #00B470;">Complex Forms</span>** - Nested form validation and processing
-- **<span style="color: #FF9900;">API Resources</span>** - Alternative to Laravel Resources with stronger typing
-
-## <span style="color: #00B470;">⚙️</span> Configuration
+## ⚙️ Configuration
 
 Laravel Arc works out of the box, but you can customize it:
 
@@ -242,30 +258,99 @@ return [
 ];
 ```
 
-## <span style="color: #D2D200;">📚</span> Examples
+## 📚 Documentation
 
-Check out the [examples directory](examples/) for complete working examples:
-- **[<span style="color: #FF9900;">Basic User DTO</span>](examples/user.yaml)** - Simple user DTO with validation
-- **[<span style="color: #88C600;">API Controllers</span>](examples/api-controller-example.php)** - Using DTOs in API controllers
-- **[<span style="color: #00B470;">Export Formats</span>](examples/export-formats-example.php)** - Export DTOs in 10 different formats
-- **[<span style="color: #D2D200;">Collection Methods</span>](examples/collection-methods-example.php)** - Advanced collection management
-- **[<span style="color: #FF9900;">Nested Structures</span>](examples/nested-order.yaml)** - Complex nested DTOs
-- **[<span style="color: #88C600;">Enum Support</span>](examples/enum-examples.yaml)** - Working with PHP enums
+For complete documentation, examples, and advanced usage, please see:
 
-## <span style="color: #88C600;">🤝</span> Contributing
+### Core Concepts
+- [📖 Documentation Index](docs/README.md) - Complete navigation guide
+- [🚀 Getting Started](docs/GETTING_STARTED.md) - Installation and first DTO
+- [📘 DTO Usage Guide](docs/DTO_USAGE_GUIDE.md) - How to use DTOs in your Laravel application
+- [YAML Schema](docs/YAML_SCHEMA.md) - Full YAML configuration reference
+- [Field Types](docs/FIELD_TYPES.md) - All available field types and options
+- [Traits Guide](docs/TRAITS_GUIDE.md) - Functional and behavioral traits system
+- [Validation Rules](docs/VALIDATION_RULES.md) - Custom validation and error handling
+
+### Advanced Features
+- [Collection Management](docs/COLLECTION_MANAGEMENT.md) - Working with DTO collections and API resources
+- [Export Formats](docs/EXPORT_FORMATS.md) - Export DTOs in 10 different formats
+- [Field Transformers](docs/FIELD_TRANSFORMERS.md) - Automatic field value transformation
+- [Relationships](docs/RELATIONSHIPS.md) - Eloquent relationships in DTOs
+- [Nested DTOs](docs/NESTED_DTO_GUIDE.md) - Building complex nested structures
+- [CLI Commands](docs/CLI_COMMANDS.md) - All available Artisan commands
+- [Advanced Usage](docs/ADVANCED_USAGE.md) - Advanced patterns and customizations
+
+## 💡 Examples
+
+Check out the [examples directory](examples) for complete working examples:
+
+- [🎯 Examples Collection](examples/README.md) - Working examples and templates
+- [Basic User DTO](examples/user.yaml) - Simple user DTO with validation
+- [API Controllers](examples/api-controller-example.php) - Using DTOs in API controllers
+- [Export Formats](examples/export-formats-example.php) - Export DTOs in 10 different formats
+- [Collection Methods](examples/collection-methods-example.php) - Advanced collection management
+- [Nested Structures](examples/nested-order.yaml) - Complex nested DTOs
+- [Enum Support](examples/enum-examples.yaml) - Working with PHP enums
+
+## 🧪 Testing
+
+Laravel Arc includes comprehensive testing utilities:
+
+```php
+use Grazulex\LaravelArc\Testing\DtoTester;
+
+// Test DTO validation
+DtoTester::assertValidates($data, UserDTO::class);
+DtoTester::assertFailsValidation($data, UserDTO::class);
+
+// Test transformations
+DtoTester::assertTransforms($input, $expected, UserDTO::class);
+
+// Test collections
+DtoTester::assertCollection($models, UserDTO::class);
+```
+
+## 🔧 Requirements
+
+- PHP: ^8.3
+- Laravel: ^12.19
+- Carbon: ^3.10
+
+## 🚀 Performance
+
+Laravel Arc is optimized for performance:
+
+- **Memory Efficient**: Minimal memory footprint with smart serialization
+- **Fast Generation**: Optimized YAML parsing and PHP generation
+- **Cached Definitions**: YAML definitions cached for better performance
+- **Bulk Operations**: Efficient handling of large model collections
+
+## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
 
-## <span style="color: #FF9900;">🔒</span> Security
+## 🔒 Security
 
 If you discover a security vulnerability, please review our [Security Policy](SECURITY.md) before disclosing it.
 
-## <span style="color: #FF9900;">📄</span> License
+## 📄 License
 
 Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE.md).
 
 ---
 
-<div align="center">
-  Made with <span style="color: #FF9900;">❤️</span> for the <span style="color: #88C600;">Laravel</span> community
-</div>
+**Made with ❤️ for the Laravel community**
+
+### Resources
+
+- [📖 Documentation](docs/README.md)
+- [💬 Discussions](https://github.com/Grazulex/laravel-arc/discussions)
+- [🐛 Issue Tracker](https://github.com/Grazulex/laravel-arc/issues)
+- [📦 Packagist](https://packagist.org/packages/grazulex/laravel-arc)
+
+### Community Links
+
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Our code of conduct
+- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
+- [SECURITY.md](SECURITY.md) - Security policy
+- [RELEASES.md](RELEASES.md) - Release notes and changelog
