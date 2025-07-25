@@ -5,6 +5,10 @@ on:
     - cron: "0 0 * * *" # Tous les jours à minuit UTC
   workflow_dispatch:     # Permet aussi de le lancer manuellement
 
+
+permissions:
+  contents: write
+
 jobs:
   update-stats:
     runs-on: ubuntu-latest
