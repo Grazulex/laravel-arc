@@ -53,7 +53,7 @@ totals = [history[date]["total"] for date in dates]
 
 plt.figure(figsize=(10, 5))
 plt.plot(dates, totals, marker="o", linestyle="-")
-plt.title(f"📦 Total Downloads: {VENDOR}/{PACKAGE}")
+plt.title(f"Total Downloads: {VENDOR}/{PACKAGE}")
 plt.xlabel("Date")
 plt.ylabel("Total Downloads")
 plt.xticks(rotation=45)
