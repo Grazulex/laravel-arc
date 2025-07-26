@@ -354,4 +354,3 @@ Laravel Arc is open-sourced software licensed under the [MIT license](LICENSE.md
 - [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
 - [SECURITY.md](SECURITY.md) - Security policy
 - [RELEASES.md](RELEASES.md) - Release notes and changelog
-
