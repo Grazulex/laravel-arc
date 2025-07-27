@@ -33,11 +33,11 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 **➡️ [Visit the Wiki for complete documentation, examples, and guides](https://github.com/Grazulex/laravel-arc/wiki)**
 
 The wiki contains:
-- **[Getting Started Guide](https://github.com/Grazulex/laravel-arc/wiki/Getting-Started)**
-- **[Field Types & Transformers](https://github.com/Grazulex/laravel-arc/wiki/Field-Types)**
-- **[Advanced Features](https://github.com/Grazulex/laravel-arc/wiki/Advanced-Features)**
-- **[API Reference](https://github.com/Grazulex/laravel-arc/wiki/API-Reference)**
-- **[Examples & Recipes](https://github.com/Grazulex/laravel-arc/wiki/Examples)**
+- **[Getting Started Guide](https://github.com/Grazulex/laravel-arc/wiki/GETTING_STARTED)**
+- **[Field Types & Transformers](https://github.com/Grazulex/laravel-arc/wiki/FIELD_TYPES)**
+- **[Advanced Features](https://github.com/Grazulex/laravel-arc/wiki/ADVANCED_USAGE)**
+- **[API Reference](https://github.com/Grazulex/laravel-arc/wiki/CLI_COMMANDS)**
+- **[Examples & Recipes](https://github.com/Grazulex/laravel-arc/wiki/examples/README)**
 
 ## 📦 Quick Installation
 
@@ -70,9 +70,9 @@ echo $userDto->toJson(); // JSON representation
 ## 📖 Learn More
 
 - **[📚 Complete Documentation](https://github.com/Grazulex/laravel-arc/wiki)** - Full guides and API reference
-- **[🚀 Getting Started](https://github.com/Grazulex/laravel-arc/wiki/Getting-Started)** - Installation and first steps
-- **[💡 Examples](https://github.com/Grazulex/laravel-arc/wiki/Examples)** - Real-world usage examples
-- **[🔧 Advanced Features](https://github.com/Grazulex/laravel-arc/wiki/Advanced-Features)** - Transformers, traits, and more
+- **[🚀 Getting Started](https://github.com/Grazulex/laravel-arc/wiki/GETTING_STARTED)** - Installation and first steps
+- **[💡 Examples](https://github.com/Grazulex/laravel-arc/wiki/examples/README)** - Real-world usage examples
+- **[🔧 Advanced Features](https://github.com/Grazulex/laravel-arc/wiki/ADVANCED_USAGE)** - Transformers, traits, and more
 
 ## 🔧 Requirements
 
