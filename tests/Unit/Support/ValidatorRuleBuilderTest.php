@@ -48,4 +48,56 @@ describe('ValidatorRuleBuilder', function () {
 
         expect($rules)->toBe(['string', 'required', 'max:255']);
     });
+
+    it('merges validation field rules from yaml definition', function () {
+        $definition = [
+            'validation' => ['email', 'unique:users'],
+        ];
+
+        $rules = ValidatorRuleBuilder::build(['string'], $definition);
+
+        expect($rules)->toBe(['string', 'required', 'email', 'unique:users']);
+    });
+
+    it('handles both validation and rules fields together', function () {
+        $definition = [
+            'validation' => ['email'],
+            'rules' => ['unique:users'],
+        ];
+
+        $rules = ValidatorRuleBuilder::build(['string'], $definition);
+
+        expect($rules)->toBe(['string', 'required', 'email', 'unique:users']);
+    });
+
+    it('handles nullable with validation rules', function () {
+        $definition = [
+            'required' => false,
+            'validation' => ['min:18', 'max:120'],
+        ];
+
+        $rules = ValidatorRuleBuilder::build(['integer'], $definition);
+
+        expect($rules)->toBe(['integer', 'nullable', 'min:18', 'max:120']);
+    });
+
+    it('does not duplicate rules from validation field', function () {
+        $definition = [
+            'validation' => ['required', 'email'],
+        ];
+
+        $rules = ValidatorRuleBuilder::build(['string', 'required'], $definition);
+
+        expect($rules)->toBe(['string', 'required', 'email']);
+    });
+
+    it('handles empty validation array', function () {
+        $definition = [
+            'validation' => [],
+        ];
+
+        $rules = ValidatorRuleBuilder::build(['string'], $definition);
+
+        expect($rules)->toBe(['string', 'required']);
+    });
 });

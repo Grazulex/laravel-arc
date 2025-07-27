@@ -28,3 +28,8 @@ package-lock.json
 /.phpunit.cache
 cache.sqlite
 /build
+/workbench/
+
+# Test files temporaires
+test-validation.yaml
+test-dto-generation.php
