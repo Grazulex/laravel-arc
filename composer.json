@@ -62,6 +62,7 @@
     "support": {
         "issues": "https://github.com/Grazulex/laravel-arc/issues",
         "source": "https://github.com/Grazulex/laravel-arc",
+        "docs": "https://github.com/Grazulex/laravel-arc/wiki",
         "wiki": "https://github.com/Grazulex/laravel-arc/wiki",
         "forum": "https://github.com/Grazulex/laravel-arc/discussions"
     },
