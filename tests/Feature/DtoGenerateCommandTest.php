@@ -30,10 +30,11 @@ it('can generate a DTO from the full-featured YAML fixture', function () {
     $dtoPath = $outputPath.'/ProductDTO.php';
     File::delete($dtoPath); // Nettoyage préalable
 
-    // 5. Exécution de la commande
+    // 5. Exécution de la commande avec l'option output
     $exitCode = Artisan::call('dto:generate', [
         'filename' => $yamlName,
         '--force' => true,
+        '--output' => $dtoPath,  // Explicitly specify the output path
     ]);
 
     // 6. Vérifications

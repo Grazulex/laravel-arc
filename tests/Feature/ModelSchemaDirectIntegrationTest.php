@@ -16,7 +16,7 @@ describe('ModelSchema Direct Integration', function () {
         // Convert to Arc format
         $yaml = [
             'header' => $processedData['header'],
-            'fields' => $processedData['processed_fields'],
+            'fields' => $processedData['fields'],  // Fixed: was 'processed_fields'
             'relations' => $processedData['relations'],
             'options' => $processedData['options'],
         ];
@@ -41,14 +41,15 @@ describe('ModelSchema Direct Integration', function () {
         $integrationService = new MinimalModelSchemaIntegrationService();
         $stats = $integrationService->getIntegrationStatistics();
 
-        expect($stats)->toHaveKey('total_modelschema_types');
-        expect($stats)->toHaveKey('geometric_types_count');
+        expect($stats)->toHaveKey('field_types_available');  // Use actual key name
+        expect($stats)->toHaveKey('geometric_types');       // Use actual key name
 
         // Verify ModelSchema integration is working with basic type mapping
-        expect($stats['total_modelschema_types'])->toBeGreaterThan(5);
+        expect($stats['field_types_available'])->toBeGreaterThan(5);
 
         // Verify geometric types are available
-        expect($stats['geometric_types_count'])->toBeGreaterThan(0);
+        expect($stats['geometric_types'])->toBeGreaterThan(0);  // Use actual key name
+        expect($stats['integration_status'])->toBe('minimal_integration');
     });
 
     it('demonstrates ModelSchema field processing power', function () {
@@ -58,7 +59,7 @@ describe('ModelSchema Direct Integration', function () {
         $processedData = $integrationService->processYamlFile($yamlFile);
 
         // Verify all advanced fields are processed
-        $fields = $processedData['processed_fields'];
+        $fields = $processedData['fields'];  // Fixed: was 'processed_fields'
 
         expect($fields)->toHaveKey('coordinates');
         expect($fields)->toHaveKey('boundary');

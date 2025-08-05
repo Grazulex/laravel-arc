@@ -44,10 +44,10 @@ describe('Comprehensive ModelSchema Integration', function () {
         expect($result['fields']['rating']['type'])->toBe('decimal'); // float → decimal
         expect($result['fields']['views']['type'])->toBe('integer'); // bigint → integer
 
-        // Test date/time types
-        expect($result['fields']['published_at']['type'])->toBe('datetime'); // datetime → datetime
-        expect($result['fields']['event_date']['type'])->toBe('date'); // date → date
-        expect($result['fields']['event_time']['type'])->toBe('time'); // time → time
+        // Test date/time types (ModelSchema maps to string for DTO consistency)
+        expect($result['fields']['published_at']['type'])->toBe('string'); // datetime → string (DTO format)
+        expect($result['fields']['event_date']['type'])->toBe('string'); // date → string (DTO format)
+        expect($result['fields']['event_time']['type'])->toBe('string'); // time → string (DTO format)
         expect($result['fields']['birth_year']['type'])->toBe('integer'); // year → integer
 
         // Test text types

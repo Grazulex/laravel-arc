@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Console\Commands;
 
 use Exception;
-use Grazulex\LaravelArc\Adapters\ModelSchemaAdapter;
 use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
 use Grazulex\LaravelArc\Support\DtoPathResolver;
@@ -71,27 +70,22 @@ final class DtoGenerateCommand extends Command
         try {
             $this->info("🛠 Generating DTO from: $filePath");
 
-            // Parse YAML with minimal ModelSchema integration service
+            // Parse YAML with advanced ModelSchema integration service
             try {
-                $integrationService = new \Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService();
+                $integrationService = new \Grazulex\LaravelArc\Services\AdvancedModelSchemaIntegrationService();
                 $processedData = $integrationService->processYamlFile($filePath);
 
-                // Convert to Arc format
-                $yaml = [
-                    'header' => $processedData['header'],
-                    'fields' => $processedData['processed_fields'],
-                    'relations' => $processedData['relations'],
-                    'options' => $processedData['options'],
-                ];
+                // Convert to Arc format (nouveau service retourne déjà le bon format)
+                $yaml = $processedData;
 
                 // Log ModelSchema statistics for debugging
                 if ($this->option('verbose')) {
                     $stats = $integrationService->getIntegrationStatistics();
-                    $this->info("🔧 ModelSchema: {$stats['total_modelschema_types']} field types available");
-                    if ($stats['geometric_types_count'] > 0) {
-                        $this->info("📍 Geometric types: {$stats['geometric_types_count']} available");
+                    $this->info("🔧 ModelSchema: {$stats['integration_type']} - {$stats['delegation_status']}");
+                    if (isset($stats['sample_fields_processed'])) {
+                        $this->info("📍 Fields processed: {$stats['sample_fields_processed']}");
                     }
-                    $this->info("⚡ Status: {$stats['status']}");
+                    $this->info("⚡ Status: {$stats['arc_role']}");
                 }
             } catch (YamlParseException $e) {
                 $originalMessage = $e->getMessage();

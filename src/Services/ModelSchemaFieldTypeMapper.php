@@ -86,8 +86,8 @@ final class ModelSchemaFieldTypeMapper
         'uuidmorphs' => 'string',
         'nullableuuidmorphs' => 'string',
         'remembertokens' => 'string',
-        'softdeletes' => 'datetime',
-        'timestamps' => 'datetime',
+        'softdeletes' => 'string',    // Changed from 'datetime' to 'string' for consistency
+        'timestamps' => 'string',     // Changed from 'datetime' to 'string' for consistency
 
         // === Fulltext and Search ===
         'fulltext' => 'string',

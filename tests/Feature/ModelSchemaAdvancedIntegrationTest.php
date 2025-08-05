@@ -56,7 +56,7 @@ describe('ModelSchema Advanced Features Integration', function () {
         // Convert to Arc format
         $yaml = [
             'header' => $processedData['header'],
-            'fields' => $processedData['processed_fields'],
+            'fields' => $processedData['fields'],  // ✅ Corrigé : 'fields' au lieu de 'processed_fields'
             'relations' => $processedData['relations'],
             'options' => $processedData['options'],
         ];

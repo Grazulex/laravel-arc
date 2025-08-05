@@ -9,8 +9,11 @@ it('can use ModelSchema as the real boss for DTO generation', function () {
     // 🎯 Test : ModelSchema fait TOUT, Arc obéit
 
     $yamlContent = <<<'YAML'
-model: Restaurant
-table: restaurants
+header:
+  dto: RestaurantDTO
+  table: restaurants
+  model: Restaurant
+
 fields:
   id:
     type: integer

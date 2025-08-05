@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Services;
 
 use Grazulex\LaravelModelschema\Schema\ModelSchema;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Advanced ModelSchema integration service that delegates EVERYTHING to ModelSchema.
@@ -18,11 +19,21 @@ final class AdvancedModelSchemaIntegrationService
      */
     public function processYamlFile(string $filePath): array
     {
+        // 🔍 First validate that this is an Arc-compatible YAML (needs 'dto' header)
+        $this->validateArcRequirements($filePath);
+
         // 🎯 ModelSchema fait TOUT le travail - parsing direct sans cache
         $modelSchema = ModelSchema::fromYamlFile($filePath);
 
+        // Parse le YAML pour récupérer le header dto spécifique à Arc
+        $yamlData = Yaml::parseFile($filePath);
+        $dtoClassName = $yamlData['header']['dto'] ?? $modelSchema->name.'DTO';
+
+        // Get namespace from YAML or use Arc default
+        $namespace = $yamlData['options']['namespace'] ?? null;
+
         // 🚀 Extractons les données ready-to-use pour Arc
-        return $this->extractArcCompatibleData($modelSchema);
+        return $this->extractArcCompatibleData($modelSchema, $dtoClassName, $namespace);
     }
 
     /**
@@ -84,10 +95,39 @@ final class AdvancedModelSchemaIntegrationService
     }
 
     /**
+     * Validate that YAML file has Arc-specific requirements.
+     * Arc needs a 'dto' header section to know how to generate the DTO.
+     */
+    private function validateArcRequirements(string $filePath): void
+    {
+        if (! file_exists($filePath)) {
+            throw new \Grazulex\LaravelArc\Exceptions\DtoGenerationException(
+                "YAML file not found: {$filePath}"
+            );
+        }
+
+        $yamlData = Yaml::parseFile($filePath);
+
+        if ($yamlData === false || ! is_array($yamlData)) {
+            throw new \Grazulex\LaravelArc\Exceptions\DtoGenerationException(
+                "Invalid YAML format in file: {$filePath}"
+            );
+        }
+
+        // Check for required 'dto' header
+        if (! isset($yamlData['header']['dto'])) {
+            throw new \Grazulex\LaravelArc\Exceptions\DtoGenerationException(
+                "Missing required header section 'dto' in YAML file: {$filePath}.\n".
+                "Arc requires a 'dto' section in the header to configure DTO generation."
+            );
+        }
+    }
+
+    /**
      * Extract Arc-compatible data from ModelSchema.
      * ModelSchema tells Arc exactly what to generate!
      */
-    private function extractArcCompatibleData(ModelSchema $modelSchema): array
+    private function extractArcCompatibleData(ModelSchema $modelSchema, string $dtoClassName, ?string $namespace = null): array
     {
         $arcFields = [];
 
@@ -120,8 +160,8 @@ final class AdvancedModelSchemaIntegrationService
 
         return [
             'header' => [
-                'class' => $modelSchema->name.'DTO',  // Arc attend 'class', pas 'class_name'
-                'namespace' => 'App\\DTOs',
+                'class' => $dtoClassName,  // Use provided DTO class name
+                'namespace' => $namespace !== null && $namespace !== '' && $namespace !== '0' ? $namespace : 'App\\DTOs',  // Use provided namespace or default
                 'table' => $modelSchema->table,
             ],
             'fields' => $arcFields,
