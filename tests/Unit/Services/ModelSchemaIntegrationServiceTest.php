@@ -12,10 +12,10 @@ describe('ModelSchemaIntegrationService Simple Test', function () {
 
     it('can process a simple YAML structure', function () {
         // Create a temporary YAML file for testing
-        $yamlContent = <<<YAML
+        $yamlContent = <<<'YAML'
 header:
   dto: TestDTO
-  model: App\\Models\\Test
+  model: App\Models\Test
 
 fields:
   name:
@@ -30,11 +30,11 @@ YAML;
         try {
             $service = new ModelSchemaIntegrationService();
             $result = $service->processYamlFile($tempFile);
-            
+
             expect($result)->toBeArray();
             expect($result)->toHaveKey('header');
             expect($result)->toHaveKey('processed_fields');
-            
+
         } finally {
             unlink($tempFile);
         }

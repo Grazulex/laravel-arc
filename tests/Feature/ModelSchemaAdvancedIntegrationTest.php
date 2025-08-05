@@ -14,7 +14,7 @@ describe('ModelSchema Advanced Features Integration', function () {
     });
 
     it('can parse and enhance YAML with advanced ModelSchema field types', function () {
-        $yamlFile = __DIR__ . '/DtoGenerator/fixtures/advanced-modelschema.yaml';
+        $yamlFile = __DIR__.'/DtoGenerator/fixtures/advanced-modelschema.yaml';
         $yaml = $this->adapter->parseYamlFile($yamlFile);
 
         // Verify basic structure
@@ -47,12 +47,12 @@ describe('ModelSchema Advanced Features Integration', function () {
     });
 
     it('can generate DTO code with advanced field types', function () {
-        $yamlFile = __DIR__ . '/DtoGenerator/fixtures/advanced-modelschema.yaml';
-        
+        $yamlFile = __DIR__.'/DtoGenerator/fixtures/advanced-modelschema.yaml';
+
         // Use the minimal integration service to avoid recursion
-        $integrationService = new \Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService();
+        $integrationService = new Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService();
         $processedData = $integrationService->processYamlFile($yamlFile);
-        
+
         // Convert to Arc format
         $yaml = [
             'header' => $processedData['header'],
@@ -85,7 +85,7 @@ describe('ModelSchema Advanced Features Integration', function () {
 
         // Verify ModelSchema has many more types than basic Laravel
         expect($stats['total_field_types'])->toBeGreaterThan(60);
-        
+
         // Verify geometric types are available
         expect($stats['geometric_types'])->toContain('point');
         expect($stats['geometric_types'])->toContain('geometry');
@@ -95,7 +95,7 @@ describe('ModelSchema Advanced Features Integration', function () {
     it('demonstrates the power of ModelSchema field type registry', function () {
         // Show that ModelSchema supports 65+ field types vs basic Laravel's ~20
         $allTypes = $this->adapter->getAvailableFieldTypes();
-        
+
         // Basic types
         $basicTypes = ['string', 'integer', 'boolean', 'decimal', 'text'];
         foreach ($basicTypes as $type) {
@@ -107,7 +107,7 @@ describe('ModelSchema Advanced Features Integration', function () {
             'uuid', 'email', 'json', 'set', 'enum',
             'point', 'geometry', 'polygon',
             'bigInteger', 'tinyInteger', 'mediumInteger',
-            'longText', 'mediumText', 'timestamp'
+            'longText', 'mediumText', 'timestamp',
         ];
         foreach ($advancedTypes as $type) {
             expect($allTypes)->toContain($type);

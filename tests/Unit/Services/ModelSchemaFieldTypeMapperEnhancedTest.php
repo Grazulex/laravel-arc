@@ -14,8 +14,8 @@ describe('ModelSchemaFieldTypeMapper Enhanced', function () {
     describe('Geometric Types Mapping', function () {
         it('maps geometric types to string', function () {
             $geometricTypes = [
-                'point', 'geometry', 'polygon', 'linestring', 
-                'multipoint', 'multipolygon', 'multilinestring', 'geometrycollection'
+                'point', 'geometry', 'polygon', 'linestring',
+                'multipoint', 'multipolygon', 'multilinestring', 'geometrycollection',
             ];
 
             foreach ($geometricTypes as $type) {
@@ -28,8 +28,8 @@ describe('ModelSchemaFieldTypeMapper Enhanced', function () {
     describe('Enhanced String Types Mapping', function () {
         it('maps enhanced string types to string', function () {
             $stringTypes = [
-                'email', 'uuid', 'url', 'slug', 'phone', 'color', 
-                'ip', 'ipv4', 'ipv6', 'mac', 'currency', 'locale', 'timezone'
+                'email', 'uuid', 'url', 'slug', 'phone', 'color',
+                'ip', 'ipv4', 'ipv6', 'mac', 'currency', 'locale', 'timezone',
             ];
 
             foreach ($stringTypes as $type) {
@@ -117,8 +117,8 @@ describe('ModelSchemaFieldTypeMapper Enhanced', function () {
     describe('Special Types Mapping', function () {
         it('maps special types correctly', function () {
             $stringSpecialTypes = [
-                'enum', 'morphs', 'nullablemorphs', 'uuidmorphs', 
-                'nullableuuidmorphs', 'remembertokens', 'fulltext', 'spatialindex'
+                'enum', 'morphs', 'nullablemorphs', 'uuidmorphs',
+                'nullableuuidmorphs', 'remembertokens', 'fulltext', 'spatialindex',
             ];
 
             foreach ($stringSpecialTypes as $type) {
@@ -130,23 +130,23 @@ describe('ModelSchemaFieldTypeMapper Enhanced', function () {
     describe('Type Coverage', function () {
         it('provides comprehensive type mapping coverage', function () {
             $mappings = $this->mapper->getAllMappings();
-            
+
             // Test that we have significant coverage (65+ types)
             expect(count($mappings))->toBeGreaterThan(60);
-            
+
             // Test key categories are covered
             $types = array_keys($mappings);
-            
+
             // Geometric types
             expect($types)->toContain('point');
             expect($types)->toContain('polygon');
             expect($types)->toContain('geometry');
-            
+
             // Enhanced string types
             expect($types)->toContain('email');
             expect($types)->toContain('uuid');
             expect($types)->toContain('url');
-            
+
             // JSON types
             expect($types)->toContain('json');
             expect($types)->toContain('jsonb');

@@ -26,12 +26,9 @@ final class DtoGenerateCommand extends Command
 
     protected $description = 'Generate a full DTO PHP class from a YAML definition.';
 
-    protected ModelSchemaAdapter $modelSchemaAdapter;
-
     public function __construct()
     {
         parent::__construct();
-        $this->modelSchemaAdapter = new ModelSchemaAdapter();
     }
 
     public function handle(): int
@@ -78,7 +75,7 @@ final class DtoGenerateCommand extends Command
             try {
                 $integrationService = new \Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService();
                 $processedData = $integrationService->processYamlFile($filePath);
-                
+
                 // Convert to Arc format
                 $yaml = [
                     'header' => $processedData['header'],
@@ -86,7 +83,7 @@ final class DtoGenerateCommand extends Command
                     'relations' => $processedData['relations'],
                     'options' => $processedData['options'],
                 ];
-                
+
                 // Log ModelSchema statistics for debugging
                 if ($this->option('verbose')) {
                     $stats = $integrationService->getIntegrationStatistics();
@@ -136,13 +133,13 @@ final class DtoGenerateCommand extends Command
             }
 
             // Validate required header information
-            $dtoName = $yaml['header']['dto'] ?? $yaml['class_name'] ?? null;
+            $dtoName = $yaml['header']['dto'] ?? $yaml['header']['class'] ?? null;
             if (! $dtoName) {
-                throw DtoGenerationException::missingHeader($filePath, 'dto or class_name');
+                throw DtoGenerationException::missingHeader($filePath, 'dto or class');
             }
 
             // Support both old and new namespace formats during transition
-            $namespace = $yaml['namespace'] ?? $yaml['header']['namespace'] ?? $yaml['options']['namespace'] ?? 'App\\DTO';
+            $namespace = $yaml['header']['namespace'] ?? $yaml['options']['namespace'] ?? 'App\\DTO';
 
             // Validate namespace format
             if (! DtoPathResolver::isValidNamespace($namespace)) {

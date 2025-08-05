@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-use Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService;
 
 describe('ModelSchema Direct Integration', function () {
     it('can generate DTO code with advanced field types using direct integration service', function () {
-        $yamlFile = __DIR__ . '/DtoGenerator/fixtures/advanced-modelschema.yaml';
-        
+        $yamlFile = __DIR__.'/DtoGenerator/fixtures/advanced-modelschema.yaml';
+
         // Use the integration service directly to avoid adapter recursion
         $integrationService = new MinimalModelSchemaIntegrationService();
         $processedData = $integrationService->processYamlFile($yamlFile);
-        
+
         // Convert to Arc format
         $yaml = [
             'header' => $processedData['header'],
@@ -46,32 +46,32 @@ describe('ModelSchema Direct Integration', function () {
 
         // Verify ModelSchema integration is working with basic type mapping
         expect($stats['total_modelschema_types'])->toBeGreaterThan(5);
-        
+
         // Verify geometric types are available
         expect($stats['geometric_types_count'])->toBeGreaterThan(0);
     });
 
     it('demonstrates ModelSchema field processing power', function () {
-        $yamlFile = __DIR__ . '/DtoGenerator/fixtures/advanced-modelschema.yaml';
-        
+        $yamlFile = __DIR__.'/DtoGenerator/fixtures/advanced-modelschema.yaml';
+
         $integrationService = new MinimalModelSchemaIntegrationService();
         $processedData = $integrationService->processYamlFile($yamlFile);
-        
+
         // Verify all advanced fields are processed
         $fields = $processedData['processed_fields'];
-        
+
         expect($fields)->toHaveKey('coordinates');
         expect($fields)->toHaveKey('boundary');
         expect($fields)->toHaveKey('email');
         expect($fields)->toHaveKey('metadata');
         expect($fields)->toHaveKey('tags');
-        
+
         // Verify type mapping worked
         expect($fields['coordinates']['type'])->toBe('string'); // point → string
         expect($fields['boundary']['type'])->toBe('string');    // polygon → string
         expect($fields['metadata']['type'])->toBe('array');     // json → array
         expect($fields['tags']['type'])->toBe('array');         // set → array
-        
+
         // Verify ModelSchema metadata is preserved
         expect($fields['coordinates'])->toHaveKey('_modelschema');
         expect($fields['boundary'])->toHaveKey('_modelschema');

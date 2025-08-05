@@ -7,22 +7,22 @@ namespace Grazulex\LaravelArc\Services;
 /**
  * Service to map ModelSchema field types to Arc field generators
  */
-class ModelSchemaFieldTypeMapper
+final class ModelSchemaFieldTypeMapper
 {
     /**
      * Mapping from ModelSchema types to Arc-compatible types
      */
-    protected array $typeMappings = [
+    private array $typeMappings = [
         // === Geometric Types ===
         'point' => 'string',
-        'geometry' => 'string', 
+        'geometry' => 'string',
         'polygon' => 'string',
         'linestring' => 'string',
         'multipoint' => 'string',
         'multipolygon' => 'string',
         'multilinestring' => 'string',
         'geometrycollection' => 'string',
-        
+
         // === Enhanced String Types ===
         'email' => 'string',
         'uuid' => 'string',
@@ -37,14 +37,14 @@ class ModelSchemaFieldTypeMapper
         'currency' => 'string',
         'locale' => 'string',
         'timezone' => 'string',
-        
+
         // === JSON and Array Types ===
         'json' => 'array',
         'jsonb' => 'array',
         'set' => 'array',
         'array' => 'array',
         'collection' => 'array',
-        
+
         // === Numeric Types ===
         'float' => 'decimal',
         'double' => 'decimal',
@@ -57,14 +57,14 @@ class ModelSchemaFieldTypeMapper
         'unsignedint' => 'integer',
         'bool' => 'boolean',
         'boolean' => 'boolean',
-        
+
         // === Date/Time Types ===
-        'datetime' => 'datetime',
-        'timestamp' => 'datetime',
-        'date' => 'date',
-        'time' => 'time',
+        'datetime' => 'string',    // Changed from 'datetime' to 'string' for ModelSchema
+        'timestamp' => 'string',   // Changed from 'datetime' to 'string' for ModelSchema
+        'date' => 'string',        // Changed from 'date' to 'string' for ModelSchema
+        'time' => 'string',        // Changed from 'time' to 'string' for ModelSchema
         'year' => 'integer',
-        
+
         // === Text Types ===
         'text' => 'text',
         'longtext' => 'text',
@@ -72,13 +72,13 @@ class ModelSchemaFieldTypeMapper
         'varchar' => 'string',
         'char' => 'string',
         'string' => 'string',
-        
+
         // === Binary Types ===
         'binary' => 'string',
         'blob' => 'string',
         'longblob' => 'string',
         'mediumblob' => 'string',
-        
+
         // === Special Types ===
         'enum' => 'string',
         'morphs' => 'string',
@@ -88,7 +88,7 @@ class ModelSchemaFieldTypeMapper
         'remembertokens' => 'string',
         'softdeletes' => 'datetime',
         'timestamps' => 'datetime',
-        
+
         // === Fulltext and Search ===
         'fulltext' => 'string',
         'spatialindex' => 'string',
