@@ -29,8 +29,8 @@ final class AdvancedModelSchemaIntegrationService
         $yamlData = Yaml::parseFile($filePath);
         $dtoClassName = $yamlData['header']['dto'] ?? $modelSchema->name.'DTO';
 
-        // Get namespace from YAML or use Arc default
-        $namespace = $yamlData['options']['namespace'] ?? null;
+        // Get namespace from YAML header or options, or use Arc default
+        $namespace = $yamlData['header']['namespace'] ?? $yamlData['options']['namespace'] ?? null;
 
         // 🚀 Extractons les données ready-to-use pour Arc
         return $this->extractArcCompatibleData($modelSchema, $dtoClassName, $namespace, $yamlData);
