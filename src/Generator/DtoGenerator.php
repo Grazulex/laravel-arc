@@ -6,16 +6,21 @@ namespace Grazulex\LaravelArc\Generator;
 
 use Exception;
 use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
+use Grazulex\LaravelArc\Services\AdvancedModelSchemaIntegrationService;
 use Grazulex\LaravelArc\Support\Traits\Behavioral\BehavioralTraitRegistry;
 
 final class DtoGenerator
 {
+    private AdvancedModelSchemaIntegrationService $modelSchemaService;
+
     public function __construct(
         private HeaderGeneratorRegistry $headers,
         private FieldGeneratorRegistry $fields,
         private RelationGeneratorRegistry $relations,
         private ValidatorGeneratorRegistry $validators,
-    ) {}
+    ) {
+        $this->modelSchemaService = new AdvancedModelSchemaIntegrationService();
+    }
 
     public static function make(): self
     {
@@ -34,9 +39,18 @@ final class DtoGenerator
         try {
             $context = new DtoGenerationContext();
 
-            $header = $yaml['header'] ?? [];
-            $fieldDefinitions = $yaml['fields'] ?? [];
-            $relationDefinitions = $yaml['relations'] ?? [];
+            // 🎯 Si on a un fichier YAML, laissons ModelSchema faire TOUT le travail
+            if ($yamlFile && file_exists($yamlFile)) {
+                $processedData = $this->modelSchemaService->processYamlFile($yamlFile);
+                $header = $processedData['header'];
+                $fieldDefinitions = $processedData['fields'];
+                $relationDefinitions = $processedData['relations'] ?? [];
+            } else {
+                // Fallback pour données YAML déjà parsées (rétrocompatibilité)
+                $header = $yaml['header'] ?? [];
+                $fieldDefinitions = $yaml['fields'] ?? [];
+                $relationDefinitions = $yaml['relations'] ?? [];
+            }
 
             // Extract traits from top level or header
             $traits = $yaml['traits'] ?? $header['traits'] ?? [];

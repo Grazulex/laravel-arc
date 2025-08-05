@@ -1,0 +1,164 @@
+header:
+  dto: RealEstatePropertyDto
+  namespace: App\DTOs\RealEstate
+
+fields:
+  # === Geographic Data ===
+  location:
+    type: point
+    required: true
+    # Will generate: public readonly string $location (WKT format)
+  
+  property_boundary:
+    type: polygon
+    required: true
+    # Will generate: public readonly string $property_boundary (WKT format)
+  
+  nearby_routes:
+    type: linestring
+    required: false
+    # Will generate: public readonly ?string $nearby_routes (WKT format)
+  
+  # === Property Information ===
+  title:
+    type: string
+    required: true
+    
+  slug:
+    type: slug
+    required: true
+    # Will generate: public readonly string $slug (URL-friendly slug)
+  
+  description:
+    type: longtext
+    required: false
+    # Will generate: public readonly ?string $description
+  
+  # === Pricing ===
+  price:
+    type: money
+    required: true
+    # Will generate: public readonly string $price (decimal for financial precision)
+    
+  price_per_sqm:
+    type: decimal
+    required: false
+    # Will generate: public readonly ?string $price_per_sqm
+  
+  # === Structured Data ===
+  amenities:
+    type: set
+    required: false
+    # Will generate: public readonly ?array $amenities (unique values)
+  
+  property_features:
+    type: json
+    required: false
+    # Will generate: public readonly ?array $property_features
+  
+  additional_metadata:
+    type: jsonb
+    required: false
+    # Will generate: public readonly ?array $additional_metadata (PostgreSQL JSONB)
+  
+  # === Contact Information ===
+  agent_email:
+    type: email
+    required: true
+    # Will generate: public readonly string $agent_email (with email validation)
+  
+  agent_phone:
+    type: phone
+    required: false
+    # Will generate: public readonly ?string $agent_phone (with phone validation)
+  
+  website:
+    type: url
+    required: false
+    # Will generate: public readonly ?string $website (with URL validation)
+  
+  # === Technical Details ===
+  property_id:
+    type: uuid
+    required: true
+    # Will generate: public readonly string $property_id (UUID format)
+  
+  square_meters:
+    type: integer
+    required: true
+    # Will generate: public readonly int $square_meters
+  
+  year_built:
+    type: year
+    required: false
+    # Will generate: public readonly ?int $year_built
+  
+  is_furnished:
+    type: boolean
+    required: false
+    # Will generate: public readonly ?bool $is_furnished
+  
+  # === Dates ===
+  available_from:
+    type: date
+    required: false
+    # Will generate: public readonly ?string $available_from
+  
+  listing_created_at:
+    type: datetime
+    required: true
+    # Will generate: public readonly string $listing_created_at
+  
+  # === Specialized Fields ===
+  energy_rating:
+    type: enum
+    values: ['A', 'B', 'C', 'D', 'E', 'F', 'G']
+    required: false
+    # Will generate: public readonly ?string $energy_rating
+  
+  property_type:
+    type: enum  
+    values: ['apartment', 'house', 'villa', 'studio', 'loft']
+    required: true
+    # Will generate: public readonly string $property_type
+  
+  # === Binary/Media ===
+  floor_plan:
+    type: binary
+    required: false
+    # Will generate: public readonly ?string $floor_plan (base64 or file path)
+  
+  # === Address Components ===
+  postal_code:
+    type: string
+    required: true
+    
+  city:
+    type: string
+    required: true
+    
+  country_code:
+    type: char
+    required: true
+    # Will generate: public readonly string $country_code (2-char country code)
+  
+  # === Advanced Features ===
+  virtual_tour_url:
+    type: url
+    required: false
+    # Will generate: public readonly ?string $virtual_tour_url
+  
+  color_scheme:
+    type: color
+    required: false
+    # Will generate: public readonly ?string $color_scheme (hex color)
+  
+  timezone:
+    type: timezone
+    required: false
+    # Will generate: public readonly ?string $timezone (timezone identifier)
+  
+  currency:
+    type: currency
+    required: true
+    # Will generate: public readonly string $currency (ISO currency code)

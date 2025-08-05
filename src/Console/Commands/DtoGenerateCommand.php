@@ -25,6 +25,11 @@ final class DtoGenerateCommand extends Command
 
     protected $description = 'Generate a full DTO PHP class from a YAML definition.';
 
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
     public function handle(): int
     {
         $basePath = DtoPaths::definitionDir();
@@ -65,9 +70,23 @@ final class DtoGenerateCommand extends Command
         try {
             $this->info("🛠 Generating DTO from: $filePath");
 
-            // Parse YAML with error handling
+            // Parse YAML with advanced ModelSchema integration service
             try {
-                $yaml = Yaml::parseFile($filePath);
+                $integrationService = new \Grazulex\LaravelArc\Services\AdvancedModelSchemaIntegrationService();
+                $processedData = $integrationService->processYamlFile($filePath);
+
+                // Convert to Arc format (nouveau service retourne déjà le bon format)
+                $yaml = $processedData;
+
+                // Log ModelSchema statistics for debugging
+                if ($this->option('verbose')) {
+                    $stats = $integrationService->getIntegrationStatistics();
+                    $this->info("🔧 ModelSchema: {$stats['integration_type']} - {$stats['delegation_status']}");
+                    if (isset($stats['sample_fields_processed'])) {
+                        $this->info("📍 Fields processed: {$stats['sample_fields_processed']}");
+                    }
+                    $this->info("⚡ Status: {$stats['arc_role']}");
+                }
             } catch (YamlParseException $e) {
                 $originalMessage = $e->getMessage();
                 $fileName = basename($filePath);
@@ -97,16 +116,24 @@ final class DtoGenerateCommand extends Command
                     "Invalid YAML syntax in '{$fileName}': {$originalMessage}",
                     $e
                 );
+            } catch (Exception $e) {
+                // Generic error from ModelSchema adapter
+                $fileName = basename($filePath);
+                throw DtoGenerationException::yamlParsingError(
+                    $filePath,
+                    "Failed to parse '{$fileName}' with ModelSchema: {$e->getMessage()}",
+                    $e
+                );
             }
 
             // Validate required header information
-            $dtoName = $yaml['header']['dto'] ?? $yaml['class_name'] ?? null;
+            $dtoName = $yaml['header']['dto'] ?? $yaml['header']['class'] ?? null;
             if (! $dtoName) {
-                throw DtoGenerationException::missingHeader($filePath, 'dto or class_name');
+                throw DtoGenerationException::missingHeader($filePath, 'dto or class');
             }
 
             // Support both old and new namespace formats during transition
-            $namespace = $yaml['namespace'] ?? $yaml['header']['namespace'] ?? $yaml['options']['namespace'] ?? 'App\\DTO';
+            $namespace = $yaml['header']['namespace'] ?? $yaml['options']['namespace'] ?? 'App\\DTO';
 
             // Validate namespace format
             if (! DtoPathResolver::isValidNamespace($namespace)) {

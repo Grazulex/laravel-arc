@@ -1,0 +1,9 @@
+header:
+  dto: TestDTO
+  table: users  
+  model: App\Models\User
+
+fields:
+  name:
+    type: string
+    required: true
