@@ -33,7 +33,7 @@ final class AdvancedModelSchemaIntegrationService
         $namespace = $yamlData['options']['namespace'] ?? null;
 
         // 🚀 Extractons les données ready-to-use pour Arc
-        return $this->extractArcCompatibleData($modelSchema, $dtoClassName, $namespace);
+        return $this->extractArcCompatibleData($modelSchema, $dtoClassName, $namespace, $yamlData);
     }
 
     /**
@@ -127,7 +127,7 @@ final class AdvancedModelSchemaIntegrationService
      * Extract Arc-compatible data from ModelSchema.
      * ModelSchema tells Arc exactly what to generate!
      */
-    private function extractArcCompatibleData(ModelSchema $modelSchema, string $dtoClassName, ?string $namespace = null): array
+    private function extractArcCompatibleData(ModelSchema $modelSchema, string $dtoClassName, ?string $namespace = null, array $yamlData = []): array
     {
         $arcFields = [];
 
@@ -160,9 +160,12 @@ final class AdvancedModelSchemaIntegrationService
 
         return [
             'header' => [
-                'class' => $dtoClassName,  // Use provided DTO class name
+                'dto' => $dtoClassName,  // Use provided DTO class name  
+                'class' => $dtoClassName,  // Compatibility alias
                 'namespace' => $namespace !== null && $namespace !== '' && $namespace !== '0' ? $namespace : 'App\\DTOs',  // Use provided namespace or default
                 'table' => $modelSchema->table,
+                'model' => $yamlData['header']['model'] ?? null,  // ✅ PASS THE MODEL FROM YAML!
+                'model_fqcn' => $yamlData['header']['model'] ?? null,  // ✅ COMPATIBILITY ALIAS
             ],
             'fields' => $arcFields,
             'relations' => [], // TODO: Relations depuis ModelSchema
