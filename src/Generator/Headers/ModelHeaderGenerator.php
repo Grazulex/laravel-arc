@@ -24,7 +24,7 @@ final class ModelHeaderGenerator implements HeaderGenerator
         }
 
         // Debug: Log the model being processed
-        error_log("ModelHeaderGenerator processing model: " . $model);
+        // error_log("ModelHeaderGenerator processing model: " . $model);
 
         // Ensure proper namespace formatting
         $model = str_replace('/', '\\', $model); // Convert any forward slashes
