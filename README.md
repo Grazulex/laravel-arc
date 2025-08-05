@@ -103,6 +103,21 @@ echo $userDto->name; // 'John Doe'
 echo $userDto->toJson(); // JSON representation
 ```
 
+## ⚠️ Important Notes
+
+### YAML Validation Rules with Commas
+When using validation rules that contain commas (like `exists:table,column`), wrap them in quotes:
+
+```yaml
+# ❌ Wrong - gets split into separate rules
+rules: [required, exists:users,id]
+
+# ✅ Correct - stays as one rule  
+rules: [required, "exists:users,id"]
+```
+
+This applies to rules like: `"exists:table,column"`, `"unique:table,column"`, `"in:value1,value2,value3"`, etc.
+
 ## 📖 Learn More
 
 - **[📚 Complete Documentation](https://github.com/Grazulex/laravel-arc/wiki)** - Full guides and API reference

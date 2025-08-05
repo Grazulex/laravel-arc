@@ -133,15 +133,6 @@ final class AdvancedModelSchemaIntegrationService
 
         // 🎯 ModelSchema nous donne TOUS les champs processés
         foreach ($modelSchema->getAllFields() as $field) {
-            $validationRules = $field->getValidationRules();
-            
-            // 🐛 DEBUG: Log validation rules for user_id field
-            if ($field->name === 'user_id') {
-                error_log("🐛 DEBUG user_id field validation rules:");
-                error_log("   Raw rules from ModelSchema: " . json_encode($validationRules));
-                error_log("   Field attributes: " . json_encode($field->attributes ?? []));
-            }
-            
             $arcFields[$field->name] = [
                 // ✅ ModelSchema nous dit le type PHP à utiliser
                 'type' => $this->getArcTypeFromField($field),
@@ -150,7 +141,7 @@ final class AdvancedModelSchemaIntegrationService
                 'nullable' => $field->nullable,
 
                 // ✅ ModelSchema nous donne les validation rules
-                'validation' => $validationRules,
+                'validation' => $field->getValidationRules(),
 
                 // ✅ ModelSchema nous donne le cast type Laravel
                 'cast_type' => $field->getCastType(),
