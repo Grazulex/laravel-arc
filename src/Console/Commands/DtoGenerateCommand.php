@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Grazulex\LaravelArc\Console\Commands;
 
 use Exception;
+use Grazulex\LaravelArc\Adapters\ModelSchemaAdapter;
 use Grazulex\LaravelArc\Exceptions\DtoGenerationException;
 use Grazulex\LaravelArc\Generator\DtoGenerator;
 use Grazulex\LaravelArc\Support\DtoPathResolver;
@@ -24,6 +25,14 @@ final class DtoGenerateCommand extends Command
         {--all : Generate all YAML files in the base path}';
 
     protected $description = 'Generate a full DTO PHP class from a YAML definition.';
+
+    protected ModelSchemaAdapter $modelSchemaAdapter;
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->modelSchemaAdapter = new ModelSchemaAdapter();
+    }
 
     public function handle(): int
     {
@@ -65,9 +74,28 @@ final class DtoGenerateCommand extends Command
         try {
             $this->info("🛠 Generating DTO from: $filePath");
 
-            // Parse YAML with error handling
+            // Parse YAML with minimal ModelSchema integration service
             try {
-                $yaml = Yaml::parseFile($filePath);
+                $integrationService = new \Grazulex\LaravelArc\Services\MinimalModelSchemaIntegrationService();
+                $processedData = $integrationService->processYamlFile($filePath);
+                
+                // Convert to Arc format
+                $yaml = [
+                    'header' => $processedData['header'],
+                    'fields' => $processedData['processed_fields'],
+                    'relations' => $processedData['relations'],
+                    'options' => $processedData['options'],
+                ];
+                
+                // Log ModelSchema statistics for debugging
+                if ($this->option('verbose')) {
+                    $stats = $integrationService->getIntegrationStatistics();
+                    $this->info("🔧 ModelSchema: {$stats['total_modelschema_types']} field types available");
+                    if ($stats['geometric_types_count'] > 0) {
+                        $this->info("📍 Geometric types: {$stats['geometric_types_count']} available");
+                    }
+                    $this->info("⚡ Status: {$stats['status']}");
+                }
             } catch (YamlParseException $e) {
                 $originalMessage = $e->getMessage();
                 $fileName = basename($filePath);
@@ -95,6 +123,14 @@ final class DtoGenerateCommand extends Command
                 throw DtoGenerationException::yamlParsingError(
                     $filePath,
                     "Invalid YAML syntax in '{$fileName}': {$originalMessage}",
+                    $e
+                );
+            } catch (Exception $e) {
+                // Generic error from ModelSchema adapter
+                $fileName = basename($filePath);
+                throw DtoGenerationException::yamlParsingError(
+                    $filePath,
+                    "Failed to parse '{$fileName}' with ModelSchema: {$e->getMessage()}",
                     $e
                 );
             }

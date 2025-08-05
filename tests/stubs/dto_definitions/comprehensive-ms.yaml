@@ -1,0 +1,138 @@
+header:
+  dto: AdvancedModelSchemaDto
+  namespace: App\DTOs
+
+fields:
+  # === Geometric Fields ===
+  location:
+    type: point
+    required: true
+  
+  area:
+    type: polygon
+    required: false
+    
+  route:
+    type: linestring
+    required: false
+    
+  # === Enhanced String Fields ===
+  email:
+    type: email
+    required: true
+    
+  website:
+    type: url
+    required: false
+    
+  slug:
+    type: slug
+    required: true
+    
+  phone:
+    type: phone
+    required: false
+    
+  color:
+    type: color
+    required: false
+    
+  ip_address:
+    type: ip
+    required: false
+    
+  mac_address:
+    type: mac
+    required: false
+    
+  # === JSON Fields ===
+  metadata:
+    type: json
+    required: false
+    
+  settings:
+    type: jsonb
+    required: false
+    
+  tags:
+    type: set
+    required: false
+    
+  features:
+    type: array
+    required: false
+    
+  # === Numeric Fields ===
+  price:
+    type: money
+    required: true
+    
+  weight:
+    type: decimal
+    required: false
+    
+  rating:
+    type: float
+    required: false
+    
+  views:
+    type: bigint
+    required: false
+    
+  # === Date/Time Fields ===
+  published_at:
+    type: datetime
+    required: false
+    
+  event_date:
+    type: date
+    required: false
+    
+  event_time:
+    type: time
+    required: false
+    
+  birth_year:
+    type: year
+    required: false
+    
+  # === Text Fields ===
+  description:
+    type: text
+    required: false
+    
+  content:
+    type: longtext
+    required: false
+    
+  # === Binary Fields ===
+  avatar:
+    type: binary
+    required: false
+    
+  # === Special Fields ===
+  status:
+    type: enum
+    values: ['draft', 'published', 'archived']
+    required: true
+    
+  currency:
+    type: currency
+    required: false
+    
+  locale:
+    type: locale
+    required: false
+    
+  timezone:
+    type: timezone
+    required: false
+    
+  is_featured:
+    type: boolean
+    required: false
+    
+  # === Morphs Fields ===
+  commentable:
+    type: morphs
+    required: false

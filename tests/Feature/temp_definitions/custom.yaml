@@ -1,0 +1,16 @@
+header:
+  dto: CustomDTO
+  table: custom_data
+  model: App\Models\Custom
+  namespace: MyCompany\DataObjects
+
+fields:
+  id:
+    type: integer
+  name:
+    type: string
+
+options:
+  timestamps: false
+  soft_deletes: false
+  namespace: MyCompany\DataObjects

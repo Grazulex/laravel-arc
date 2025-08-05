@@ -23,10 +23,46 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - **🏗️ YAML-Driven Generation** - Define DTOs in clean, readable YAML
 - **🔒 Type Safety** - Full PHP 8.3+ type enforcement with readonly properties
 - **✅ Automatic Validation** - Generate Laravel validation rules from field definitions
-- **🔄 Field Transformers** - Built-in data transformation (trim, slugify, normalize, etc.)
+- **� ModelSchema Integration** - 65+ advanced field types (geometric, JSON, enhanced validation)
+- **�🔄 Field Transformers** - Built-in data transformation (trim, slugify, normalize, etc.)
 - **📊 Export Formats** - Convert to JSON, XML, CSV, YAML, and more
 - **🎯 Behavioral Traits** - Timestamps, UUIDs, soft deletes, and tagging
 - **🚀 Modern PHP** - Leverages PHP 8.3+ features and best practices
+
+### 🔧 Advanced Field Types (ModelSchema Integration)
+
+Laravel Arc integrates with **grazulex/laravel-modelschema** to provide **65+ advanced field types**:
+
+```yaml
+# Traditional Arc types
+fields:
+  name:
+    type: string
+  age:
+    type: integer
+
+# Advanced ModelSchema types  
+fields:
+  coordinates:
+    type: point          # Geographic point
+  boundary:
+    type: polygon        # Geographic polygon
+  metadata:
+    type: json           # JSON with validation
+  tags:
+    type: set            # Set collection
+  email:
+    type: email          # Enhanced email validation
+  settings:
+    type: jsonb          # PostgreSQL JSONB
+```
+
+**Supported Advanced Types:**
+- **🌍 Geometric**: `point`, `polygon`, `geometry`, `linestring`
+- **📋 JSON**: `json`, `jsonb`, `set`, `array`
+- **📧 Enhanced String**: `email`, `uuid`, `url`, `slug`, `phone`
+- **🔢 Numeric Variations**: `bigint`, `tinyint`, `decimal`, `money`
+- **📅 Date/Time**: `datetime`, `timestamp`, `date`, `time`
 
 ### 📚 Complete Documentation
 

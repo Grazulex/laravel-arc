@@ -1,0 +1,50 @@
+header:
+  dto: AdvancedLocationDTO
+  table: locations
+  model: App\Models\Location
+  namespace: App\DTO
+
+fields:
+  id:
+    type: uuid
+    required: true
+  name:
+    type: string
+    required: true
+  coordinates:
+    type: point         # Geometric type from ModelSchema
+    nullable: true
+  boundary:
+    type: polygon       # Advanced geometric type
+    nullable: true
+  email:
+    type: email         # Enhanced email validation
+    unique: true
+  website:
+    type: string        # Could be enhanced to 'url' with custom plugin
+    nullable: true
+  metadata:
+    type: json          # Better than 'array' - supports complex data
+    nullable: true
+  price:
+    type: decimal
+    precision: 10
+    scale: 2
+    default: 0.00
+  status:
+    type: enum
+    values: [active, inactive, pending]
+  tags:
+    type: set           # Multi-select values
+    nullable: true
+
+relations:
+  category:
+    type: belongsTo
+    target: App\Models\Category
+
+options:
+  timestamps: true
+  soft_deletes: false
+  expose_hidden_by_default: false
+  namespace: App\DTO
