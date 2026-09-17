@@ -27,14 +27,6 @@ final class DtoGenerationException extends Exception
 
     private array $suggestions = [];
 
-    public function __construct(
-        string $message = '',
-        int $code = 0,
-        ?Throwable $previous = null
-    ) {
-        parent::__construct($message, $code, $previous);
-    }
-
     /**
      * Create exception for YAML parsing errors.
      */
@@ -285,22 +277,22 @@ final class DtoGenerationException extends Exception
     {
         $message = '❌ DTO Generation Error';
 
-        if ($this->context !== null && $this->context !== '' && $this->context !== '0') {
+        if (! in_array($this->context, [null, '', '0'], true)) {
             $message .= " ({$this->context})";
         }
 
         $message .= "\n\n";
         $message .= "Error: {$this->getMessage()}\n";
 
-        if ($this->yamlFile !== null && $this->yamlFile !== '' && $this->yamlFile !== '0') {
+        if (! in_array($this->yamlFile, [null, '', '0'], true)) {
             $message .= "File: {$this->yamlFile}\n";
         }
 
-        if ($this->dtoName !== null && $this->dtoName !== '' && $this->dtoName !== '0') {
+        if (! in_array($this->dtoName, [null, '', '0'], true)) {
             $message .= "DTO: {$this->dtoName}\n";
         }
 
-        if ($this->fieldName !== null && $this->fieldName !== '' && $this->fieldName !== '0') {
+        if (! in_array($this->fieldName, [null, '', '0'], true)) {
             $message .= "Field: {$this->fieldName}\n";
         }
 

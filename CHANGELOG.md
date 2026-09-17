@@ -5,6 +5,16 @@ All notable changes to Laravel Arc will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- `ModelSchemaAdapter` now reports unknown or failing field types through the `Log` facade (`warning` / `error`) instead of raw `error_log()`
+- Codebase cleaned up with Rector (redundant delegating constructors, `in_array()` for repeated comparisons, closure parameter types)
+- GitHub Actions bumped: `actions/checkout@v5`, `softprops/action-gh-release@v2`
+
+### Removed
+- Orphan `src/Support/Traits/ConvertsData.php.backup` file
+
 ## [v1.4.0] - 2026-09-17
 
 ### Added

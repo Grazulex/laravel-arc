@@ -162,7 +162,7 @@ final class AdvancedModelSchemaIntegrationService
             'header' => [
                 'dto' => $dtoClassName,  // Use provided DTO class name
                 'class' => $dtoClassName,  // Compatibility alias
-                'namespace' => $namespace !== null && $namespace !== '' && $namespace !== '0' ? $namespace : 'App\\DTOs',  // Use provided namespace or default
+                'namespace' => ! in_array($namespace, [null, '', '0'], true) ? $namespace : 'App\\DTOs',  // Use provided namespace or default
                 'table' => $modelSchema->table,
                 'model' => $yamlData['header']['model'] ?? null,  // ✅ PASS THE MODEL FROM YAML!
                 'model_fqcn' => $yamlData['header']['model'] ?? null,  // ✅ COMPATIBILITY ALIAS

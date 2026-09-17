@@ -139,7 +139,7 @@ final class DtoGenerator
             foreach ($relationDefinitions as $name => $def) {
                 try {
                     $code = $this->relations->generate($name, $def);
-                    if ($code !== null && $code !== '' && $code !== '0') {
+                    if (! in_array($code, [null, '', '0'], true)) {
                         $methods[] = $code;
                     }
                 } catch (Exception $e) {
@@ -216,8 +216,7 @@ PHP;
             throw DtoGenerationException::invalidField(
                 $yamlFile ?? '',
                 '',
-                "DTO generation failed: {$e->getMessage()}",
-                null
+                "DTO generation failed: {$e->getMessage()}"
             );
         }
     }

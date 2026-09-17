@@ -41,7 +41,7 @@ use Grazulex\LaravelArc\Generator\Validators\UuidValidatorGenerator;
 
 final class DtoGenerationContext
 {
-    private int $maxDepth = 3;
+    private int $maxDepth;
 
     private array $currentPath = [];
 
