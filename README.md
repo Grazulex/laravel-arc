@@ -8,7 +8,7 @@ Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YA
 [![Total Downloads](https://img.shields.io/packagist/dt/grazulex/laravel-arc.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-arc)
 [![License](https://img.shields.io/github/license/grazulex/laravel-arc.svg?style=flat-square)](https://github.com/Grazulex/laravel-arc/blob/main/LICENSE.md)
 [![PHP Version](https://img.shields.io/packagist/php-v/grazulex/laravel-arc.svg?style=flat-square)](https://php.net/)
-[![Laravel Version](https://img.shields.io/badge/laravel-12.x-ff2d20?style=flat-square&logo=laravel)](https://laravel.com/)
+[![Laravel Version](https://img.shields.io/badge/laravel-12.x%20%7C%2013.x-ff2d20?style=flat-square&logo=laravel)](https://laravel.com/)
 [![Tests](https://img.shields.io/github/actions/workflow/status/grazulex/laravel-arc/tests.yml?branch=main&label=tests&style=flat-square)](https://github.com/Grazulex/laravel-arc/actions)
 [![Code Style](https://img.shields.io/badge/code%20style-pint-000000?style=flat-square&logo=laravel)](https://github.com/laravel/pint)
 
@@ -128,9 +128,10 @@ This applies to rules like: `"exists:table,column"`, `"unique:table,column"`, `"
 
 ## 🔧 Requirements
 
-- **PHP:** ^8.3
-- **Laravel:** ^12.19
+- **PHP:** 8.3+
+- **Laravel:** 12.x or 13.x
 - **Carbon:** ^3.10
+- **grazulex/laravel-modelschema:** ^1.2
 
 ## 🧪 Testing
 

@@ -88,7 +88,15 @@ describe('ModelSchemaAdapter', function () {
         $method = $reflection->getMethod('enhanceFieldTypes');
         $method->setAccessible(true);
 
-        $enhanced = $method->invoke($this->adapter, $yamlData);
+        // The adapter logs a warning for unknown field types via error_log();
+        // silence it so PHPUnit does not flag the test as risky.
+        $previousErrorLog = ini_set('error_log', '/dev/null');
+
+        try {
+            $enhanced = $method->invoke($this->adapter, $yamlData);
+        } finally {
+            ini_set('error_log', $previousErrorLog === false ? '' : $previousErrorLog);
+        }
 
         expect($enhanced['fields']['name'])->toHaveKey('_modelschema');
         expect($enhanced['fields']['coordinates'])->toHaveKey('_modelschema');
