@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Grazulex\LaravelArc\Adapters\ModelSchemaAdapter;
+use Illuminate\Support\Facades\Log;
 
 describe('ModelSchemaAdapter', function () {
     beforeEach(function () {
@@ -88,15 +89,12 @@ describe('ModelSchemaAdapter', function () {
         $method = $reflection->getMethod('enhanceFieldTypes');
         $method->setAccessible(true);
 
-        // The adapter logs a warning for unknown field types via error_log();
-        // silence it so PHPUnit does not flag the test as risky.
-        $previousErrorLog = ini_set('error_log', '/dev/null');
+        // The adapter logs a warning for unknown field types instead of failing.
+        Log::shouldReceive('warning')
+            ->once()
+            ->withArgs(fn (string $message): bool => str_contains($message, "Unknown field type 'unknown_type' for field 'unknown_field'"));
 
-        try {
-            $enhanced = $method->invoke($this->adapter, $yamlData);
-        } finally {
-            ini_set('error_log', $previousErrorLog === false ? '' : $previousErrorLog);
-        }
+        $enhanced = $method->invoke($this->adapter, $yamlData);
 
         expect($enhanced['fields']['name'])->toHaveKey('_modelschema');
         expect($enhanced['fields']['coordinates'])->toHaveKey('_modelschema');

@@ -25,11 +25,6 @@ final class DtoGenerateCommand extends Command
 
     protected $description = 'Generate a full DTO PHP class from a YAML definition.';
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function handle(): int
     {
         $basePath = DtoPaths::definitionDir();

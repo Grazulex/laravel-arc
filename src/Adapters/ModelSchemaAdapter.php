@@ -6,6 +6,7 @@ namespace Grazulex\LaravelArc\Adapters;
 
 use Exception;
 use Grazulex\LaravelModelschema\Support\FieldTypeRegistry;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\Yaml\Yaml;
 
 /**
@@ -200,8 +201,8 @@ final class ModelSchemaAdapter
             // Validate field type using ModelSchema's FieldTypeRegistry
             if (! FieldTypeRegistry::has($fieldType)) {
                 // Log warning but don't fail - maintain backward compatibility
-                error_log("Warning: Unknown field type '{$fieldType}' for field '{$fieldName}'. Available types: ".
-                         implode(', ', array_slice(FieldTypeRegistry::all(), 0, 10)).'...');
+                Log::warning("Unknown field type '{$fieldType}' for field '{$fieldName}'. Available types: ".
+                    implode(', ', array_slice(FieldTypeRegistry::all(), 0, 10)).'...');
 
                 continue;
             }
@@ -220,7 +221,7 @@ final class ModelSchemaAdapter
                 ];
             } catch (Exception $e) {
                 // Log error but continue
-                error_log("Error enhancing field type '{$fieldType}': ".$e->getMessage());
+                Log::error("Error enhancing field type '{$fieldType}': ".$e->getMessage());
             }
         }
 

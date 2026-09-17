@@ -121,7 +121,7 @@ final class ModernDtoGeneratorCorrected
     {
         $declaration = "class {$className}";
 
-        if ($extendsClass !== null && $extendsClass !== '' && $extendsClass !== '0') {
+        if (! in_array($extendsClass, [null, '', '0'], true)) {
             $declaration .= " extends {$extendsClass}";
         }
 

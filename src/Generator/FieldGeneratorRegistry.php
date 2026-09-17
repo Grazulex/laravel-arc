@@ -46,8 +46,7 @@ final class FieldGeneratorRegistry
             throw DtoGenerationException::invalidField(
                 '',
                 $name,
-                "Field generation failed: {$e->getMessage()}",
-                null
+                "Field generation failed: {$e->getMessage()}"
             );
         }
     }
