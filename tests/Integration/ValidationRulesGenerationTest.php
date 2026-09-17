@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Tests\Integration;
 
 use Grazulex\LaravelArc\Generator\DtoGenerator;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 final class ValidationRulesGenerationTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_generates_validation_rules_from_yaml_validation_field()
     {
         $yamlDefinition = [
@@ -45,7 +46,7 @@ final class ValidationRulesGenerationTest extends TestCase
         $this->assertStringContainsString("'status' => ['string', 'nullable', 'in:active,inactive,pending']", $generatedCode);
     }
 
-    /** @test */
+    #[Test]
     public function it_supports_legacy_rules_field_format()
     {
         $yamlDefinition = [
@@ -69,7 +70,7 @@ final class ValidationRulesGenerationTest extends TestCase
         $this->assertStringContainsString("'email' => ['string', 'required', 'email', 'max:255']", $generatedCode);
     }
 
-    /** @test */
+    #[Test]
     public function it_merges_validation_and_rules_fields()
     {
         $yamlDefinition = [

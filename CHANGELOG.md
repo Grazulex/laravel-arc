@@ -5,7 +5,26 @@ All notable changes to Laravel Arc will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased] - 2025-01-05
+## [v1.4.0] - 2026-09-17
+
+### Added
+- Laravel 13 support (`illuminate/support` and `illuminate/contracts` `^12.0|^13.0`)
+- `symfony/yaml` (`^7.3|^8.0`) declared explicitly as a runtime dependency (used by the ModelSchema adapter)
+- `Integration` test suite is now part of the default PHPUnit run
+
+### Changed
+- Minimum PHP version is now 8.3
+- `grazulex/laravel-modelschema` bumped to `^1.2` (Laravel 13 compatible)
+- Development dependencies: Pest `^3.8|^4.0`, Pest Laravel plugin `^3.2|^4.0`, Testbench `^10.0|^11.0`
+- CI matrix now covers PHP 8.3 / 8.4 with Laravel 12 / 13 (prefer-lowest and prefer-stable)
+- Release workflow no longer pins Laravel 12 / Testbench 10
+
+### Fixed
+- Rector 2.x configuration (`strictBooleans` is no longer a valid prepared set)
+- PHPUnit 12 compatibility: `@test` annotations converted to `#[Test]` attributes, silenced `error_log()` output in the ModelSchema adapter test
+- Code style fixes reported by Pint
+
+## [v1.3.0] - 2025-08-05
 
 ### ✨ Enhanced ModelSchema Integration
 

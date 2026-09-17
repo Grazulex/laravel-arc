@@ -160,7 +160,7 @@ final class AdvancedModelSchemaIntegrationService
 
         return [
             'header' => [
-                'dto' => $dtoClassName,  // Use provided DTO class name  
+                'dto' => $dtoClassName,  // Use provided DTO class name
                 'class' => $dtoClassName,  // Compatibility alias
                 'namespace' => $namespace !== null && $namespace !== '' && $namespace !== '0' ? $namespace : 'App\\DTOs',  // Use provided namespace or default
                 'table' => $modelSchema->table,
