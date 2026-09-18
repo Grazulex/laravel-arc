@@ -2,6 +2,12 @@
 
 <img src="new_logo.png" alt="Laravel Arc" width="200">
 
+> [!TIP]
+> **What Laravel Arc does for you** — Describe your DTOs in YAML and Arc generates the typed, validated PHP classes for you. No more hand-written DTOs slowly drifting away from your validation rules.
+>
+> **This package is free and maintained on my own time.** If it saves you hours, a small contribution helps me keep it going:
+> [💖 GitHub Sponsors](https://github.com/sponsors/Grazulex) · [☕ Buy Me a Coffee](https://buymeacoffee.com/grazulex) · [PayPal](https://paypal.me/strauven)
+
 Generate modern, type-safe Data Transfer Objects (DTOs) in Laravel from clean YAML definitions — with automatic validation, nested support, and fluent collection handling.
 
 [![Latest Version](https://img.shields.io/packagist/v/grazulex/laravel-arc.svg?style=flat-square)](https://packagist.org/packages/grazulex/laravel-arc)
@@ -146,6 +152,14 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 ## 🔒 Security
 
 Please review our [Security Policy](SECURITY.md) for reporting vulnerabilities.
+
+## 💖 Support This Package
+
+Laravel Arc is free, open source and maintained on my own time. If it saves you hours, here is how you can give back:
+
+- ⭐ **Star the repository** — it helps other developers find it
+- 🐦 **Share it** with your team and network
+- 💖 **[Sponsor on GitHub](https://github.com/sponsors/Grazulex)**, **[buy me a coffee](https://buymeacoffee.com/grazulex)** or **[donate via PayPal](https://paypal.me/strauven)** — every contribution funds maintenance, new features and Laravel upgrades
 
 ## 📄 License
 
