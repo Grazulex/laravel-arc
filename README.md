@@ -29,8 +29,8 @@ Laravel Arc is a powerful Laravel package that simplifies Data Transfer Object (
 - **🏗️ YAML-Driven Generation** - Define DTOs in clean, readable YAML
 - **🔒 Type Safety** - Full PHP 8.3+ type enforcement with readonly properties
 - **✅ Automatic Validation** - Generate Laravel validation rules from field definitions
-- **� ModelSchema Integration** - 65+ advanced field types (geometric, JSON, enhanced validation)
-- **�🔄 Field Transformers** - Built-in data transformation (trim, slugify, normalize, etc.)
+- **🧩 ModelSchema Integration** - 65+ advanced field types (geometric, JSON, enhanced validation)
+- **🔄 Field Transformers** - Built-in data transformation (trim, slugify, normalize, etc.)
 - **📊 Export Formats** - Convert to JSON, XML, CSV, YAML, and more
 - **🎯 Behavioral Traits** - Timestamps, UUIDs, soft deletes, and tagging
 - **🚀 Modern PHP** - Leverages PHP 8.3+ features and best practices
