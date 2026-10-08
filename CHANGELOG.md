@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [v1.5.0] - 2026-10-08
+
 ### Changed
+- **Minimum PHP version is now 8.4**: PHP 8.3 is no longer supported (#140)
+- CI test matrix now runs PHP 8.4 and 8.5 (#140)
 - `ModelSchemaAdapter` now reports unknown or failing field types through the `Log` facade (`warning` / `error`) instead of raw `error_log()`
 - Codebase cleaned up with Rector (redundant delegating constructors, `in_array()` for repeated comparisons, closure parameter types)
 - GitHub Actions bumped: `actions/checkout@v5`, `softprops/action-gh-release@v2`
