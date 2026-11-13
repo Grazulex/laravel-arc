@@ -7,6 +7,7 @@ namespace Grazulex\LaravelArc;
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionInitCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionListCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoGenerateCommand;
+use Grazulex\LaravelArc\Console\Commands\DtoGenerateTypeScriptCommand;
 use Grazulex\LaravelArc\Support\Validation\Rules\EnumExists;
 use Grazulex\LaravelArc\Support\Validation\Rules\InEnum;
 use Illuminate\Support\Facades\Validator;
@@ -37,6 +38,7 @@ final class LaravelArcServiceProvider extends ServiceProvider
             DtoDefinitionInitCommand::class,
             DtoDefinitionListCommand::class,
             DtoGenerateCommand::class,
+            DtoGenerateTypeScriptCommand::class,
         ]);
     }
 

@@ -30,4 +30,16 @@ return [
 
     'output_path' => base_path('app/DTO'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | TypeScript Output Path
+    |--------------------------------------------------------------------------
+    |
+    | The directory where `php artisan dto:generate-ts` writes the TypeScript
+    | types generated from your YAML definitions (one .ts file per DTO).
+    |
+    */
+
+    'typescript_path' => resource_path('js/types'),
+
 ];

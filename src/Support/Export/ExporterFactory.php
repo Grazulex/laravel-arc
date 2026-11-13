@@ -59,6 +59,7 @@ final class ExporterFactory
             new Exporters\PhpArrayExporter(),
             new Exporters\QueryStringExporter(),
             new Exporters\MessagePackExporter(),
+            new Exporters\TypeScriptExporter(),
         ];
 
         foreach ($exporters as $exporter) {

@@ -21,7 +21,8 @@ final class DtoGenerateCommand extends Command
         {--force : Overwrite existing DTO file if present}
         {--output= : Manually specify output path for generated DTO}
         {--dry-run : Output the result to console instead of saving}
-        {--all : Generate all YAML files in the base path}';
+        {--all : Generate all YAML files in the base path}
+        {--check : Compare the rendered DTO with the existing file and fail on any difference, without writing}';
 
     protected $description = 'Generate a full DTO PHP class from a YAML definition.';
 
@@ -36,8 +37,21 @@ final class DtoGenerateCommand extends Command
 
                 return self::FAILURE;
             }
+            $failed = 0;
             foreach ($files as $file) {
-                $this->generateFromFile($file);
+                if ($this->generateFromFile($file) !== self::SUCCESS) {
+                    $failed++;
+                }
+            }
+
+            if ($this->option('check')) {
+                if ($failed > 0) {
+                    $this->error("❌ {$failed} DTO file(s) are out of date or could not be checked.");
+
+                    return self::FAILURE;
+                }
+
+                $this->info('✅ All DTO files are up to date.');
             }
 
             return self::SUCCESS;
@@ -153,6 +167,13 @@ final class DtoGenerateCommand extends Command
                 );
             }
 
+            if ($this->option('check')) {
+                $outputPath = $this->option('output')
+                    ?? DtoPathResolver::resolveOutputPath($dtoName, $namespace);
+
+                return $this->checkGeneratedFile($outputPath, $code);
+            }
+
             if ($this->option('dry-run')) {
                 $this->line("\n----- Begin DTO: $dtoName -----\n");
                 $this->line($code);
@@ -198,5 +219,34 @@ final class DtoGenerateCommand extends Command
 
             return self::FAILURE;
         }
+    }
+
+    /**
+     * Compare the rendered code with the file on disk without writing anything.
+     */
+    private function checkGeneratedFile(string $outputPath, string $code): int
+    {
+        if (! File::exists($outputPath)) {
+            $this->error("❌ DTO file is missing: $outputPath");
+
+            return self::FAILURE;
+        }
+
+        $existing = File::get($outputPath);
+
+        if ($this->normalizeLineEndings($existing) !== $this->normalizeLineEndings($code)) {
+            $this->error("❌ DTO file is out of date: $outputPath");
+
+            return self::FAILURE;
+        }
+
+        $this->info("✅ DTO file is up to date: $outputPath");
+
+        return self::SUCCESS;
+    }
+
+    private function normalizeLineEndings(string $content): string
+    {
+        return str_replace("\r\n", "\n", $content);
     }
 }
