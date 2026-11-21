@@ -42,4 +42,17 @@ return [
 
     'typescript_path' => resource_path('js/types'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | OpenAPI Output Path
+    |--------------------------------------------------------------------------
+    |
+    | The file where `php artisan dto:generate-openapi` writes the OpenAPI
+    | document holding the schemas generated from your YAML definitions.
+    | Use a .yaml extension to get a YAML document instead of JSON.
+    |
+    */
+
+    'openapi_path' => base_path('openapi/dto-schemas.json'),
+
 ];
