@@ -6,6 +6,7 @@ namespace Grazulex\LaravelArc;
 
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionInitCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoDefinitionListCommand;
+use Grazulex\LaravelArc\Console\Commands\DtoDefinitionValidateCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoGenerateCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoGenerateOpenApiCommand;
 use Grazulex\LaravelArc\Console\Commands\DtoGenerateTypeScriptCommand;
@@ -38,6 +39,7 @@ final class LaravelArcServiceProvider extends ServiceProvider
         $this->commands([
             DtoDefinitionInitCommand::class,
             DtoDefinitionListCommand::class,
+            DtoDefinitionValidateCommand::class,
             DtoGenerateCommand::class,
             DtoGenerateTypeScriptCommand::class,
             DtoGenerateOpenApiCommand::class,
